@@ -7,4 +7,6 @@ const config = getDefaultConfig(__dirname, {
   isCSSEnabled: true,
 });
 
+config.watcher.additionalExts.push('mjs', 'cjs');
+
 module.exports = config;
