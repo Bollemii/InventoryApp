@@ -1,7 +1,8 @@
 {
   "title": {
-    "tabs": {
-      "one": "First Tab"
-    }
+    "home": "Home"
+  },
+  "item": {
+    "new": "New item"
   }
 }

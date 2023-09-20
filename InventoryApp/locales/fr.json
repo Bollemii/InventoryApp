@@ -1,7 +1,8 @@
 {
   "title": {
-    "tabs": {
-      "one": "Premier onglet"
-    }
+    "home": "Accueil"
+  },
+  "item": {
+    "new": "Nouveau"
   }
 }
