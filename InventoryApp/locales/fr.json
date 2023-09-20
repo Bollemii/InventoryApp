@@ -1,8 +1,15 @@
 {
-  "title": {
-    "home": "Accueil"
+  "error": {
+    "screenDoesntExists": "Cette page n'existe pas.",
+    "goToHomeScreen": "Aller à la page d'accueil!"
   },
   "item": {
+    "add": "Ajouter",
     "new": "Nouveau"
+  },
+  "title": {
+    "complete": "Complet",
+    "inventory": "Inventaire",
+    "oops": "Oops!"
   }
 }

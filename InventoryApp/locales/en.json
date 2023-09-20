@@ -1,8 +1,15 @@
 {
-  "title": {
-    "home": "Home"
+  "error": {
+    "screenDoesntExists": "This screen doesn't exists.",
+    "goToHomeScreen": "Go to home screen!"
   },
   "item": {
+    "add": "Add item",
     "new": "New item"
+  },
+  "title": {
+    "complete": "Complete",
+    "inventory": "Inventory",
+    "oops": "Oops!"
   }
 }

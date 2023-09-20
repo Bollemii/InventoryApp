@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { Text, View } from '../../components/Themed';
-import i18n from '../../I18n'
+import { View } from '../../components/Themed';
 import GridList from '../../components/GridList';
 import Item from '../../models/Item';
 import Inventory from '../../models/Inventory';
@@ -18,7 +17,6 @@ items.forEach(i => inventory.addItem(i))
 export default function InventoryScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{ i18n.t('title.home') }</Text>
       <View style={styles.list}>
         <GridList inventory={inventory}/>
       </View>
@@ -30,11 +28,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    padding: 10,
   },
   list: {
     background: '#fff',
