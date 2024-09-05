@@ -1,5 +1,11 @@
 name: Expo app test and deployment
 
+# This workflow is triggered on pushes to the main branch
+# It runs expo-doctor to check the app and then builds the app in an apk file
+
+# This workflow needs the following secrets:
+# - EXPO_TOKEN: The token to authenticate with Expo
+
 on:
   push:
     branches:
