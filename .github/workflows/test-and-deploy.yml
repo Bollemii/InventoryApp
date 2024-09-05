@@ -1,0 +1,43 @@
+name: Expo app test and deployment
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 14
+      uses: actions/setup-node@v4
+      with:
+        node-version: '14'
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm install
+    - name: Test app
+      run: |
+        npx tsc
+        npx expo-doctor
+
+  release:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm install
+    - name: Build app
+      run: |
+        npm install -g expo-cli eas-cli
+        eas build --platform android --profile preview --non-interactive --no-wait
