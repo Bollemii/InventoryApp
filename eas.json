@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 7.8.1"
+    "version": "remote"
   },
   "build": {
     "development": {
