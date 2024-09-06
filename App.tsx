@@ -1,24 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+
+import Router from '@/router/Router';
 
 export default function App() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Hello World!</Text>
+        <View style={{flex: 1}}>
+            <Router/>
+            <StatusBar hidden={true}/>
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-    },
-    text: {
-        marginVertical: 10,
-        fontSize: 16,
-        color: 'red',
-    }
-});
