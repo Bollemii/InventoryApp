@@ -17,13 +17,12 @@ export default function Inventory() {
         const idChanged = await updateItemQuantity(items[index].id, itemAffected.quantity + add);
         if (idChanged === -1) return;
 
-        items[index].add(add);
-        setItems([...items]);
+        itemAffected.add(add);
+        setItems([...items]); // Force re-render
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Inventory</Text>
             <FlatList
                 data={items}
                 extraData={items}
@@ -47,14 +46,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        paddingVertical: 10,
         backgroundColor: "white",
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: "bold",
-        margin: 20,
-        color: "black",
-        textAlignVertical: "center",
     },
     inventory: {
         flexDirection: "row",
