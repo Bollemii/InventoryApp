@@ -6,7 +6,7 @@ interface ItemProps {
     index: number;
     item: ItemObj;
     handleChangeQuantity: (index: number, quantity: number) => void;
-};
+}
 
 const SIZE = 110;
 
@@ -15,13 +15,21 @@ export default function Item({ index, item, handleChangeQuantity }: ItemProps) {
         <View style={styles.item}>
             <Text style={styles.name}>{item.name}</Text>
             <View style={styles.quantityBox}>
-                <PlusMinusButton onPress={handleChangeQuantity} plus={true} itemIndex={index} />
+                <PlusMinusButton
+                    onPress={handleChangeQuantity}
+                    plus={true}
+                    itemIndex={index}
+                />
                 <Text style={styles.quantity}>{item.quantity}</Text>
-                <PlusMinusButton onPress={handleChangeQuantity} plus={false} itemIndex={index} />
+                <PlusMinusButton
+                    onPress={handleChangeQuantity}
+                    plus={false}
+                    itemIndex={index}
+                />
             </View>
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     item: {

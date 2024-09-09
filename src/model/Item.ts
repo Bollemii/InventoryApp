@@ -7,7 +7,7 @@ export class Item {
         this._id = id;
         this._name = name;
         this._quantity = quantity;
-    };
+    }
 
     get id() {
         return this._id;
@@ -15,23 +15,23 @@ export class Item {
 
     get name() {
         return this._name;
-    };
-    
+    }
+
     get quantity() {
         return this._quantity;
-    };
+    }
 
     set name(name: string) {
         if (name === "") return;
 
         this._name = name;
-    };
+    }
 
     set quantity(quantity: number) {
         if (quantity < 0) return;
 
         this._quantity = quantity;
-    };
+    }
 
     public add(quantity: number): void {
         if (this._quantity + quantity < 0) return;
@@ -41,5 +41,5 @@ export class Item {
 
     public toString(): string {
         return `${this._id} - ${this._name} (${this._quantity})`;
-    };
+    }
 }

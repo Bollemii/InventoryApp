@@ -14,7 +14,10 @@ export default function Inventory() {
 
     const handleChangeQuantity = async (index: number, add: number) => {
         const itemAffected = items[index];
-        const idChanged = await updateItemQuantity(items[index].id, itemAffected.quantity + add);
+        const idChanged = await updateItemQuantity(
+            items[index].id,
+            itemAffected.quantity + add
+        );
         if (idChanged === -1) return;
 
         itemAffected.add(add);
@@ -39,7 +42,7 @@ export default function Inventory() {
             />
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {

@@ -7,13 +7,21 @@ interface PlusMinusButtonProps {
     onPress: (index: number, number: number) => void;
     plus: boolean;
     itemIndex: number;
-};
+}
 
-export default function PlusMinusButton({ onPress, plus, itemIndex }: PlusMinusButtonProps) {
+export default function PlusMinusButton({
+    onPress,
+    plus,
+    itemIndex,
+}: PlusMinusButtonProps) {
     return (
         <Pressable
             onPress={() => onPress(itemIndex, plus ? 1 : -1)}
-            style={(state) => state.pressed ? [styles.button, {backgroundColor: "grey"}] : styles.button}
+            style={(state) =>
+                state.pressed
+                    ? [styles.button, { backgroundColor: "grey" }]
+                    : styles.button
+            }
         >
             <FontAwesomeIcon
                 icon={plus ? faPlus : faMinus}
@@ -22,7 +30,7 @@ export default function PlusMinusButton({ onPress, plus, itemIndex }: PlusMinusB
             />
         </Pressable>
     );
-};
+}
 
 const styles = StyleSheet.create({
     button: {

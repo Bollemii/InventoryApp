@@ -5,6 +5,6 @@ export type RootStackParamList = {
 };
 
 export const routes = {
-    Inventory: 'Inventory',
-    Settings: 'Settings',
+    Inventory: "Inventory",
+    Settings: "Settings",
 };
