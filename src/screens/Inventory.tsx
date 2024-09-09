@@ -1,21 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
-import { Item as ItemObj } from "@/model/Item";
 import Item from "@/components/Item";
+import { Item as ItemObj } from "@/model/Item";
+import { fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
 
 export default function Inventory() {
-    const [items, setItems] = useState<ItemObj[]>([
-        new ItemObj("Apple", 5),
-        new ItemObj("Banana", 3),
-        new ItemObj("Cherry", 7),
-        new ItemObj("Date", 1),
-        new ItemObj("Elderberry", 2),
-        new ItemObj("Fig", 4),
-    ]);
+    const [items, setItems] = useState<ItemObj[]>([]);
 
-    const handleChangeQuantity = (index: number, quantity: number) => {
-        items[index].add(quantity);
+    useEffect(() => {
+        fetchAllItems().then((items) => setItems(items));
+    }, []);
+
+    const handleChangeQuantity = async (index: number, add: number) => {
+        const itemAffected = items[index];
+        const idChanged = await updateItemQuantity(items[index].id, itemAffected.quantity + add);
+        if (idChanged === -1) return;
+
+        items[index].add(add);
         setItems([...items]);
     };
 

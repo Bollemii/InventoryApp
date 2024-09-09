@@ -1,11 +1,17 @@
 export class Item {
+    private _id: number;
     private _name: string;
     private _quantity: number;
 
-    constructor(name: string, quantity: number) {
+    constructor(id: number, name: string, quantity: number) {
+        this._id = id;
         this._name = name;
         this._quantity = quantity;
     };
+
+    get id() {
+        return this._id;
+    }
 
     get name() {
         return this._name;
@@ -34,6 +40,6 @@ export class Item {
     }
 
     public toString(): string {
-        return `${this._name} (${this._quantity})`;
+        return `${this._id} - ${this._name} (${this._quantity})`;
     };
 }
