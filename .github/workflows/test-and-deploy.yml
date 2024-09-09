@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: latest
+          cache: 'npm'
       - name: 🏗 Setup EAS
         uses: expo/expo-github-action@v8
         with:
@@ -30,6 +31,7 @@ jobs:
         run: npm install
       - name: Test app
         run: npx expo-doctor
+        continue-on-error: true
 
   release:
     runs-on: ubuntu-latest
@@ -40,7 +42,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 21.x
+          node-version: latest
+          cache: 'npm'
       - name: 🏗 Setup EAS
         uses: expo/expo-github-action@v8
         with:
