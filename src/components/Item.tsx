@@ -8,13 +8,15 @@ interface ItemProps {
     handleChangeQuantity: (index: number, quantity: number) => void;
 };
 
+const SIZE = 110;
+
 export default function Item({ index, item, handleChangeQuantity }: ItemProps) {
     return (
         <View style={styles.item}>
             <Text style={styles.name}>{item.name}</Text>
-            <View style={styles.quantity}>
+            <View style={styles.quantityBox}>
                 <PlusMinusButton onPress={handleChangeQuantity} plus={true} itemIndex={index} />
-                <Text>{item.quantity}</Text>
+                <Text style={styles.quantity}>{item.quantity}</Text>
                 <PlusMinusButton onPress={handleChangeQuantity} plus={false} itemIndex={index} />
             </View>
         </View>
@@ -28,19 +30,25 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 20,
         margin: 5,
-        height: 100,
-        width: 100,
+        height: SIZE,
+        width: SIZE,
     },
     name: {
         width: "100%",
         flexGrow: 1,
         textAlign: "center",
+        fontSize: 15,
     },
-    quantity: {
+    quantityBox: {
         flexDirection: "row",
         width: "100%",
         flexGrow: 2,
         alignItems: "center",
         justifyContent: "space-around",
+    },
+    quantity: {
+        width: "40%",
+        textAlign: "center",
+        fontSize: 15,
     },
 });

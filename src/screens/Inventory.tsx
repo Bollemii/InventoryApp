@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { Item as ItemObj } from "@/model/Item";
 import Item from "@/components/Item";
@@ -22,11 +22,20 @@ export default function Inventory() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Inventory</Text>
-            <View style={styles.inventory}>
-                {items.map((item, index) => (
-                    <Item key={index} index={index} item={item} handleChangeQuantity={handleChangeQuantity}/>
-                ))}
-            </View>
+            <FlatList
+                data={items}
+                extraData={items}
+                renderItem={({ item, index }) => (
+                    <Item
+                        index={index}
+                        item={item}
+                        handleChangeQuantity={handleChangeQuantity}
+                    />
+                )}
+                keyExtractor={(_, index) => index.toString()}
+                columnWrapperStyle={styles.inventory}
+                numColumns={3}
+            />
         </View>
     );
 };
@@ -36,17 +45,18 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        backgroundColor: "white",
     },
     title: {
         fontSize: 20,
         fontWeight: "bold",
         margin: 20,
-        color: "black"
+        color: "black",
+        textAlignVertical: "center",
     },
     inventory: {
         flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: "center",
         marginHorizontal: 10,
     },
 });

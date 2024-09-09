@@ -1,4 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { colors } from "@/styles/colors";
 
 interface PlusMinusButtonProps {
     onPress: (index: number, number: number) => void;
@@ -12,7 +15,11 @@ export default function PlusMinusButton({ onPress, plus, itemIndex }: PlusMinusB
             onPress={() => onPress(itemIndex, plus ? 1 : -1)}
             style={(state) => state.pressed ? [styles.button, {backgroundColor: "grey"}] : styles.button}
         >
-            <View><Text>{plus ? "+" : "-"}</Text></View>
+            <FontAwesomeIcon
+                icon={plus ? faPlus : faMinus}
+                size={15}
+                color={colors.black}
+            />
         </Pressable>
     );
 };
@@ -20,9 +27,8 @@ export default function PlusMinusButton({ onPress, plus, itemIndex }: PlusMinusB
 const styles = StyleSheet.create({
     button: {
         borderRadius: 10,
-        alignContent: "center",
+        alignItems: "center",
         justifyContent: "center",
-        flexDirection: "row",
         height: 30,
         width: 30,
         backgroundColor: "lightgrey",
