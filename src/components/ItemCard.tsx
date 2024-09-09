@@ -1,5 +1,6 @@
 import { Item } from "@/model/Item";
 import { StyleSheet, Text, View } from "react-native";
+
 import PlusMinusButton from "./PlusMinusButton";
 
 interface ItemProps {

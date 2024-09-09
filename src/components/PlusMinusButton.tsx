@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+
 import { colors } from "@/styles/colors";
 
 interface PlusMinusButtonProps {
