@@ -42,12 +42,11 @@ export default function Router() {
                 <Stack.Screen
                     name="Inventory"
                     component={Inventory}
-                    options={{ title: "Inventory" }}
                 />
                 <Stack.Screen
                     name="Settings"
                     component={Settings}
-                    options={{ title: "Settings", headerRight: () => null }}
+                    options={{ headerRight: () => null }}
                 />
                 <Stack.Screen name="*" component={Inventory} />
             </Stack.Navigator>
