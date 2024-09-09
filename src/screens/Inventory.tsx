@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
-import Item from "@/components/Item";
-import { Item as ItemObj } from "@/model/Item";
+import ItemCard from "@/components/ItemCard";
+import { Item } from "@/model/Item";
 import { fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
 
 export default function Inventory() {
-    const [items, setItems] = useState<ItemObj[]>([]);
+    const [items, setItems] = useState<Item[]>([]);
 
     useEffect(() => {
         fetchAllItems().then((items) => setItems(items));
@@ -14,6 +14,8 @@ export default function Inventory() {
 
     const handleChangeQuantity = async (index: number, add: number) => {
         const itemAffected = items[index];
+        if (!Item.isQuantityValid(itemAffected.quantity + add)) return;
+
         const idChanged = await updateItemQuantity(
             items[index].id,
             itemAffected.quantity + add
@@ -28,9 +30,8 @@ export default function Inventory() {
         <View style={styles.container}>
             <FlatList
                 data={items}
-                extraData={items}
                 renderItem={({ item, index }) => (
-                    <Item
+                    <ItemCard
                         index={index}
                         item={item}
                         handleChangeQuantity={handleChangeQuantity}

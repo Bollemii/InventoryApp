@@ -39,25 +39,14 @@ export async function getItems(): Promise<Item[]> {
     }
 }
 
-export async function getItemById(id: number): Promise<Item> {
-    await initializeDatabase();
-    const statement = await db.prepareAsync(
-        "SELECT * FROM items WHERE id = $id"
-    );
-    try {
-        const result = (await (
-            await statement.executeAsync({ $id: id })
-        ).getFirstAsync()) as IItem;
-        return new Item(result.id, result.name, result.quantity);
-    } finally {
-        statement.finalizeAsync();
-    }
-}
-
 export async function updateQuantity(
     id: number,
     quantity: number
 ): Promise<number> {
+    if (!Item.isQuantityValid(quantity)) {
+        throw new Error("Item quantity out of bounds");
+    }
+
     await initializeDatabase();
     const statement = await db.prepareAsync(
         "UPDATE items SET quantity = $quantity WHERE id = $id"
