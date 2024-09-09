@@ -1,24 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from "react-native";
+
+import Router from "@/router/Router";
+
+const BACKGROUND_COLOR = "white";
 
 export default function App() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Hello World!</Text>
+        <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+            <Router />
         </View>
     );
-};
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-    },
-    text: {
-        marginVertical: 10,
-        fontSize: 16,
-        color: 'red',
-    }
-});
+}
