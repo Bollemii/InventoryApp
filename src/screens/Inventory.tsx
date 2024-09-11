@@ -6,22 +6,24 @@ import Category from "@/components/Category";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
 import { fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
-import { getCardViewSetting } from "@/dataaccess/settingsRepository";
-import { colors } from "@/styles/colors";
+import { getCardViewSetting, getThemeSetting } from "@/dataaccess/settingsRepository";
+import { colorScheme } from "@/styles/colors";
 
 export default function Inventory() {
+    const [theme, setTheme] = useState(colorScheme.dark);
     const isFocused = useIsFocused();
     const [categories, setCategories] = useState<CategoryObj[]>([]);
     const [cardViewSetting, setCardViewSetting] = useState(false);
-
+    
     useEffect(() => {
+        getThemeSetting().then((theme) => { setTheme(theme) });
         fetchAllItems().then((categories) => setCategories(categories));
         getCardViewSetting().then((value) => setCardViewSetting(value));
     }, []);
-
     useEffect(() => {
         if (!isFocused) return;
 
+        getThemeSetting().then((theme) => { setTheme(theme) });
         getCardViewSetting().then((value) => setCardViewSetting(value));
     }, [isFocused]);
 
@@ -45,7 +47,7 @@ export default function Inventory() {
     };
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={[styles.container, {backgroundColor: theme.colors.background}]}>
             {categories.map((category, categoryIndex) => (
                 <Category
                     key={categoryIndex}
@@ -62,6 +64,5 @@ export default function Inventory() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.white,
     },
 });

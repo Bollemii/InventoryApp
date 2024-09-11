@@ -1,6 +1,63 @@
-export const colors = {
-    black: "#000000",
-    grey: "#808080",
-    lightgrey: "#D3D3D3",
-    white: "#FFFFFF",
+export interface Theme {
+    name: string;
+    colors: {
+        background: string;
+        headers: {
+            background: string;
+            elements: string;
+            selected: string;
+        };
+        texts: string;
+        items: {
+            background: string;
+            button: {
+                normal: string;
+                pressed: string;
+                icon: string;
+            };
+        };
+    }
+}
+
+export const colorScheme : {[key: string]: Theme} = {
+    dark: {
+        name: "dark",
+        colors: {
+            background: "#8B8B8B",
+            headers:{
+                background: "#424242",
+                elements: "#FFFFFF",
+                selected: "#4285F4",
+            },
+            texts: "#212121",
+            items: {
+                background: "#BBBBBB",
+                button: {
+                    normal: "#FFFFFF",
+                    pressed: "#A9A9A9",
+                    icon: "#000000",
+                }
+            },
+        },
+    },
+    light: {
+        name: "light",
+        colors: {
+            background: "#FFFFFF",
+            headers:{
+                background: "#8B8B8B",
+                elements: "#212121",
+                selected: "#8B8B8B",
+            },
+            texts: "#212121",
+            items: {
+                background: "#BBBBBB",
+                button: {
+                    normal: "#D3D3D3",
+                    pressed: "#808080",
+                    icon: "#000000",
+                },
+            },
+        },
+    },
 };

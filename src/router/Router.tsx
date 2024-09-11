@@ -8,9 +8,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 
 import { RootStackParamList, routes } from "@/router/routes";
-import { colors } from "@/styles/colors";
+import { colorScheme, Theme } from "@/styles/colors";
 import Inventory from "@/screens/Inventory";
 import Settings from "@/screens/Settings";
+import { useEffect, useState } from "react";
+import { getThemeSetting } from "@/dataaccess/settingsRepository";
 
 declare global {
     namespace ReactNavigation {
@@ -21,6 +23,11 @@ declare global {
 export default function Router() {
     const Stack = createNativeStackNavigator<RootStackParamList>();
     const navigationRef = useNavigationContainerRef();
+    const [theme, setTheme] = useState(colorScheme.dark);
+
+    useEffect(() => {
+        getThemeSetting().then((theme) => { setTheme(theme) });
+    }, []);
 
     const handleError = (error: any) => {
         console.log("Unhandled routing action", error);
@@ -36,7 +43,7 @@ export default function Router() {
             <Stack.Navigator
                 initialRouteName="Inventory"
                 screenOptions={({ navigation }) => ({
-                    ...headerOptions(navigation),
+                    ...headerOptions(navigation, theme),
                 })}
             >
                 <Stack.Screen
@@ -55,11 +62,15 @@ export default function Router() {
     );
 }
 
-function headerOptions(navigation: any) {
+function headerOptions(navigation: any, theme: Theme) {
     return {
+        headerStyle: {
+            backgroundColor: theme.colors.headers.background,
+        },
+        headerTintColor: theme.colors.headers.elements,
         headerRight: () => (
             <Pressable onPress={() => navigation.navigate(routes.Settings)}>
-                <FontAwesomeIcon icon={faGear} size={25} color={colors.black} />
+                <FontAwesomeIcon icon={faGear} size={25} color={theme.colors.headers.elements} />
             </Pressable>
         ),
     };

@@ -3,6 +3,9 @@ import { StyleSheet, Text, View } from "react-native";
 import ItemCard from "./ItemCard";
 import ItemList from "./ItemList";
 import { Category as CategoryObj } from "@/model/category";
+import { useEffect, useState } from "react";
+import { getThemeSetting } from "@/dataaccess/settingsRepository";
+import { colorScheme } from "@/styles/colors";
 
 interface CategoryProps {
     categoryIndex: number;
@@ -21,6 +24,12 @@ export default function Category({
     cardViewSetting,
     handleChangeQuantity,
 }: CategoryProps) {
+    const [theme, setTheme] = useState(colorScheme.dark);
+
+    useEffect(() => {
+        getThemeSetting().then((theme) => { setTheme(theme) });
+    }, []);
+
     return (
         <View style={styles.container}>
             <View
@@ -32,9 +41,9 @@ export default function Category({
                     },
                 ]}
             >
-                <Text style={styles.title}>{category.name}</Text>
+                <Text style={[styles.title, {color: theme.colors.texts}]}>{category.name}</Text>
             </View>
-            <View style={styles.items}>
+            <View style={[styles.items, {backgroundColor: theme.colors.items.background}]}>
                 {category.items.map((item, index) =>
                     cardViewSetting ? (
                         <ItemCard
@@ -74,6 +83,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 17,
+        fontWeight: "bold",
     },
     items: {
         flexDirection: "row",
