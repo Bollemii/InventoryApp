@@ -1,6 +1,9 @@
 import { Item } from "@/model/Item";
 import { Category } from "@/model/category";
-import { getItemsGroupByCategory, updateQuantity } from "./database/itemdatabase";
+import {
+    getItemsGroupByCategory,
+    updateQuantity,
+} from "./database/itemdatabase";
 
 export async function fetchAllItems(): Promise<Category[]> {
     try {

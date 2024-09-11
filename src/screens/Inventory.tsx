@@ -13,8 +13,8 @@ export default function Inventory() {
     const isFocused = useIsFocused();
     const [categories, setCategories] = useState<CategoryObj[]>([]);
     const [cardViewSetting, setCardViewSetting] = useState(false);
-    
-    useEffect(() => {        
+
+    useEffect(() => {
         fetchAllItems().then((categories) => setCategories(categories));
         getCardViewSetting().then((value) => setCardViewSetting(value));
     }, []);
@@ -25,8 +25,12 @@ export default function Inventory() {
         getCardViewSetting().then((value) => setCardViewSetting(value));
     }, [isFocused]);
 
-    const handleChangeQuantity = async (categoryIndex: number, itemIndex: number, add: number) => {
-        const categoryAffected = categories[categoryIndex]
+    const handleChangeQuantity = async (
+        categoryIndex: number,
+        itemIndex: number,
+        add: number
+    ) => {
+        const categoryAffected = categories[categoryIndex];
         const itemAffected = categoryAffected.items[itemIndex];
         if (!Item.isQuantityValid(itemAffected.quantity + add)) return;
 

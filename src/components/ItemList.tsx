@@ -7,7 +7,11 @@ interface ItemProps {
     categoryIndex: number;
     itemIndex: number;
     item: Item;
-    handleChangeQuantity: (categoryIndex: number, itemIndex: number, quantity: number) => void;
+    handleChangeQuantity: (
+        categoryIndex: number,
+        itemIndex: number,
+        quantity: number
+    ) => void;
 }
 
 export default function ItemList({

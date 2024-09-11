@@ -8,17 +8,34 @@ interface CategoryProps {
     categoryIndex: number;
     category: CategoryObj;
     cardViewSetting: boolean;
-    handleChangeQuantity: (categoryIndex: number, itemIndex: number, add: number) => void;
+    handleChangeQuantity: (
+        categoryIndex: number,
+        itemIndex: number,
+        add: number
+    ) => void;
 }
 
-export default function Category({ categoryIndex, category, cardViewSetting, handleChangeQuantity } : CategoryProps) {
+export default function Category({
+    categoryIndex,
+    category,
+    cardViewSetting,
+    handleChangeQuantity,
+}: CategoryProps) {
     return (
         <View style={styles.container}>
-            <View style={[styles.category, { borderTopWidth: cardViewSetting || categoryIndex === 0 ? 1 : 0}]}>
+            <View
+                style={[
+                    styles.category,
+                    {
+                        borderTopWidth:
+                            cardViewSetting || categoryIndex === 0 ? 1 : 0,
+                    },
+                ]}
+            >
                 <Text style={styles.title}>{category.name}</Text>
             </View>
-            <View style={styles.items}>{
-                category.items.map((item, index) => (
+            <View style={styles.items}>
+                {category.items.map((item, index) =>
                     cardViewSetting ? (
                         <ItemCard
                             key={item.id}
@@ -36,8 +53,8 @@ export default function Category({ categoryIndex, category, cardViewSetting, han
                             handleChangeQuantity={handleChangeQuantity}
                         />
                     )
-                ))
-            }</View>
+                )}
+            </View>
         </View>
     );
 }
