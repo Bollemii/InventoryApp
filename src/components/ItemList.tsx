@@ -4,30 +4,34 @@ import { Item } from "@/model/Item";
 import PlusMinusButton from "./PlusMinusButton";
 
 interface ItemProps {
-    index: number;
+    categoryIndex: number;
+    itemIndex: number;
     item: Item;
-    handleChangeQuantity: (index: number, quantity: number) => void;
+    handleChangeQuantity: (categoryIndex: number, itemIndex: number, quantity: number) => void;
 }
 
 export default function ItemList({
-    index,
+    categoryIndex,
+    itemIndex,
     item,
     handleChangeQuantity,
 }: ItemProps) {
     return (
-        <View style={[styles.item, { borderTopWidth: index === 0 ? 1 : 0 }]}>
+        <View style={styles.item}>
             <Text style={styles.name}>{item.name}</Text>
             <View style={styles.quantityBox}>
                 <PlusMinusButton
                     onPress={handleChangeQuantity}
                     plus={false}
-                    itemIndex={index}
+                    categoryIndex={categoryIndex}
+                    itemIndex={itemIndex}
                 />
                 <Text style={styles.quantity}>{item.quantity}</Text>
                 <PlusMinusButton
                     onPress={handleChangeQuantity}
                     plus={true}
-                    itemIndex={index}
+                    categoryIndex={categoryIndex}
+                    itemIndex={itemIndex}
                 />
             </View>
         </View>
@@ -39,7 +43,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         padding: 10,
-        borderWidth: 1,
+        marginHorizontal: 10,
+        borderBottomWidth: 1,
         height: 50,
         width: "100%",
     },

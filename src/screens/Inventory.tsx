@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 
-import ItemCard from "@/components/ItemCard";
-import ItemList from "@/components/ItemList";
+import Category from "@/components/Category";
 import { Item } from "@/model/Item";
+import { Category as CategoryObj } from "@/model/category";
 import { fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
 import { getCardViewSetting } from "@/dataaccess/settingsRepository";
 import { colors } from "@/styles/colors";
 
 export default function Inventory() {
     const isFocused = useIsFocused();
-    const [items, setItems] = useState<Item[]>([]);
+    const [categories, setCategories] = useState<CategoryObj[]>([]);
     const [cardViewSetting, setCardViewSetting] = useState(false);
     
     useEffect(() => {        
-        fetchAllItems().then((items) => setItems(items));
+        fetchAllItems().then((categories) => setCategories(categories));
         getCardViewSetting().then((value) => setCardViewSetting(value));
     }, []);
 
@@ -25,58 +25,39 @@ export default function Inventory() {
         getCardViewSetting().then((value) => setCardViewSetting(value));
     }, [isFocused]);
 
-    const handleChangeQuantity = async (index: number, add: number) => {
-        const itemAffected = items[index];
+    const handleChangeQuantity = async (categoryIndex: number, itemIndex: number, add: number) => {
+        const categoryAffected = categories[categoryIndex]
+        const itemAffected = categoryAffected.items[itemIndex];
         if (!Item.isQuantityValid(itemAffected.quantity + add)) return;
 
         const idChanged = await updateItemQuantity(
-            items[index].id,
+            itemAffected.id,
             itemAffected.quantity + add
         );
         if (idChanged === -1) return;
 
         itemAffected.add(add);
-        setItems([...items]); // Force re-render
+        setCategories([...categories]); // Force re-render
     };
 
     return (
-        <View style={styles.container}>
-            <FlatList
-                data={items}
-                renderItem={({ item, index }) => (
-                    cardViewSetting ? (
-                        <ItemCard
-                            item={item}
-                            index={index}
-                            handleChangeQuantity={handleChangeQuantity}
-                        />
-                    ) : (
-                        <ItemList
-                            item={item}
-                            index={index}
-                            handleChangeQuantity={handleChangeQuantity}
-                        />
-                    )
-                )}
-                keyExtractor={(_, index) => index.toString()}
-                columnWrapperStyle={styles.inventory}
-                numColumns={3}
-            />
-        </View>
+        <ScrollView style={styles.container}>
+            {categories.map((category, categoryIndex) => (
+                <Category
+                    key={categoryIndex}
+                    categoryIndex={categoryIndex}
+                    category={category}
+                    cardViewSetting={cardViewSetting}
+                    handleChangeQuantity={handleChangeQuantity}
+                />
+            ))}
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 10,
         backgroundColor: colors.white,
-    },
-    inventory: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        marginHorizontal: 10,
     },
 });
