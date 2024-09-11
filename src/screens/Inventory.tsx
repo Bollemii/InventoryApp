@@ -7,6 +7,7 @@ import ItemList from "@/components/ItemList";
 import { Item } from "@/model/Item";
 import { fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
 import { getCardViewSetting } from "@/dataaccess/settingsRepository";
+import { colors } from "@/styles/colors";
 
 export default function Inventory() {
     const isFocused = useIsFocused();
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         paddingVertical: 10,
-        backgroundColor: "white",
+        backgroundColor: colors.white,
     },
     inventory: {
         flexDirection: "row",
