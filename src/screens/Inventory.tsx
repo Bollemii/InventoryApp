@@ -1,16 +1,29 @@
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 
 import ItemCard from "@/components/ItemCard";
+import ItemList from "@/components/ItemList";
 import { Item } from "@/model/Item";
 import { fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
+import { getCardViewSetting } from "@/dataaccess/settingsRepository";
+import { colors } from "@/styles/colors";
 
 export default function Inventory() {
+    const isFocused = useIsFocused();
     const [items, setItems] = useState<Item[]>([]);
+    const [cardViewSetting, setCardViewSetting] = useState(false);
+    
+    useEffect(() => {        
+        fetchAllItems().then((items) => setItems(items));
+        getCardViewSetting().then((value) => setCardViewSetting(value));
+    }, []);
 
     useEffect(() => {
-        fetchAllItems().then((items) => setItems(items));
-    }, []);
+        if (!isFocused) return;
+
+        getCardViewSetting().then((value) => setCardViewSetting(value));
+    }, [isFocused]);
 
     const handleChangeQuantity = async (index: number, add: number) => {
         const itemAffected = items[index];
@@ -31,11 +44,19 @@ export default function Inventory() {
             <FlatList
                 data={items}
                 renderItem={({ item, index }) => (
-                    <ItemCard
-                        index={index}
-                        item={item}
-                        handleChangeQuantity={handleChangeQuantity}
-                    />
+                    cardViewSetting ? (
+                        <ItemCard
+                            item={item}
+                            index={index}
+                            handleChangeQuantity={handleChangeQuantity}
+                        />
+                    ) : (
+                        <ItemList
+                            item={item}
+                            index={index}
+                            handleChangeQuantity={handleChangeQuantity}
+                        />
+                    )
                 )}
                 keyExtractor={(_, index) => index.toString()}
                 columnWrapperStyle={styles.inventory}
@@ -51,7 +72,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         paddingVertical: 10,
-        backgroundColor: "white",
+        backgroundColor: colors.white,
     },
     inventory: {
         flexDirection: "row",

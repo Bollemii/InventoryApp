@@ -20,7 +20,7 @@ export default function PlusMinusButton({
             onPress={() => onPress(itemIndex, plus ? 1 : -1)}
             style={(state) =>
                 state.pressed
-                    ? [styles.button, { backgroundColor: "grey" }]
+                    ? [styles.button, { backgroundColor: colors.grey }]
                     : styles.button
             }
         >
@@ -40,6 +40,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         height: 30,
         width: 30,
-        backgroundColor: "lightgrey",
+        backgroundColor: colors.lightgrey,
     },
 });
