@@ -5,19 +5,21 @@ import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { colors } from "@/styles/colors";
 
 interface PlusMinusButtonProps {
-    onPress: (index: number, number: number) => void;
+    onPress: (categoryIndex: number, itemIndex: number, number: number) => void;
     plus: boolean;
+    categoryIndex: number;
     itemIndex: number;
 }
 
 export default function PlusMinusButton({
     onPress,
     plus,
+    categoryIndex,
     itemIndex,
 }: PlusMinusButtonProps) {
     return (
         <Pressable
-            onPress={() => onPress(itemIndex, plus ? 1 : -1)}
+            onPress={() => onPress(categoryIndex, itemIndex, plus ? 1 : -1)}
             style={(state) =>
                 state.pressed
                     ? [styles.button, { backgroundColor: colors.grey }]

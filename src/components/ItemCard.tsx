@@ -4,15 +4,21 @@ import { StyleSheet, Text, View } from "react-native";
 import PlusMinusButton from "./PlusMinusButton";
 
 interface ItemProps {
-    index: number;
+    categoryIndex: number;
+    itemIndex: number;
     item: Item;
-    handleChangeQuantity: (index: number, quantity: number) => void;
+    handleChangeQuantity: (
+        categoryIndex: number,
+        itemIndex: number,
+        quantity: number
+    ) => void;
 }
 
 const SIZE = 110;
 
 export default function ItemCard({
-    index,
+    categoryIndex,
+    itemIndex,
     item,
     handleChangeQuantity,
 }: ItemProps) {
@@ -23,13 +29,15 @@ export default function ItemCard({
                 <PlusMinusButton
                     onPress={handleChangeQuantity}
                     plus={false}
-                    itemIndex={index}
+                    categoryIndex={categoryIndex}
+                    itemIndex={itemIndex}
                 />
                 <Text style={styles.quantity}>{item.quantity}</Text>
                 <PlusMinusButton
                     onPress={handleChangeQuantity}
                     plus={true}
-                    itemIndex={index}
+                    categoryIndex={categoryIndex}
+                    itemIndex={itemIndex}
                 />
             </View>
         </View>
@@ -42,7 +50,8 @@ const styles = StyleSheet.create({
         padding: 10,
         borderWidth: 1,
         borderRadius: 20,
-        margin: 5,
+        marginHorizontal: 7,
+        marginVertical: 5,
         height: SIZE,
         width: SIZE,
     },

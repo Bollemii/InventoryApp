@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 
-import { getCardViewSetting, setCardViewSetting } from "@/dataaccess/settingsRepository";
+import {
+    getCardViewSetting,
+    setCardViewSetting,
+} from "@/dataaccess/settingsRepository";
 import { colors } from "@/styles/colors";
 
 export default function Settings() {

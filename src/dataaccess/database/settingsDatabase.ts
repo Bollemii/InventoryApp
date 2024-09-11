@@ -7,7 +7,7 @@ export async function getSetting(key: string) {
         console.error(`Error getting preference ${key}: ${e}`);
         return null;
     }
-};
+}
 
 export async function setSetting(key: string, value: string) {
     try {
@@ -15,4 +15,4 @@ export async function setSetting(key: string, value: string) {
     } catch (e) {
         console.error(`Error setting preference ${key}: ${e}`);
     }
-};
+}
