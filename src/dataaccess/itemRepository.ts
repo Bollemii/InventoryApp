@@ -15,6 +15,9 @@ export async function updateItemQuantity(
     quantity: number
 ): Promise<number> {
     try {
+        if (!Item.isQuantityValid(quantity)) {
+            throw new Error("Item quantity out of bounds");
+        }
         return await updateQuantity(id, quantity);
     } catch (error) {
         console.error(error);

@@ -1,8 +1,9 @@
 import { View } from "react-native";
 
 import Router from "@/router/Router";
+import { colors } from "@/styles/colors";
 
-const BACKGROUND_COLOR = "white";
+const BACKGROUND_COLOR = colors.white;
 
 export default function App() {
     return (

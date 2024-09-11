@@ -1,4 +1,7 @@
 export class Item {
+    static QUANTITY_MIN = 0;
+    static QUANTITY_MAX = 99;
+
     private _id: number;
     private _name: string;
     private _quantity: number;
@@ -28,18 +31,22 @@ export class Item {
     }
 
     set quantity(quantity: number) {
-        if (quantity < 0) return;
+        if (!Item.isQuantityValid(quantity)) return;
 
         this._quantity = quantity;
     }
 
     public add(quantity: number): void {
-        if (this._quantity + quantity < 0) return;
+        if (!Item.isQuantityValid(this._quantity + quantity)) return;
 
         this._quantity += quantity;
     }
 
     public toString(): string {
         return `${this._id} - ${this._name} (${this._quantity})`;
+    }
+
+    public static isQuantityValid(quantity: number): boolean {
+        return quantity >= Item.QUANTITY_MIN && quantity <= Item.QUANTITY_MAX;
     }
 }

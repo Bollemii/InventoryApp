@@ -1,29 +1,34 @@
-import { Item as ItemObj } from "@/model/Item";
+import { Item } from "@/model/Item";
 import { StyleSheet, Text, View } from "react-native";
+
 import PlusMinusButton from "./PlusMinusButton";
 
 interface ItemProps {
     index: number;
-    item: ItemObj;
+    item: Item;
     handleChangeQuantity: (index: number, quantity: number) => void;
 }
 
 const SIZE = 110;
 
-export default function Item({ index, item, handleChangeQuantity }: ItemProps) {
+export default function ItemCard({
+    index,
+    item,
+    handleChangeQuantity,
+}: ItemProps) {
     return (
         <View style={styles.item}>
             <Text style={styles.name}>{item.name}</Text>
             <View style={styles.quantityBox}>
                 <PlusMinusButton
                     onPress={handleChangeQuantity}
-                    plus={true}
+                    plus={false}
                     itemIndex={index}
                 />
                 <Text style={styles.quantity}>{item.quantity}</Text>
                 <PlusMinusButton
                     onPress={handleChangeQuantity}
-                    plus={false}
+                    plus={true}
                     itemIndex={index}
                 />
             </View>
