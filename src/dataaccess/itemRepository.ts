@@ -1,5 +1,5 @@
 import { Item } from "@/model/Item";
-import { getItems, updateQuantity } from "./itemdatabase";
+import { getItems, updateQuantity } from "./database/itemdatabase";
 
 export async function fetchAllItems(): Promise<Item[]> {
     try {
