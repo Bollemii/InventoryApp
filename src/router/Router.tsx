@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 
-import { RootStackParamList } from "@/router/routes";
+import { RootStackParamList, routes } from "@/router/routes";
 import { colors } from "@/styles/colors";
 import Inventory from "@/screens/Inventory";
 import Settings from "@/screens/Settings";
@@ -35,18 +35,19 @@ export default function Router() {
         >
             <Stack.Navigator
                 initialRouteName="Inventory"
-                screenOptions={({ navigation, route }) => ({
-                    ...Header({ navigation, route }),
+                screenOptions={({ navigation }) => ({
+                    ...headerOptions(navigation),
                 })}
             >
                 <Stack.Screen
                     name="Inventory"
                     component={Inventory}
+                    options={{ title: "Inventaire" }}
                 />
                 <Stack.Screen
                     name="Settings"
                     component={Settings}
-                    options={{ headerRight: () => null }}
+                    options={{ title: "Paramètres", headerRight: () => null }}
                 />
                 <Stack.Screen name="*" component={Inventory} />
             </Stack.Navigator>
@@ -54,11 +55,10 @@ export default function Router() {
     );
 }
 
-function Header({ navigation, route }) {
+function headerOptions(navigation: any) {
     return {
-        title: route.name,
         headerRight: () => (
-            <Pressable onPress={() => navigation.navigate("Settings")}>
+            <Pressable onPress={() => navigation.navigate(routes.Settings)}>
                 <FontAwesomeIcon icon={faGear} size={25} color={colors.black} />
             </Pressable>
         ),
