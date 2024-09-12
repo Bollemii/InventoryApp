@@ -2,9 +2,7 @@ import { Pressable, StyleSheet } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
-import { colorScheme } from "@/styles/colors";
-import { useEffect, useState } from "react";
-import { getThemeSetting } from "@/dataaccess/settingsRepository";
+import { useSettingsContext } from "@/contexts/settingsContext";
 
 interface PlusMinusButtonProps {
     onPress: (categoryIndex: number, itemIndex: number, number: number) => void;
@@ -19,25 +17,33 @@ export default function PlusMinusButton({
     categoryIndex,
     itemIndex,
 }: PlusMinusButtonProps) {
-    const [theme, setTheme] = useState(colorScheme.dark);
-
-    useEffect(() => {
-        getThemeSetting().then((theme) => { setTheme(theme) });
-    }, []);
+    const { settingsCtx } = useSettingsContext();
 
     return (
         <Pressable
             onPress={() => onPress(categoryIndex, itemIndex, plus ? 1 : -1)}
             style={(state) =>
                 state.pressed
-                    ? [styles.button, { backgroundColor: theme.colors.items.button.pressed }]
-                    : [styles.button, { backgroundColor: theme.colors.items.button.normal }]
+                    ? [
+                          styles.button,
+                          {
+                              backgroundColor:
+                                  settingsCtx.theme.colors.items.button.pressed,
+                          },
+                      ]
+                    : [
+                          styles.button,
+                          {
+                              backgroundColor:
+                                  settingsCtx.theme.colors.items.button.normal,
+                          },
+                      ]
             }
         >
             <FontAwesomeIcon
                 icon={plus ? faPlus : faMinus}
                 size={15}
-                color={theme.colors.items.button.icon}
+                color={settingsCtx.theme.colors.items.button.icon}
             />
         </Pressable>
     );

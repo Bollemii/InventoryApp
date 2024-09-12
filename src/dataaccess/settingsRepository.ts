@@ -1,10 +1,20 @@
-import { Theme, colorScheme } from "@/styles/colors";
+import { colorScheme } from "@/styles/colors";
 import { getSetting, setSetting } from "./database/settingsDatabase";
+import { Settings } from "@/model/settings";
+import { Theme } from "@/types/theme";
 
 const SETTING_KEYS = {
     cardsView: "cardsView",
     theme: "theme",
 };
+
+export async function getSettings(): Promise<Settings> {
+    return Promise.all([getCardViewSetting(), getThemeSetting()]).then(
+        ([cardsView, theme]) => {
+            return new Settings(cardsView, theme);
+        }
+    );
+}
 
 export async function getCardViewSetting(): Promise<boolean> {
     return getSetting(SETTING_KEYS.cardsView).then((value) => value === "true");

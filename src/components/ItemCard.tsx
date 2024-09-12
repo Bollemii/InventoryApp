@@ -1,10 +1,8 @@
-import { Item } from "@/model/Item";
 import { StyleSheet, Text, View } from "react-native";
 
+import { Item } from "@/model/Item";
 import PlusMinusButton from "./PlusMinusButton";
-import { useEffect, useState } from "react";
-import { colorScheme } from "@/styles/colors";
-import { getThemeSetting } from "@/dataaccess/settingsRepository";
+import { useSettingsContext } from "@/contexts/settingsContext";
 
 interface ItemProps {
     categoryIndex: number;
@@ -25,14 +23,15 @@ export default function ItemCard({
     item,
     handleChangeQuantity,
 }: ItemProps) {
-    const [theme, setTheme] = useState(colorScheme.dark);
-
-    useEffect(() => {
-        getThemeSetting().then((theme) => { setTheme(theme) });
-    }, []);
+    const { settingsCtx } = useSettingsContext();
 
     return (
-        <View style={[styles.item, {backgroundColor: theme.colors.items.background}]}>
+        <View
+            style={[
+                styles.item,
+                { backgroundColor: settingsCtx.theme.colors.items.background },
+            ]}
+        >
             <Text style={styles.name}>{item.name}</Text>
             <View style={styles.quantityBox}>
                 <PlusMinusButton

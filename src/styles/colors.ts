@@ -1,30 +1,11 @@
-export interface Theme {
-    name: string;
-    colors: {
-        background: string;
-        headers: {
-            background: string;
-            elements: string;
-            selected: string;
-        };
-        texts: string;
-        items: {
-            background: string;
-            button: {
-                normal: string;
-                pressed: string;
-                icon: string;
-            };
-        };
-    }
-}
+import { Theme } from "@/types/theme";
 
-export const colorScheme : {[key: string]: Theme} = {
+export const colorScheme: { [key: string]: Theme } = {
     dark: {
         name: "dark",
         colors: {
             background: "#8B8B8B",
-            headers:{
+            headers: {
                 background: "#424242",
                 elements: "#FFFFFF",
                 selected: "#4285F4",
@@ -36,7 +17,7 @@ export const colorScheme : {[key: string]: Theme} = {
                     normal: "#FFFFFF",
                     pressed: "#A9A9A9",
                     icon: "#000000",
-                }
+                },
             },
         },
     },
@@ -44,7 +25,7 @@ export const colorScheme : {[key: string]: Theme} = {
         name: "light",
         colors: {
             background: "#FFFFFF",
-            headers:{
+            headers: {
                 background: "#8B8B8B",
                 elements: "#212121",
                 selected: "#8B8B8B",

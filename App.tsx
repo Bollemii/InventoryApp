@@ -1,19 +1,22 @@
 import { View } from "react-native";
 
 import Router from "@/router/Router";
-import { colorScheme } from "@/styles/colors";
-import { useEffect, useState } from "react";
-import { getThemeSetting } from "@/dataaccess/settingsRepository";
+import ContextsProvider from "@/contexts";
+import { useSettingsContext } from "@/contexts/settingsContext";
 
 export default function App() {
-    const [theme, setTheme] = useState(colorScheme.dark);
-    useEffect(() => {
-        getThemeSetting().then((theme) => { setTheme(theme) });
-    }, []);
+    const { settingsCtx } = useSettingsContext();
 
     return (
-        <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-            <Router />
+        <View
+            style={{
+                flex: 1,
+                backgroundColor: settingsCtx.theme.colors.background,
+            }}
+        >
+            <ContextsProvider>
+                <Router />
+            </ContextsProvider>
         </View>
     );
 }

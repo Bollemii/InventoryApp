@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Pressable, Text } from "react-native";
 import {
     NavigationContainer,
@@ -8,11 +9,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 
 import { RootStackParamList, routes } from "@/router/routes";
-import { colorScheme, Theme } from "@/styles/colors";
+import { colorScheme } from "@/styles/colors";
 import Inventory from "@/screens/Inventory";
 import Settings from "@/screens/Settings";
-import { useEffect, useState } from "react";
 import { getThemeSetting } from "@/dataaccess/settingsRepository";
+import { Theme } from "@/types/theme";
 
 declare global {
     namespace ReactNavigation {
@@ -26,7 +27,9 @@ export default function Router() {
     const [theme, setTheme] = useState(colorScheme.dark);
 
     useEffect(() => {
-        getThemeSetting().then((theme) => { setTheme(theme) });
+        getThemeSetting().then((theme) => {
+            setTheme(theme);
+        });
     }, []);
 
     const handleError = (error: any) => {
@@ -70,7 +73,11 @@ function headerOptions(navigation: any, theme: Theme) {
         headerTintColor: theme.colors.headers.elements,
         headerRight: () => (
             <Pressable onPress={() => navigation.navigate(routes.Settings)}>
-                <FontAwesomeIcon icon={faGear} size={25} color={theme.colors.headers.elements} />
+                <FontAwesomeIcon
+                    icon={faGear}
+                    size={25}
+                    color={theme.colors.headers.elements}
+                />
             </Pressable>
         ),
     };
