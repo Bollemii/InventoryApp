@@ -1,14 +1,22 @@
 import { View } from "react-native";
 
 import Router from "@/router/Router";
-import { colors } from "@/styles/colors";
-
-const BACKGROUND_COLOR = colors.white;
+import ContextsProvider from "@/contexts";
+import { useSettingsContext } from "@/contexts/settingsContext";
 
 export default function App() {
+    const { settingsCtx } = useSettingsContext();
+
     return (
-        <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
-            <Router />
+        <View
+            style={{
+                flex: 1,
+                backgroundColor: settingsCtx.theme.colors.background,
+            }}
+        >
+            <ContextsProvider>
+                <Router />
+            </ContextsProvider>
         </View>
     );
 }

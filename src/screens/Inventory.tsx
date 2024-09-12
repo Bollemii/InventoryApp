@@ -1,29 +1,21 @@
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 
 import Category from "@/components/Category";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
 import { fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
-import { getCardViewSetting } from "@/dataaccess/settingsRepository";
-import { colors } from "@/styles/colors";
+import { useSettingsContext } from "@/contexts/settingsContext";
 
 export default function Inventory() {
     const isFocused = useIsFocused();
+    const { settingsCtx } = useSettingsContext();
     const [categories, setCategories] = useState<CategoryObj[]>([]);
-    const [cardViewSetting, setCardViewSetting] = useState(false);
 
     useEffect(() => {
         fetchAllItems().then((categories) => setCategories(categories));
-        getCardViewSetting().then((value) => setCardViewSetting(value));
     }, []);
-
-    useEffect(() => {
-        if (!isFocused) return;
-
-        getCardViewSetting().then((value) => setCardViewSetting(value));
-    }, [isFocused]);
 
     const handleChangeQuantity = async (
         categoryIndex: number,
@@ -44,14 +36,20 @@ export default function Inventory() {
         setCategories([...categories]); // Force re-render
     };
 
+    if (!isFocused) return null;
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView
+            style={[
+                styles.container,
+                { backgroundColor: settingsCtx.theme.colors.background },
+            ]}
+        >
             {categories.map((category, categoryIndex) => (
                 <Category
                     key={categoryIndex}
                     categoryIndex={categoryIndex}
                     category={category}
-                    cardViewSetting={cardViewSetting}
+                    cardViewSetting={settingsCtx.cardsView}
                     handleChangeQuantity={handleChangeQuantity}
                 />
             ))}
@@ -62,6 +60,5 @@ export default function Inventory() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.white,
     },
 });
