@@ -126,3 +126,17 @@ export async function updateQuantity(id: number, quantity: number): Promise<numb
         statement.finalizeAsync();
     }
 }
+
+export async function deleteOne(id: number): Promise<void> {
+    await initializeItemDatabase();
+
+    const statement = await db.prepareAsync(`
+        DELETE FROM items
+        WHERE id = $id
+    `);
+    try {
+        statement.executeAsync({ $id: id });
+    } finally {
+        statement.finalizeAsync();
+    }
+}

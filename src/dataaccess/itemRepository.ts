@@ -1,6 +1,6 @@
 import { Item } from "@/model/Item";
 import { Category } from "@/model/category";
-import { getAllGroupByCategory, getByName, insert, updateQuantity } from "./database/itemdatabase";
+import { getAllGroupByCategory, getByName, insert, updateQuantity, deleteOne } from "./database/itemdatabase";
 import { fetchCategoryById } from "./categoryRepository";
 
 export async function fetchAllItems(): Promise<Category[]> {
@@ -29,7 +29,6 @@ export async function addItem(item: Item, category: Category): Promise<number> {
         if (!Item.isQuantityValid(item.quantity)) {
             throw new Error("Item quantity out of bounds");
         }
-        console.log(item, category);
 
         const categoryFetched = await fetchCategoryById(category.id);
         if (!categoryFetched) {
@@ -53,6 +52,16 @@ export async function updateItemQuantity(id: number, quantity: number): Promise<
             throw new Error("Item quantity out of bounds");
         }
         return updateQuantity(id, quantity);
+    } catch (error) {
+        console.error(error);
+        return -1;
+    }
+}
+
+export async function deleteItem(id: number): Promise<number> {
+    try {
+        await deleteOne(id);
+        return 0;
     } catch (error) {
         console.error(error);
         return -1;
