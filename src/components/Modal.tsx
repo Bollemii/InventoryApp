@@ -1,4 +1,4 @@
-import { Modal as ModalCmp } from "react-native";
+import { Modal as ModalCmp, StyleSheet, View } from "react-native";
 
 interface ModalProps {
     children: React.ReactNode;
@@ -9,8 +9,22 @@ interface ModalProps {
 export default function Modal(props: ModalProps) {
     if (!props.visible) return null;
     return (
-        <ModalCmp visible={props.visible} transparent={true} onRequestClose={props.close}>
-            {props.children}
-        </ModalCmp>
+        <>
+            {props.visible && <View style={styles.opacityView} />}
+            <ModalCmp visible={props.visible} transparent={true} onRequestClose={props.close}>
+                {props.children}
+            </ModalCmp>
+        </>
     );
 }
+
+const styles = StyleSheet.create({
+    opacityView: {
+        position: "absolute",
+        height: "100%",
+        width: "100%",
+        zIndex: 1,
+        backgroundColor: "black",
+        opacity: 0.6,
+    },
+});

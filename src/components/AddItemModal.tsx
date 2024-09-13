@@ -74,8 +74,6 @@ export default function AddItemModal(props: AddItemModalProps) {
     };
 
     return (
-        <>
-        {props.visible && <View style={styles.opacityView} />}
         <Modal visible={props.visible} close={props.close}>
             <View style={styles.modal}>
                 <Button onPress={props.close} style={styles.closeButton}>
@@ -105,7 +103,6 @@ export default function AddItemModal(props: AddItemModalProps) {
                 )}
             </View>
         </Modal>
-        </>
     );
 }
 
@@ -178,14 +175,6 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderWidth: 1,
         elevation: 10,
-    },
-    opacityView: {
-        position: "absolute",
-        height: "100%",
-        width: "100%",
-        zIndex: 1,
-        backgroundColor: "black",
-        opacity: 0.6,
     },
     closeButton: {
         position: "absolute",
