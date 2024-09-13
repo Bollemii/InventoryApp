@@ -1,10 +1,5 @@
 import { Category } from "@/model/category";
-import {
-    getAll,
-    getById,
-    getByName,
-    insert,
-} from "./database/categoryDatabase";
+import { getAll, getById, getByName, insert } from "./database/categoryDatabase";
 
 export async function fetchAllCategories(): Promise<Category[]> {
     try {

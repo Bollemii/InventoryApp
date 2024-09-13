@@ -9,11 +9,9 @@ const SETTING_KEYS = {
 };
 
 export async function getSettings(): Promise<Settings> {
-    return Promise.all([getCardViewSetting(), getThemeSetting()]).then(
-        ([cardsView, theme]) => {
-            return new Settings(cardsView, theme);
-        }
-    );
+    return Promise.all([getCardViewSetting(), getThemeSetting()]).then(([cardsView, theme]) => {
+        return new Settings(cardsView, theme);
+    });
 }
 
 export async function getCardViewSetting(): Promise<boolean> {

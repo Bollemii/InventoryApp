@@ -25,13 +25,9 @@ export async function getAll(): Promise<Category[]> {
     }
 
     try {
-        const result = (await (
-            await statement.executeAsync()
-        ).getAllAsync()) as Result[];
+        const result = (await (await statement.executeAsync()).getAllAsync()) as Result[];
         if (result.length === 0) return [];
-        return result.map(
-            (category) => new Category(category.id, category.name)
-        );
+        return result.map((category) => new Category(category.id, category.name));
     } finally {
         statement.finalizeAsync();
     }
@@ -51,9 +47,7 @@ export async function getById(id: number): Promise<Category> {
     }
 
     try {
-        const result = (await (
-            await statement.executeAsync({ $id: id })
-        ).getFirstAsync()) as Result;
+        const result = (await (await statement.executeAsync({ $id: id })).getFirstAsync()) as Result;
         if (!result) return null;
         return new Category(result.id, result.name);
     } finally {
@@ -75,9 +69,7 @@ export async function getByName(name: string): Promise<Category> {
     }
 
     try {
-        const result = (await (
-            await statement.executeAsync({ $name: name })
-        ).getFirstAsync()) as Result;
+        const result = (await (await statement.executeAsync({ $name: name })).getFirstAsync()) as Result;
         if (!result) return null;
         return new Category(result.id, result.name);
     } finally {

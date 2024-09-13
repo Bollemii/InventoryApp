@@ -9,11 +9,7 @@ interface ModalProps {
 export default function Modal(props: ModalProps) {
     if (!props.visible) return null;
     return (
-        <ModalCmp
-            visible={props.visible}
-            transparent={true}
-            onRequestClose={props.close}
-        >
+        <ModalCmp visible={props.visible} transparent={true} onRequestClose={props.close}>
             {props.children}
         </ModalCmp>
     );

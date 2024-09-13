@@ -1,0 +1,20 @@
+{
+  "trailingComma": "es5",
+  "indentStyle": "space",
+  "indentSize": 2,
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": ["*.tsx", "*.ts"],
+      "options": {
+        "tabWidth": 4,
+        "printWidth": 120
+      }
+    }
+  ]
+}

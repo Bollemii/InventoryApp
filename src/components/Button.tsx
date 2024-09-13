@@ -16,17 +16,11 @@ export default function Button(props: ButtonProps) {
                 { alignItems: "center", justifyContent: "center", padding: 10 },
                 props.style,
                 {
-                    backgroundColor: state.pressed
-                        ? props.colors?.pressed
-                        : props.colors?.normal,
+                    backgroundColor: state.pressed ? props.colors?.pressed : props.colors?.normal,
                 },
             ]}
         >
-            {props.children ? (
-                props.children
-            ) : (
-                <Text>{props.title}</Text>
-            )}
+            {props.children ? props.children : <Text>{props.title}</Text>}
         </Pressable>
     );
 }

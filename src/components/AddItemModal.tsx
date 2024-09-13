@@ -77,11 +77,7 @@ export default function AddItemModal(props: AddItemModalProps) {
                     <FontAwesomeIcon icon={faXmark} size={20} />
                 </Button>
                 <Text style={styles.title}>
-                    {mode === MODES.ITEM
-                        ? "Add Item"
-                        : mode === MODES.CATEGORY
-                        ? "Add Category"
-                        : "Choose mode"}
+                    {mode === MODES.ITEM ? "Add Item" : mode === MODES.CATEGORY ? "Add Category" : "Choose mode"}
                 </Text>
                 {mode === MODES.ITEM ? (
                     <AddItemModalContent
@@ -94,14 +90,9 @@ export default function AddItemModal(props: AddItemModalProps) {
                 ) : mode === MODES.CATEGORY ? (
                     <AddCategoryModalContent name={name} setName={setName} />
                 ) : (
-                    <ChooseModeContent
-                        setMode={setMode}
-                        categories={categories}
-                    />
+                    <ChooseModeContent setMode={setMode} categories={categories} />
                 )}
-                {error !== "" && (
-                    <Text style={styles.errorMessage}>{error}</Text>
-                )}
+                {error !== "" && <Text style={styles.errorMessage}>{error}</Text>}
                 {mode !== MODES.NONE && (
                     <Button onPress={handleSave} style={styles.saveButton}>
                         <Text>Save</Text>
@@ -112,27 +103,15 @@ export default function AddItemModal(props: AddItemModalProps) {
     );
 }
 
-function ChooseModeContent({
-    setMode,
-    categories,
-}: {
-    setMode: (mode: string) => void;
-    categories: Category[];
-}) {
+function ChooseModeContent({ setMode, categories }: { setMode: (mode: string) => void; categories: Category[] }) {
     return (
         <View style={styles.content}>
             {categories.length > 0 && (
-                <Button
-                    onPress={() => setMode(MODES.ITEM)}
-                    style={styles.saveButton}
-                >
+                <Button onPress={() => setMode(MODES.ITEM)} style={styles.saveButton}>
                     <Text>Item</Text>
                 </Button>
             )}
-            <Button
-                onPress={() => setMode(MODES.CATEGORY)}
-                style={styles.saveButton}
-            >
+            <Button onPress={() => setMode(MODES.CATEGORY)} style={styles.saveButton}>
                 <Text>Category</Text>
             </Button>
         </View>
@@ -159,12 +138,7 @@ function AddItemModalContent({
 
     return (
         <View style={styles.content}>
-            <TextInput
-                value={name}
-                onChangeText={setName}
-                placeholder="Item name"
-                style={styles.input}
-            />
+            <TextInput value={name} onChangeText={setName} placeholder="Item name" style={styles.input} />
             <View style={styles.input}>
                 <Picker
                     selectedValue={category}
@@ -172,32 +146,17 @@ function AddItemModalContent({
                     style={styles.picker}
                 >
                     {categories.map((category) => (
-                        <Picker.Item
-                            key={category.name}
-                            label={category.name}
-                            value={category}
-                        />
+                        <Picker.Item key={category.name} label={category.name} value={category} />
                     ))}
                 </Picker>
             </View>
         </View>
     );
 }
-function AddCategoryModalContent({
-    name,
-    setName,
-}: {
-    name: string;
-    setName: (name: string) => void;
-}) {
+function AddCategoryModalContent({ name, setName }: { name: string; setName: (name: string) => void }) {
     return (
         <View style={styles.content}>
-            <TextInput
-                value={name}
-                onChangeText={setName}
-                placeholder="Category name"
-                style={styles.input}
-            />
+            <TextInput value={name} onChangeText={setName} placeholder="Category name" style={styles.input} />
         </View>
     );
 }

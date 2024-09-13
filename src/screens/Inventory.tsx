@@ -5,11 +5,7 @@ import { useIsFocused } from "@react-navigation/native";
 import Category from "@/components/Category";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
-import {
-    addItem,
-    fetchAllItems,
-    updateItemQuantity,
-} from "@/dataaccess/itemRepository";
+import { addItem, fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
 import { useSettingsContext } from "@/contexts/settingsContext";
 import Button from "@/components/Button";
 import AddItemModal from "@/components/AddItemModal";
@@ -25,28 +21,18 @@ export default function Inventory() {
         fetchAllItems().then((categories) => setCategories(categories));
     }, []);
 
-    const handleChangeQuantity = async (
-        categoryIndex: number,
-        itemIndex: number,
-        add: number
-    ) => {
+    const handleChangeQuantity = async (categoryIndex: number, itemIndex: number, add: number) => {
         const categoryAffected = categories[categoryIndex];
         const itemAffected = categoryAffected.items[itemIndex];
         if (!Item.isQuantityValid(itemAffected.quantity + add)) return;
 
-        const idChanged = await updateItemQuantity(
-            itemAffected.id,
-            itemAffected.quantity + add
-        );
+        const idChanged = await updateItemQuantity(itemAffected.id, itemAffected.quantity + add);
         if (idChanged === -1) return;
 
         itemAffected.add(add);
         setCategories([...categories]); // Force re-render
     };
-    const handleAddItem = async (
-        category: CategoryObj,
-        item?: Item
-    ): Promise<number> => {
+    const handleAddItem = async (category: CategoryObj, item?: Item): Promise<number> => {
         let id: number;
         if (!item) {
             // add new category
@@ -61,9 +47,7 @@ export default function Inventory() {
             if (id === -1) return -1;
             const categoryFound = categories.find((c) => c.id === category.id);
             if (categoryFound) {
-                categoryFound.items.push(
-                    new Item(id, item.name, item.quantity)
-                );
+                categoryFound.items.push(new Item(id, item.name, item.quantity));
             } else {
                 category.addItem(new Item(id, item.name, item.quantity));
                 categories.push(category);
@@ -83,11 +67,7 @@ export default function Inventory() {
                 backgroundColor: settingsCtx.theme.colors.background,
             }}
         >
-            <AddItemModal
-                visible={showAddItemModal}
-                close={() => setShowAddItemModal(false)}
-                save={handleAddItem}
-            />
+            <AddItemModal visible={showAddItemModal} close={() => setShowAddItemModal(false)} save={handleAddItem} />
             <ScrollView>
                 {categories.map((category, categoryIndex) => (
                     <Category
@@ -103,10 +83,8 @@ export default function Inventory() {
                         onPress={() => setShowAddItemModal(true)}
                         style={styles.button}
                         colors={{
-                            normal: settingsCtx.theme.colors.items.button
-                                .normal,
-                            pressed:
-                                settingsCtx.theme.colors.items.button.pressed,
+                            normal: settingsCtx.theme.colors.items.button.normal,
+                            pressed: settingsCtx.theme.colors.items.button.pressed,
                         }}
                     >
                         <Text>Add something</Text>

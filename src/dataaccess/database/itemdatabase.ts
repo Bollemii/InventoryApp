@@ -36,9 +36,7 @@ export async function getAllGroupByCategory(): Promise<Category[]> {
     }
 
     try {
-        const result = (await (
-            await statement.executeAsync()
-        ).getAllAsync()) as Result[];
+        const result = (await (await statement.executeAsync()).getAllAsync()) as Result[];
         if (result.length === 0) return [];
         const categories = groupBy(result, "categoryName");
         return Object.keys(categories)
@@ -51,10 +49,7 @@ export async function getAllGroupByCategory(): Promise<Category[]> {
                     }),
                 };
             })
-            .map(
-                (category) =>
-                    new Category(category.id, category.name, category.items)
-            );
+            .map((category) => new Category(category.id, category.name, category.items));
     } finally {
         statement.finalizeAsync();
     }
@@ -75,9 +70,7 @@ export async function getByName(name: string): Promise<Item> {
     }
 
     try {
-        const result = (await (
-            await statement.executeAsync({ $name: name })
-        ).getFirstAsync()) as Result;
+        const result = (await (await statement.executeAsync({ $name: name })).getFirstAsync()) as Result;
         if (!result) return null;
         return new Item(result.id, result.name, result.quantity);
     } finally {
@@ -85,11 +78,7 @@ export async function getByName(name: string): Promise<Item> {
     }
 }
 
-export async function insert(
-    name: string,
-    quantity: number,
-    categoryId: number
-): Promise<number> {
+export async function insert(name: string, quantity: number, categoryId: number): Promise<number> {
     await initializeItemDatabase();
 
     if (!Item.isNameValid(name)) {
@@ -115,10 +104,7 @@ export async function insert(
     }
 }
 
-export async function updateQuantity(
-    id: number,
-    quantity: number
-): Promise<number> {
+export async function updateQuantity(id: number, quantity: number): Promise<number> {
     await initializeItemDatabase();
 
     if (!Item.isQuantityValid(quantity)) {

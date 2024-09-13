@@ -12,12 +12,7 @@ interface PlusMinusButtonProps {
     itemIndex: number;
 }
 
-export default function PlusMinusButton({
-    onPress,
-    plus,
-    categoryIndex,
-    itemIndex,
-}: PlusMinusButtonProps) {
+export default function PlusMinusButton({ onPress, plus, categoryIndex, itemIndex }: PlusMinusButtonProps) {
     const { settingsCtx } = useSettingsContext();
 
     return (

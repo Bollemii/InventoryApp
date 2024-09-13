@@ -1,11 +1,6 @@
 import { Item } from "@/model/Item";
 import { Category } from "@/model/category";
-import {
-    getAllGroupByCategory,
-    getByName,
-    insert,
-    updateQuantity,
-} from "./database/itemdatabase";
+import { getAllGroupByCategory, getByName, insert, updateQuantity } from "./database/itemdatabase";
 import { fetchCategoryById } from "./categoryRepository";
 
 export async function fetchAllItems(): Promise<Category[]> {
@@ -52,10 +47,7 @@ export async function addItem(item: Item, category: Category): Promise<number> {
     }
 }
 
-export async function updateItemQuantity(
-    id: number,
-    quantity: number
-): Promise<number> {
+export async function updateItemQuantity(id: number, quantity: number): Promise<number> {
     try {
         if (!Item.isQuantityValid(quantity)) {
             throw new Error("Item quantity out of bounds");

@@ -9,19 +9,10 @@ interface CategoryProps {
     categoryIndex: number;
     category: CategoryObj;
     cardViewSetting: boolean;
-    handleChangeQuantity: (
-        categoryIndex: number,
-        itemIndex: number,
-        add: number
-    ) => void;
+    handleChangeQuantity: (categoryIndex: number, itemIndex: number, add: number) => void;
 }
 
-export default function Category({
-    categoryIndex,
-    category,
-    cardViewSetting,
-    handleChangeQuantity,
-}: CategoryProps) {
+export default function Category({ categoryIndex, category, cardViewSetting, handleChangeQuantity }: CategoryProps) {
     const { settingsCtx } = useSettingsContext();
 
     return (
@@ -34,21 +25,13 @@ export default function Category({
                     },
                 ]}
             >
-                <Text
-                    style={[
-                        styles.title,
-                        { color: settingsCtx.theme.colors.texts },
-                    ]}
-                >
-                    {category.name}
-                </Text>
+                <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{category.name}</Text>
             </View>
             <View
                 style={[
                     styles.items,
                     {
-                        backgroundColor:
-                            settingsCtx.theme.colors.items.background,
+                        backgroundColor: settingsCtx.theme.colors.items.background,
                         borderBottomWidth: cardViewSetting ? 1 : 0,
                     },
                 ]}
