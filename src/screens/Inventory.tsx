@@ -62,7 +62,7 @@ export default function Inventory() {
     };
     const handleRemoveItem = async (categoryIndex: number, itemIndex: number) => {
         const itemAffected = categories[categoryIndex].items[itemIndex];
-        
+
         const finishId = await deleteItem(itemAffected.id);
         if (finishId === -1) return;
 
@@ -71,7 +71,7 @@ export default function Inventory() {
             categories.splice(categoryIndex, 1);
         }
         setCategories([...categories]); // Force re-render
-    }
+    };
 
     if (!isFocused) return null;
     return (
@@ -96,26 +96,26 @@ export default function Inventory() {
                 <View style={{ alignItems: "center" }}>
                     {editionModeCtx ? (
                         <>
-                        <Button
-                            onPress={() => setShowAddItemModal(true)}
-                            style={styles.button}
-                            colors={{
-                                normal: settingsCtx.theme.colors.items.button.normal,
-                                pressed: settingsCtx.theme.colors.items.button.pressed,
-                            }}
-                        >
-                            <Text>Add something</Text>
-                        </Button>
-                        <Button
-                            onPress={() => setEditionModeCtx(false)}
-                            style={styles.button}
-                            colors={{
-                                normal: settingsCtx.theme.colors.items.button.normal,
-                                pressed: settingsCtx.theme.colors.items.button.pressed,
-                            }}
-                        >
-                            <Text>Quit edition mode</Text>
-                        </Button>
+                            <Button
+                                onPress={() => setShowAddItemModal(true)}
+                                style={styles.button}
+                                colors={{
+                                    normal: settingsCtx.theme.colors.items.button.normal,
+                                    pressed: settingsCtx.theme.colors.items.button.pressed,
+                                }}
+                            >
+                                <Text>Add something</Text>
+                            </Button>
+                            <Button
+                                onPress={() => setEditionModeCtx(false)}
+                                style={styles.button}
+                                colors={{
+                                    normal: settingsCtx.theme.colors.items.button.normal,
+                                    pressed: settingsCtx.theme.colors.items.button.pressed,
+                                }}
+                            >
+                                <Text>Quit edition mode</Text>
+                            </Button>
                         </>
                     ) : (
                         <Button
