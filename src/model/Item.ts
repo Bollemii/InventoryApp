@@ -46,7 +46,11 @@ export class Item {
         return `${this._id} - ${this._name} (${this._quantity})`;
     }
 
-    public static isQuantityValid(quantity: number): boolean {
+    static isNameValid(name: string): boolean {
+        return name.length > 0;
+    }
+
+    static isQuantityValid(quantity: number): boolean {
         return quantity >= Item.QUANTITY_MIN && quantity <= Item.QUANTITY_MAX;
     }
 }
