@@ -18,11 +18,7 @@ export default function SettingsContextProvider({ children }) {
         getSettings().then((settings) => setSettingsCtx(settings));
     }, []);
 
-    return (
-        <SettingsContext.Provider value={{ settingsCtx, setSettingsCtx }}>
-            {children}
-        </SettingsContext.Provider>
-    );
+    return <SettingsContext.Provider value={{ settingsCtx, setSettingsCtx }}>{children}</SettingsContext.Provider>;
 }
 
 export function useSettingsContext() {

@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-import {
-    setCardViewSetting,
-    setThemeSetting,
-} from "@/dataaccess/settingsRepository";
+import { setCardViewSetting, setThemeSetting } from "@/dataaccess/settingsRepository";
 import { colorScheme } from "@/styles/colors";
 import { useSettingsContext } from "@/contexts/settingsContext";
 
@@ -17,7 +14,7 @@ const switchColors = {
 export default function Settings() {
     const { settingsCtx, setSettingsCtx } = useSettingsContext();
     const [cardsView, setCardsView] = useState(false);
-    const [selectedTheme, setSelectedTheme] = useState("dark");
+    const [selectedTheme, setSelectedTheme] = useState(Object.keys(colorScheme)[0]);
 
     useEffect(() => {
         setCardsView(settingsCtx.cardsView);
@@ -38,36 +35,19 @@ export default function Settings() {
     };
 
     return (
-        <ScrollView
-            style={[
-                styles.container,
-                { backgroundColor: settingsCtx.theme.colors.background },
-            ]}
-        >
+        <ScrollView style={[styles.container, { backgroundColor: settingsCtx.theme.colors.background }]}>
             <View
                 style={[
                     styles.item,
                     {
-                        backgroundColor:
-                            settingsCtx.theme.colors.items.background,
+                        backgroundColor: settingsCtx.theme.colors.items.background,
                     },
                 ]}
             >
-                <Text
-                    style={[
-                        styles.itemText,
-                        { color: settingsCtx.theme.colors.texts },
-                    ]}
-                >
-                    Cards view
-                </Text>
+                <Text style={[styles.itemText, { color: settingsCtx.theme.colors.texts }]}>Cards view</Text>
                 <Switch
                     trackColor={switchColors.track}
-                    thumbColor={
-                        cardsView
-                            ? switchColors.thumb.true
-                            : switchColors.thumb.false
-                    }
+                    thumbColor={cardsView ? switchColors.thumb.true : switchColors.thumb.false}
                     onValueChange={handleCardsView}
                     value={cardsView}
                 />
@@ -77,19 +57,11 @@ export default function Settings() {
                     styles.item,
                     ,
                     {
-                        backgroundColor:
-                            settingsCtx.theme.colors.items.background,
+                        backgroundColor: settingsCtx.theme.colors.items.background,
                     },
                 ]}
             >
-                <Text
-                    style={[
-                        styles.itemText,
-                        { color: settingsCtx.theme.colors.texts },
-                    ]}
-                >
-                    Dark mode
-                </Text>
+                <Text style={[styles.itemText, { color: settingsCtx.theme.colors.texts }]}>Dark mode</Text>
                 <View style={styles.pickerContainer}>
                     <Picker
                         selectedValue={selectedTheme}
@@ -99,18 +71,13 @@ export default function Settings() {
                         style={[
                             styles.picker,
                             {
-                                backgroundColor:
-                                    settingsCtx.theme.colors.items.background,
+                                backgroundColor: settingsCtx.theme.colors.items.background,
                             },
                         ]}
                         mode="dropdown"
                     >
                         {Object.keys(colorScheme).map((theme) => (
-                            <Picker.Item
-                                key={theme}
-                                label={theme}
-                                value={theme}
-                            />
+                            <Picker.Item key={theme} label={theme} value={theme} />
                         ))}
                     </Picker>
                 </View>

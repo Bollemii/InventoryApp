@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { Pressable, Text } from "react-native";
-import {
-    NavigationContainer,
-    useNavigationContainerRef,
-} from "@react-navigation/native";
+import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
@@ -38,22 +35,14 @@ export default function Router() {
     };
 
     return (
-        <NavigationContainer
-            fallback={<Text>Chargement...</Text>}
-            ref={navigationRef}
-            onUnhandledAction={handleError}
-        >
+        <NavigationContainer fallback={<Text>Chargement...</Text>} ref={navigationRef} onUnhandledAction={handleError}>
             <Stack.Navigator
                 initialRouteName="Inventory"
                 screenOptions={({ navigation }) => ({
                     ...headerOptions(navigation, theme),
                 })}
             >
-                <Stack.Screen
-                    name="Inventory"
-                    component={Inventory}
-                    options={{ title: "Inventaire" }}
-                />
+                <Stack.Screen name="Inventory" component={Inventory} options={{ title: "Inventaire" }} />
                 <Stack.Screen
                     name="Settings"
                     component={Settings}
@@ -73,11 +62,7 @@ function headerOptions(navigation: any, theme: Theme) {
         headerTintColor: theme.colors.headers.elements,
         headerRight: () => (
             <Pressable onPress={() => navigation.navigate(routes.Settings)}>
-                <FontAwesomeIcon
-                    icon={faGear}
-                    size={25}
-                    color={theme.colors.headers.elements}
-                />
+                <FontAwesomeIcon icon={faGear} size={25} color={theme.colors.headers.elements} />
             </Pressable>
         ),
     };

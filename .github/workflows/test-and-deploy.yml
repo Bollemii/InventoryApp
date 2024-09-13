@@ -10,9 +10,9 @@ on:
   push:
     branches:
       - main
-      - 'test-ci/**'
+      - "test-ci/**"
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   test:
@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: latest
-          cache: 'npm'
+          cache: "npm"
       - name: 🏗 Setup EAS
         uses: expo/expo-github-action@v8
         with:
@@ -47,7 +47,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: latest
-          cache: 'npm'
+          cache: "npm"
       - name: 🏗 Setup EAS
         uses: expo/expo-github-action@v8
         with:

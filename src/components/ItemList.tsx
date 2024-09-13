@@ -8,28 +8,14 @@ interface ItemProps {
     categoryIndex: number;
     itemIndex: number;
     item: Item;
-    handleChangeQuantity: (
-        categoryIndex: number,
-        itemIndex: number,
-        quantity: number
-    ) => void;
+    handleChangeQuantity: (categoryIndex: number, itemIndex: number, quantity: number) => void;
 }
 
-export default function ItemList({
-    categoryIndex,
-    itemIndex,
-    item,
-    handleChangeQuantity,
-}: ItemProps) {
+export default function ItemList({ categoryIndex, itemIndex, item, handleChangeQuantity }: ItemProps) {
     const { settingsCtx } = useSettingsContext();
 
     return (
-        <View
-            style={[
-                styles.item,
-                { backgroundColor: settingsCtx.theme.colors.items.background },
-            ]}
-        >
+        <View style={[styles.item, { backgroundColor: settingsCtx.theme.colors.items.background }]}>
             <Text style={styles.name}>{item.name}</Text>
             <View style={styles.quantityBox}>
                 <PlusMinusButton
