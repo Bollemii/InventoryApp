@@ -5,15 +5,17 @@ import { useIsFocused } from "@react-navigation/native";
 import Category from "@/components/Category";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
-import { addItem, fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
+import { addItem, deleteItem, fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
 import { useSettingsContext } from "@/contexts/settingsContext";
 import Button from "@/components/Button";
 import AddItemModal from "@/components/AddItemModal";
 import { addCategory } from "@/dataaccess/categoryRepository";
+import { useEditionModeContext } from "@/contexts/editionModeContext";
 
 export default function Inventory() {
     const isFocused = useIsFocused();
     const { settingsCtx } = useSettingsContext();
+    const { editionModeCtx, setEditionModeCtx } = useEditionModeContext();
     const [categories, setCategories] = useState<CategoryObj[]>([]);
     const [showAddItemModal, setShowAddItemModal] = useState(false);
 
@@ -32,7 +34,7 @@ export default function Inventory() {
         itemAffected.add(add);
         setCategories([...categories]); // Force re-render
     };
-    const handleAddItem = async (category: CategoryObj, item?: Item): Promise<number> => {
+    const handleAddNewItem = async (category: CategoryObj, item?: Item): Promise<number> => {
         let id: number;
         if (!item) {
             // add new category
@@ -52,11 +54,23 @@ export default function Inventory() {
                 category.addItem(new Item(id, item.name, item.quantity));
                 categories.push(category);
             }
-            setCategories([...categories]);
+            setCategories([...categories]); // Force re-render
         }
 
         setShowAddItemModal(false);
         return id;
+    };
+    const handleRemoveItem = async (categoryIndex: number, itemIndex: number) => {
+        const itemAffected = categories[categoryIndex].items[itemIndex];
+
+        const finishId = await deleteItem(itemAffected.id);
+        if (finishId === -1) return;
+
+        categories[categoryIndex].items.splice(itemIndex, 1);
+        if (categories[categoryIndex].items.length === 0) {
+            categories.splice(categoryIndex, 1);
+        }
+        setCategories([...categories]); // Force re-render
     };
 
     if (!isFocused) return null;
@@ -67,7 +81,7 @@ export default function Inventory() {
                 backgroundColor: settingsCtx.theme.colors.background,
             }}
         >
-            <AddItemModal visible={showAddItemModal} close={() => setShowAddItemModal(false)} save={handleAddItem} />
+            <AddItemModal visible={showAddItemModal} close={() => setShowAddItemModal(false)} save={handleAddNewItem} />
             <ScrollView>
                 {categories.map((category, categoryIndex) => (
                     <Category
@@ -76,19 +90,45 @@ export default function Inventory() {
                         category={category}
                         cardViewSetting={settingsCtx.cardsView}
                         handleChangeQuantity={handleChangeQuantity}
+                        handleRemoveItem={handleRemoveItem}
                     />
                 ))}
                 <View style={{ alignItems: "center" }}>
-                    <Button
-                        onPress={() => setShowAddItemModal(true)}
-                        style={styles.button}
-                        colors={{
-                            normal: settingsCtx.theme.colors.items.button.normal,
-                            pressed: settingsCtx.theme.colors.items.button.pressed,
-                        }}
-                    >
-                        <Text>Add something</Text>
-                    </Button>
+                    {editionModeCtx ? (
+                        <>
+                            <Button
+                                onPress={() => setShowAddItemModal(true)}
+                                style={styles.button}
+                                colors={{
+                                    normal: settingsCtx.theme.colors.items.button.normal,
+                                    pressed: settingsCtx.theme.colors.items.button.pressed,
+                                }}
+                            >
+                                <Text>Add something</Text>
+                            </Button>
+                            <Button
+                                onPress={() => setEditionModeCtx(false)}
+                                style={styles.button}
+                                colors={{
+                                    normal: settingsCtx.theme.colors.items.button.normal,
+                                    pressed: settingsCtx.theme.colors.items.button.pressed,
+                                }}
+                            >
+                                <Text>Quit edition mode</Text>
+                            </Button>
+                        </>
+                    ) : (
+                        <Button
+                            onPress={() => setEditionModeCtx(true)}
+                            style={styles.button}
+                            colors={{
+                                normal: settingsCtx.theme.colors.items.button.normal,
+                                pressed: settingsCtx.theme.colors.items.button.pressed,
+                            }}
+                        >
+                            <Text>Edition mode</Text>
+                        </Button>
+                    )}
                 </View>
             </ScrollView>
         </View>

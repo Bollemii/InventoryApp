@@ -10,9 +10,10 @@ interface CategoryProps {
     category: CategoryObj;
     cardViewSetting: boolean;
     handleChangeQuantity: (categoryIndex: number, itemIndex: number, add: number) => void;
+    handleRemoveItem: (categoryIndex: number, itemIndex: number) => void;
 }
 
-export default function Category({ categoryIndex, category, cardViewSetting, handleChangeQuantity }: CategoryProps) {
+export default function Category({ categoryIndex, category, cardViewSetting, handleChangeQuantity, handleRemoveItem }: CategoryProps) {
     const { settingsCtx } = useSettingsContext();
 
     return (
@@ -44,6 +45,7 @@ export default function Category({ categoryIndex, category, cardViewSetting, han
                             itemIndex={index}
                             item={item}
                             handleChangeQuantity={handleChangeQuantity}
+                            handleRemoveItem={handleRemoveItem}
                         />
                     ) : (
                         <ItemList
@@ -52,6 +54,7 @@ export default function Category({ categoryIndex, category, cardViewSetting, han
                             itemIndex={index}
                             item={item}
                             handleChangeQuantity={handleChangeQuantity}
+                            handleRemoveItem={handleRemoveItem}
                         />
                     )
                 )}

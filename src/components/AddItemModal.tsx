@@ -39,6 +39,9 @@ export default function AddItemModal(props: AddItemModalProps) {
         setCategory(null);
         setError("");
     }, [props.visible]);
+    useEffect(() => {
+        setError("");
+    }, [name]);
 
     const handleSave = async () => {
         setError("");
@@ -48,14 +51,14 @@ export default function AddItemModal(props: AddItemModalProps) {
                 setError("Category is required");
                 return;
             } else if (!Item.isNameValid(name)) {
-                setError("Name is required");
+                setError("Item name is required");
                 return;
             }
 
             idResult = await props.save(category, new Item(0, name, 0));
         } else if (mode === MODES.CATEGORY) {
             if (!Category.isNameValid(name)) {
-                setError("Name is required");
+                setError("Category name is required");
                 return;
             }
 
@@ -105,7 +108,7 @@ export default function AddItemModal(props: AddItemModalProps) {
 
 function ChooseModeContent({ setMode, categories }: { setMode: (mode: string) => void; categories: Category[] }) {
     return (
-        <View style={styles.content}>
+        <>
             {categories.length > 0 && (
                 <Button onPress={() => setMode(MODES.ITEM)} style={styles.saveButton}>
                     <Text>Item</Text>
@@ -114,7 +117,7 @@ function ChooseModeContent({ setMode, categories }: { setMode: (mode: string) =>
             <Button onPress={() => setMode(MODES.CATEGORY)} style={styles.saveButton}>
                 <Text>Category</Text>
             </Button>
-        </View>
+        </>
     );
 }
 function AddItemModalContent({
@@ -137,7 +140,7 @@ function AddItemModalContent({
     }, [categories]);
 
     return (
-        <View style={styles.content}>
+        <>
             <TextInput value={name} onChangeText={setName} placeholder="Item name" style={styles.input} />
             <View style={styles.input}>
                 <Picker
@@ -150,14 +153,14 @@ function AddItemModalContent({
                     ))}
                 </Picker>
             </View>
-        </View>
+        </>
     );
 }
 function AddCategoryModalContent({ name, setName }: { name: string; setName: (name: string) => void }) {
     return (
-        <View style={styles.content}>
+        <>
             <TextInput value={name} onChangeText={setName} placeholder="Category name" style={styles.input} />
-        </View>
+        </>
     );
 }
 
@@ -185,10 +188,6 @@ const styles = StyleSheet.create({
         top: 5,
         left: 5,
         fontSize: 16,
-    },
-    content: {
-        width: "100%",
-        alignItems: "center",
     },
     input: {
         width: "80%",

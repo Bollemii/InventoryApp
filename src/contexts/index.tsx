@@ -1,5 +1,12 @@
+import EditionModeContextProvider from "./editionModeContext";
 import SettingsContextProvider from "./settingsContext";
 
 export default function ContextsProvider({ children }) {
-    return <SettingsContextProvider>{children}</SettingsContextProvider>;
+    return (
+        <SettingsContextProvider>
+            <EditionModeContextProvider>
+                {children}
+            </EditionModeContextProvider>
+        </SettingsContextProvider>
+    );
 }

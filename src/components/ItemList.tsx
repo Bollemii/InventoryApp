@@ -3,19 +3,29 @@ import { StyleSheet, Text, View } from "react-native";
 import { Item } from "@/model/Item";
 import PlusMinusButton from "./PlusMinusButton";
 import { useSettingsContext } from "@/contexts/settingsContext";
+import { useEditionModeContext } from "@/contexts/editionModeContext";
+import DeleteItemButton from "./DeleteItemButton";
 
 interface ItemProps {
     categoryIndex: number;
     itemIndex: number;
     item: Item;
     handleChangeQuantity: (categoryIndex: number, itemIndex: number, quantity: number) => void;
+    handleRemoveItem: (categoryIndex: number, itemIndex: number) => void;
 }
 
-export default function ItemList({ categoryIndex, itemIndex, item, handleChangeQuantity }: ItemProps) {
+export default function ItemList({ categoryIndex, itemIndex, item, handleChangeQuantity, handleRemoveItem }: ItemProps) {
     const { settingsCtx } = useSettingsContext();
+    const { editionModeCtx } = useEditionModeContext();
 
     return (
         <View style={[styles.item, { backgroundColor: settingsCtx.theme.colors.items.background }]}>
+            {editionModeCtx && (
+                <DeleteItemButton
+                    onPress={() => handleRemoveItem(categoryIndex, itemIndex)}
+                    style={{ marginRight: 10 }}
+                />
+            )}
             <Text style={styles.name}>{item.name}</Text>
             <View style={styles.quantityBox}>
                 <PlusMinusButton
