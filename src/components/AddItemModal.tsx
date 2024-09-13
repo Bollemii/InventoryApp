@@ -42,6 +42,7 @@ export default function AddItemModal(props: AddItemModalProps) {
 
     const handleSave = async () => {
         setError("");
+        let idResult: number;
         if (mode === MODES.ITEM) {
             if (!category) {
                 setError("Category is required");
@@ -51,17 +52,21 @@ export default function AddItemModal(props: AddItemModalProps) {
                 return;
             }
 
-            props.save(category, new Item(0, name, 0));
+            idResult = await props.save(category, new Item(0, name, 0));
         } else if (mode === MODES.CATEGORY) {
             if (!Category.isNameValid(name)) {
                 setError("Name is required");
                 return;
             }
 
-            const id = await props.save(new Category(0, name));
-            if (id !== -1) {
-                setCategories([...categories, new Category(id, name)]);
+            idResult = await props.save(new Category(0, name));
+            if (idResult !== -1) {
+                setCategories([...categories, new Category(idResult, name)]);
             }
+        }
+        if (idResult === -1) {
+            setError(`Unhandled error occurred while saving the ${mode}`);
+            return;
         }
     }
 

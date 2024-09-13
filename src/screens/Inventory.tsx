@@ -43,14 +43,14 @@ export default function Inventory() {
         let id : number;
         if (!item) {
             // add new category
+            if (!CategoryObj.isNameValid(category.name)) return -1;
+
             id = await addCategory(category.name);
         } else {
             // add new item
-            console.log(item, category);
+            if (!Item.isNameValid(item.name)) return -1;
             
             id = await addItem(item, category);
-            console.log(id);
-            
             if (id === -1) return -1;
             const categoryFound = categories.find((c) => c.id === category.id);
             if (categoryFound) {
