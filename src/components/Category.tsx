@@ -30,8 +30,7 @@ export default function Category({
                 style={[
                     styles.category,
                     {
-                        borderTopWidth:
-                            cardViewSetting || categoryIndex === 0 ? 1 : 0,
+                        borderTopWidth: categoryIndex === 0 ? 1 : 0,
                     },
                 ]}
             >
@@ -50,6 +49,7 @@ export default function Category({
                     {
                         backgroundColor:
                             settingsCtx.theme.colors.items.background,
+                        borderBottomWidth: cardViewSetting ? 1 : 0,
                     },
                 ]}
             >
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     items: {
+        width: "100%",
         flexDirection: "row",
         flexWrap: "wrap",
         justifyContent: "center",

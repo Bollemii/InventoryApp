@@ -51,7 +51,10 @@ export async function getAllGroupByCategory(): Promise<Category[]> {
                     }),
                 };
             })
-            .map((category) => new Category(category.id, category.name, category.items));
+            .map(
+                (category) =>
+                    new Category(category.id, category.name, category.items)
+            );
     } finally {
         statement.finalizeAsync();
     }
@@ -82,7 +85,11 @@ export async function getByName(name: string): Promise<Item> {
     }
 }
 
-export async function insert(name: string, quantity: number, categoryId: number): Promise<number> {
+export async function insert(
+    name: string,
+    quantity: number,
+    categoryId: number
+): Promise<number> {
     await initializeItemDatabase();
 
     if (!Item.isNameValid(name)) {
@@ -107,7 +114,6 @@ export async function insert(name: string, quantity: number, categoryId: number)
         statement.finalizeAsync();
     }
 }
-
 
 export async function updateQuantity(
     id: number,
@@ -134,5 +140,3 @@ export async function updateQuantity(
         statement.finalizeAsync();
     }
 }
-
-

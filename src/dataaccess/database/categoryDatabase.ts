@@ -21,7 +21,7 @@ export async function getAll(): Promise<Category[]> {
     `);
     interface Result {
         id: number;
-        name: string
+        name: string;
     }
 
     try {
@@ -29,7 +29,9 @@ export async function getAll(): Promise<Category[]> {
             await statement.executeAsync()
         ).getAllAsync()) as Result[];
         if (result.length === 0) return [];
-        return result.map((category) => new Category(category.id, category.name));
+        return result.map(
+            (category) => new Category(category.id, category.name)
+        );
     } finally {
         statement.finalizeAsync();
     }
@@ -45,12 +47,12 @@ export async function getById(id: number): Promise<Category> {
     `);
     interface Result {
         id: number;
-        name: string
+        name: string;
     }
 
     try {
         const result = (await (
-            await statement.executeAsync({$id: id})
+            await statement.executeAsync({ $id: id })
         ).getFirstAsync()) as Result;
         if (!result) return null;
         return new Category(result.id, result.name);
@@ -69,12 +71,12 @@ export async function getByName(name: string): Promise<Category> {
     `);
     interface Result {
         id: number;
-        name: string
+        name: string;
     }
 
     try {
         const result = (await (
-            await statement.executeAsync({$name: name})
+            await statement.executeAsync({ $name: name })
         ).getFirstAsync()) as Result;
         if (!result) return null;
         return new Category(result.id, result.name);
@@ -95,7 +97,7 @@ export async function insert(name: string): Promise<number> {
         VALUES ($name)
     `);
     try {
-        const result = await statement.executeAsync({$name: name});
+        const result = await statement.executeAsync({ $name: name });
         return result.lastInsertRowId;
     } finally {
         statement.finalizeAsync();

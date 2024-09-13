@@ -68,7 +68,7 @@ export default function AddItemModal(props: AddItemModalProps) {
             setError(`Unhandled error occurred while saving the ${mode}`);
             return;
         }
-    }
+    };
 
     return (
         <Modal visible={props.visible} close={props.close}>
@@ -92,16 +92,18 @@ export default function AddItemModal(props: AddItemModalProps) {
                         categories={categories}
                     />
                 ) : mode === MODES.CATEGORY ? (
-                    <AddCategoryModalContent name={name} setName={setName}/>
+                    <AddCategoryModalContent name={name} setName={setName} />
                 ) : (
-                    <ChooseModeContent setMode={setMode} categories={categories} />
+                    <ChooseModeContent
+                        setMode={setMode}
+                        categories={categories}
+                    />
                 )}
-                {error !== "" && <Text style={styles.errorMessage}>{error}</Text>}
-                { mode !== MODES.NONE && (
-                    <Button
-                        onPress={handleSave}
-                        style={styles.saveButton}
-                    >
+                {error !== "" && (
+                    <Text style={styles.errorMessage}>{error}</Text>
+                )}
+                {mode !== MODES.NONE && (
+                    <Button onPress={handleSave} style={styles.saveButton}>
                         <Text>Save</Text>
                     </Button>
                 )}
@@ -110,11 +112,20 @@ export default function AddItemModal(props: AddItemModalProps) {
     );
 }
 
-function ChooseModeContent({ setMode, categories }: { setMode: (mode: string) => void, categories: Category[] }) {
+function ChooseModeContent({
+    setMode,
+    categories,
+}: {
+    setMode: (mode: string) => void;
+    categories: Category[];
+}) {
     return (
         <View style={styles.content}>
             {categories.length > 0 && (
-                <Button onPress={() => setMode(MODES.ITEM)} style={styles.saveButton}>
+                <Button
+                    onPress={() => setMode(MODES.ITEM)}
+                    style={styles.saveButton}
+                >
                     <Text>Item</Text>
                 </Button>
             )}
@@ -161,7 +172,11 @@ function AddItemModalContent({
                     style={styles.picker}
                 >
                     {categories.map((category) => (
-                        <Picker.Item key={category.name} label={category.name} value={category} />
+                        <Picker.Item
+                            key={category.name}
+                            label={category.name}
+                            value={category}
+                        />
                     ))}
                 </Picker>
             </View>

@@ -1,7 +1,12 @@
 import { Category } from "@/model/category";
-import { getAll, getById, getByName, insert } from "./database/categoryDatabase";
+import {
+    getAll,
+    getById,
+    getByName,
+    insert,
+} from "./database/categoryDatabase";
 
-export async function fetchAllCategories() : Promise<Category[]> {
+export async function fetchAllCategories(): Promise<Category[]> {
     try {
         return getAll();
     } catch (error) {
@@ -10,7 +15,7 @@ export async function fetchAllCategories() : Promise<Category[]> {
     }
 }
 
-export async function fetchCategoryById(id: number) : Promise<Category> {
+export async function fetchCategoryById(id: number): Promise<Category> {
     try {
         return getById(id);
     } catch (error) {
@@ -19,7 +24,7 @@ export async function fetchCategoryById(id: number) : Promise<Category> {
     }
 }
 
-export async function fetchCategoryByName(name: string) : Promise<Category> {
+export async function fetchCategoryByName(name: string): Promise<Category> {
     try {
         return getByName(name);
     } catch (error) {
@@ -28,7 +33,7 @@ export async function fetchCategoryByName(name: string) : Promise<Category> {
     }
 }
 
-export async function addCategory(name: string) : Promise<number> {
+export async function addCategory(name: string): Promise<number> {
     try {
         if (!Category.isNameValid(name)) {
             throw new Error("Category name is invalid");

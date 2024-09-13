@@ -26,10 +26,7 @@ export async function fetchItemByName(name: string): Promise<Item> {
     }
 }
 
-export async function addItem(
-    item: Item,
-    category: Category
-): Promise<number> {
+export async function addItem(item: Item, category: Category): Promise<number> {
     try {
         if (!Item.isNameValid(item.name)) {
             throw new Error("Item name is invalid");
@@ -38,7 +35,7 @@ export async function addItem(
             throw new Error("Item quantity out of bounds");
         }
         console.log(item, category);
-        
+
         const categoryFetched = await fetchCategoryById(category.id);
         if (!categoryFetched) {
             throw new Error("Category not found");

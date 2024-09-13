@@ -5,7 +5,11 @@ import { useIsFocused } from "@react-navigation/native";
 import Category from "@/components/Category";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
-import { addItem, fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
+import {
+    addItem,
+    fetchAllItems,
+    updateItemQuantity,
+} from "@/dataaccess/itemRepository";
 import { useSettingsContext } from "@/contexts/settingsContext";
 import Button from "@/components/Button";
 import AddItemModal from "@/components/AddItemModal";
@@ -39,8 +43,11 @@ export default function Inventory() {
         itemAffected.add(add);
         setCategories([...categories]); // Force re-render
     };
-    const handleAddItem = async (category: CategoryObj, item?: Item) : Promise<number> => {
-        let id : number;
+    const handleAddItem = async (
+        category: CategoryObj,
+        item?: Item
+    ): Promise<number> => {
+        let id: number;
         if (!item) {
             // add new category
             if (!CategoryObj.isNameValid(category.name)) return -1;
@@ -49,12 +56,14 @@ export default function Inventory() {
         } else {
             // add new item
             if (!Item.isNameValid(item.name)) return -1;
-            
+
             id = await addItem(item, category);
             if (id === -1) return -1;
             const categoryFound = categories.find((c) => c.id === category.id);
             if (categoryFound) {
-                categoryFound.items.push(new Item(id, item.name, item.quantity));
+                categoryFound.items.push(
+                    new Item(id, item.name, item.quantity)
+                );
             } else {
                 category.addItem(new Item(id, item.name, item.quantity));
                 categories.push(category);
