@@ -8,8 +8,8 @@ export async function fetchAllItems(): Promise<Category[]> {
     try {
         return getAllGroupByCategory();
     } catch (error) {
-        log.error(error);
-        return [];
+        log.error(`${error} (ItemRepository::fetchAllItems)`);
+        throw error;
     }
 }
 
@@ -17,8 +17,8 @@ export async function fetchItemByName(name: string): Promise<Item> {
     try {
         return getByName(name);
     } catch (error) {
-        log.error(error);
-        return null;
+        log.error(`${error} (ItemRepository::fetchItemByName)`);
+        throw error;
     }
 }
 
@@ -42,8 +42,8 @@ export async function addItem(item: Item, category: Category): Promise<number> {
 
         return insert(item.name, item.quantity, category.id);
     } catch (error) {
-        log.error(error);
-        return -1;
+        log.error(`${error} (ItemRepository::addItem)`);
+        throw error;
     }
 }
 
@@ -54,8 +54,8 @@ export async function updateItemQuantity(id: number, quantity: number): Promise<
         }
         return updateQuantity(id, quantity);
     } catch (error) {
-        log.error(error);
-        return -1;
+        log.error(`${error} (ItemRepository::updateItemQuantity)`);
+        throw error;
     }
 }
 
@@ -64,7 +64,7 @@ export async function deleteItem(id: number): Promise<number> {
         await deleteOne(id);
         return 0;
     } catch (error) {
-        log.error(error);
-        return -1;
+        log.error(`${error} (ItemRepository::deleteItem)`);
+        throw error;
     }
 }

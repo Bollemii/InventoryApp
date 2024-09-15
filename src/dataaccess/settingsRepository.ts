@@ -30,7 +30,7 @@ export async function getThemeSetting(): Promise<Theme> {
 
 export function setThemeSetting(value: string): Promise<void> {
     if (colorScheme[value] === undefined) {
-        log.error(`Invalid theme value: ${value}`);
+        log.error(`Invalid theme value: ${value} (SettingsRepository::setThemeSetting)`);
         return;
     }
 

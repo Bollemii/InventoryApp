@@ -31,7 +31,7 @@ export default function Router() {
     }, []);
 
     const handleError = (error: any) => {
-        log.warn(`Unhandled routing action : ${error}"`);
+        log.warn(`Unhandled routing action : ${error} (Router)`);
         navigationRef.navigate("*");
     };
 

@@ -5,11 +5,11 @@ import { useIsFocused } from "@react-navigation/native";
 import Category from "@/components/Category";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
-import { addItem, deleteItem, fetchAllItems, updateItemQuantity } from "@/dataaccess/itemRepository";
+import { addItem, deleteItem, fetchAllItems, fetchItemByName, updateItemQuantity } from "@/dataaccess/itemRepository";
 import { useSettingsContext } from "@/contexts/settingsContext";
 import Button from "@/components/Button";
 import AddItemModal from "@/components/AddItemModal";
-import { addCategory } from "@/dataaccess/categoryRepository";
+import { addCategory, fetchCategoryByName } from "@/dataaccess/categoryRepository";
 import { useEditionModeContext } from "@/contexts/editionModeContext";
 
 export default function Inventory() {
@@ -38,15 +38,28 @@ export default function Inventory() {
         let id: number;
         if (!item) {
             // add new category
-            if (!CategoryObj.isNameValid(category.name)) return -1;
+            if (!CategoryObj.isNameValid(category.name)) {
+                throw new Error("Category name is required");
+            }
+
+            const fetchedCategory = await fetchCategoryByName(category.name);
+            if (fetchedCategory) {
+                throw new Error("This category already exists");
+            }
 
             id = await addCategory(category.name);
         } else {
             // add new item
-            if (!Item.isNameValid(item.name)) return -1;
+            if (!Item.isNameValid(item.name)) {
+                throw new Error("Item name is required");
+            }
+
+            const itemFetched = await fetchItemByName(item.name);
+            if (itemFetched) {
+                throw new Error("This item already exists");
+            }
 
             id = await addItem(item, category);
-            if (id === -1) return -1;
             const categoryFound = categories.find((c) => c.id === category.id);
             if (categoryFound) {
                 categoryFound.items.push(new Item(id, item.name, item.quantity));

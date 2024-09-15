@@ -6,8 +6,8 @@ export async function fetchAllCategories(): Promise<Category[]> {
     try {
         return getAll();
     } catch (error) {
-        log.error(error);
-        return [];
+        log.error(`${error} (CategoryRepository::fetchAllCategories)`);
+        throw error;
     }
 }
 
@@ -15,8 +15,8 @@ export async function fetchCategoryById(id: number): Promise<Category> {
     try {
         return getById(id);
     } catch (error) {
-        log.error(error);
-        return null;
+        log.error(`${error} (CategoryRepository::fetchCategoryById)`);
+        throw error;
     }
 }
 
@@ -24,8 +24,8 @@ export async function fetchCategoryByName(name: string): Promise<Category> {
     try {
         return getByName(name);
     } catch (error) {
-        log.error(error);
-        return null;
+        log.error(`${error} (CategoryRepository::fetchCategoryByName)`);
+        throw error;
     }
 }
 
@@ -42,7 +42,7 @@ export async function addCategory(name: string): Promise<number> {
 
         return insert(name);
     } catch (error) {
-        log.error(error);
-        return -1;
+        log.error(`${error} (CategoryRepository::addCategory)`);
+        throw error;
     }
 }

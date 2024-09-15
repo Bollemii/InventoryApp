@@ -25,7 +25,7 @@ export class Settings {
 
     set theme(value: Theme) {
         if (colorScheme[value.name] === undefined) {
-            log.error(`Invalid theme value: ${value}`);
+            log.error(`Invalid theme value: ${value} (Settings::setTheme)`);
             return;
         }
 
