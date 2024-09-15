@@ -2,12 +2,13 @@ import { Item } from "@/model/Item";
 import { Category } from "@/model/category";
 import { getAllGroupByCategory, getByName, insert, updateQuantity, deleteOne } from "./database/itemdatabase";
 import { fetchCategoryById } from "./categoryRepository";
+import { log } from "@/logger";
 
 export async function fetchAllItems(): Promise<Category[]> {
     try {
         return getAllGroupByCategory();
     } catch (error) {
-        console.error(error);
+        log.error(error);
         return [];
     }
 }
@@ -16,7 +17,7 @@ export async function fetchItemByName(name: string): Promise<Item> {
     try {
         return getByName(name);
     } catch (error) {
-        console.error(error);
+        log.error(error);
         return null;
     }
 }
@@ -41,7 +42,7 @@ export async function addItem(item: Item, category: Category): Promise<number> {
 
         return insert(item.name, item.quantity, category.id);
     } catch (error) {
-        console.error(error);
+        log.error(error);
         return -1;
     }
 }
@@ -53,7 +54,7 @@ export async function updateItemQuantity(id: number, quantity: number): Promise<
         }
         return updateQuantity(id, quantity);
     } catch (error) {
-        console.error(error);
+        log.error(error);
         return -1;
     }
 }
@@ -63,7 +64,7 @@ export async function deleteItem(id: number): Promise<number> {
         await deleteOne(id);
         return 0;
     } catch (error) {
-        console.error(error);
+        log.error(error);
         return -1;
     }
 }

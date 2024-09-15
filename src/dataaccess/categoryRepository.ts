@@ -1,11 +1,12 @@
 import { Category } from "@/model/category";
 import { getAll, getById, getByName, insert } from "./database/categoryDatabase";
+import { log } from "@/logger";
 
 export async function fetchAllCategories(): Promise<Category[]> {
     try {
         return getAll();
     } catch (error) {
-        console.error(error);
+        log.error(error);
         return [];
     }
 }
@@ -14,7 +15,7 @@ export async function fetchCategoryById(id: number): Promise<Category> {
     try {
         return getById(id);
     } catch (error) {
-        console.error(error);
+        log.error(error);
         return null;
     }
 }
@@ -23,7 +24,7 @@ export async function fetchCategoryByName(name: string): Promise<Category> {
     try {
         return getByName(name);
     } catch (error) {
-        console.error(error);
+        log.error(error);
         return null;
     }
 }
@@ -41,7 +42,7 @@ export async function addCategory(name: string): Promise<number> {
 
         return insert(name);
     } catch (error) {
-        console.error(error);
+        log.error(error);
         return -1;
     }
 }

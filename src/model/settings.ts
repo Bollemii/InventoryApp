@@ -1,3 +1,4 @@
+import { log } from "@/logger";
 import { colorScheme } from "@/styles/colors";
 import { Theme } from "@/types/theme";
 
@@ -24,7 +25,7 @@ export class Settings {
 
     set theme(value: Theme) {
         if (colorScheme[value.name] === undefined) {
-            console.error(`Invalid theme value: ${value}`);
+            log.error(`Invalid theme value: ${value}`);
             return;
         }
 

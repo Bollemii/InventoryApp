@@ -1,10 +1,8 @@
 import { Category } from "@/model/category";
-import * as sqlite from "expo-sqlite";
-
-const db = sqlite.openDatabaseSync("inventory");
+import * as database from "./common/sqliteDatabase";
 
 export async function initializeCategoryDatabase() {
-    db.execAsync(`
+    database.execute(`
         CREATE TABLE IF NOT EXISTS categories (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE
@@ -14,67 +12,55 @@ export async function initializeCategoryDatabase() {
 
 export async function getAll(): Promise<Category[]> {
     await initializeCategoryDatabase();
-
-    const statement = await db.prepareAsync(`
-        SELECT id, name
-        FROM categories
-    `);
     interface Result {
         id: number;
         name: string;
     }
 
-    try {
-        const result = (await (await statement.executeAsync()).getAllAsync()) as Result[];
-        if (result.length === 0) return [];
-        return result.map((category) => new Category(category.id, category.name));
-    } finally {
-        statement.finalizeAsync();
-    }
+    const result = (await database.getAll(`
+        SELECT id, name
+        FROM categories
+    `)) as Result[];
+    if (result.length === 0) return [];
+    return result.map((category) => new Category(category.id, category.name));
 }
 
 export async function getById(id: number): Promise<Category> {
     await initializeCategoryDatabase();
-
-    const statement = await db.prepareAsync(`
-        SELECT id, name
-        FROM categories
-        WHERE id = $id
-    `);
     interface Result {
         id: number;
         name: string;
     }
 
-    try {
-        const result = (await (await statement.executeAsync({ $id: id })).getFirstAsync()) as Result;
-        if (!result) return null;
-        return new Category(result.id, result.name);
-    } finally {
-        statement.finalizeAsync();
-    }
+    const result = (await database.getOne(
+        `
+        SELECT id, name
+        FROM categories
+        WHERE id = $id
+    `,
+        { $id: id }
+    )) as Result;
+    if (!result) return null;
+    return new Category(result.id, result.name);
 }
 
 export async function getByName(name: string): Promise<Category> {
     await initializeCategoryDatabase();
-
-    const statement = await db.prepareAsync(`
-        SELECT id, name
-        FROM categories
-        WHERE name = $name
-    `);
     interface Result {
         id: number;
         name: string;
     }
 
-    try {
-        const result = (await (await statement.executeAsync({ $name: name })).getFirstAsync()) as Result;
-        if (!result) return null;
-        return new Category(result.id, result.name);
-    } finally {
-        statement.finalizeAsync();
-    }
+    const result = await database.getOne(
+        `
+        SELECT id, name
+        FROM categories
+        WHERE name = $name
+    `,
+        { $name: name }
+    );
+    if (!result) return null;
+    return new Category(result.id, result.name);
 }
 
 export async function insert(name: string): Promise<number> {
@@ -84,14 +70,12 @@ export async function insert(name: string): Promise<number> {
         throw new Error("Category name is invalid");
     }
 
-    const statement = await db.prepareAsync(`
+    const result = await database.executeStatement(
+        `
         INSERT INTO categories (name)
         VALUES ($name)
-    `);
-    try {
-        const result = await statement.executeAsync({ $name: name });
-        return result.lastInsertRowId;
-    } finally {
-        statement.finalizeAsync();
-    }
+    `,
+        { $name: name }
+    );
+    return result.lastInsertRowId;
 }
