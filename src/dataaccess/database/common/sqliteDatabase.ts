@@ -15,7 +15,7 @@ export async function executeStatement(query: string, params?: sqlite.SQLiteBind
     try {
         return await statement.executeAsync(params || {});
     } finally {
-        await statement.finalizeAsync();
+        statement.finalizeAsync();
     }
 }
 
@@ -30,7 +30,7 @@ export async function getAll(query: string): Promise<any[]> {
     try {
         return await (await statement.executeAsync()).getAllAsync();
     } finally {
-        await statement.finalizeAsync();
+        statement.finalizeAsync();
     }
 }
 
@@ -39,7 +39,7 @@ export async function get(query: string, params: sqlite.SQLiteBindParams): Promi
     try {
         return await (await statement.executeAsync(params)).getAllAsync();
     } finally {
-        await statement.finalizeAsync();
+        statement.finalizeAsync();
     }
 }
 
@@ -48,6 +48,6 @@ export async function getOne(query: string, params: sqlite.SQLiteBindParams): Pr
     try {
         return await (await statement.executeAsync(params)).getFirstAsync();
     } finally {
-        await statement.finalizeAsync();
+        statement.finalizeAsync();
     }
 }

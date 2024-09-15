@@ -4,12 +4,6 @@ import * as FileSystem from "expo-file-system";
 const fileLogger = logger.createLogger({
     transport: fileAsyncTransport,
     transportOptions: {
-        colors: {
-            info: "blueBright",
-            warn: "yellowBright",
-            error: "redBright",
-            debug: "white",
-        },
         FS: FileSystem,
         fileName: "logs.txt",
     },
