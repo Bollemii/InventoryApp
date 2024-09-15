@@ -11,6 +11,7 @@ import Inventory from "@/screens/Inventory";
 import Settings from "@/screens/Settings";
 import { getThemeSetting } from "@/dataaccess/settingsRepository";
 import { Theme } from "@/types/theme";
+import { log } from "@/logger";
 
 declare global {
     namespace ReactNavigation {
@@ -30,7 +31,7 @@ export default function Router() {
     }, []);
 
     const handleError = (error: any) => {
-        console.log("Unhandled routing action", error);
+        log.warn(`Unhandled routing action : ${error}"`);
         navigationRef.navigate("*");
     };
 

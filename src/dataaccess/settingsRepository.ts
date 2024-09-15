@@ -2,6 +2,7 @@ import { colorScheme } from "@/styles/colors";
 import { getSetting, setSetting } from "./database/settingsDatabase";
 import { Settings } from "@/model/settings";
 import { Theme } from "@/types/theme";
+import { log } from "@/logger";
 
 const SETTING_KEYS = {
     cardsView: "cardsView",
@@ -29,7 +30,7 @@ export async function getThemeSetting(): Promise<Theme> {
 
 export function setThemeSetting(value: string): Promise<void> {
     if (colorScheme[value] === undefined) {
-        console.error(`Invalid theme value: ${value}`);
+        log.error(`Invalid theme value: ${value}`);
         return;
     }
 
