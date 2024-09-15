@@ -13,10 +13,15 @@ export async function initializeItemDatabase() {
         CREATE TABLE IF NOT EXISTS items (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE,
-            quantity INTEGER,
-            category INTEGER REFERENCES categories(id)
+            quantity INTEGER
         );
     `);
+    const columns = await db.getAllAsync("PRAGMA table_info(items)") as { name: string }[];    
+    if (columns.find((column) => column.name === "category") === undefined) {        
+        db.execAsync(`
+            ALTER TABLE items ADD COLUMN category INTEGER REFERENCES categories(id);
+        `);
+    }
 }
 
 export async function getAllGroupByCategory(): Promise<Category[]> {
