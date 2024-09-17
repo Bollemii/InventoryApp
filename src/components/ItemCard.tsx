@@ -25,17 +25,13 @@ export default function ItemCard({ categoryIndex, itemIndex, item, handleChangeQ
             <Text style={styles.name}>{item.name}</Text>
             <View style={styles.quantityBox}>
                 <PlusMinusButton
-                    onPress={handleChangeQuantity}
+                    onPress={() => handleChangeQuantity(categoryIndex, itemIndex, -1)}
                     plus={false}
-                    categoryIndex={categoryIndex}
-                    itemIndex={itemIndex}
                 />
                 <Text style={styles.quantity}>{item.quantity}</Text>
                 <PlusMinusButton
-                    onPress={handleChangeQuantity}
+                    onPress={() => handleChangeQuantity(categoryIndex, itemIndex, 1)}
                     plus={true}
-                    categoryIndex={categoryIndex}
-                    itemIndex={itemIndex}
                 />
             </View>
             {editionModeCtx && (

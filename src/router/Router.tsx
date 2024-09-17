@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { Pressable, Text } from "react-native";
 import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faGear } from "@fortawesome/free-solid-svg-icons";
 
 import { RootStackParamList, routes } from "@/router/routes";
 import { colorScheme } from "@/styles/colors";
@@ -12,6 +10,7 @@ import Settings from "@/screens/Settings";
 import { getThemeSetting } from "@/dataaccess/settingsRepository";
 import { Theme } from "@/types/theme";
 import { log } from "@/logger";
+import Icon from "@/components/Icon";
 
 declare global {
     namespace ReactNavigation {
@@ -63,7 +62,7 @@ function headerOptions(navigation: any, theme: Theme) {
         headerTintColor: theme.colors.headers.elements,
         headerRight: () => (
             <Pressable onPress={() => navigation.navigate(routes.Settings)}>
-                <FontAwesomeIcon icon={faGear} size={25} color={theme.colors.headers.elements} />
+                <Icon icon="gear" size={25} color={theme.colors.headers.elements} />
             </Pressable>
         ),
     };

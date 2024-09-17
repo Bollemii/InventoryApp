@@ -1,9 +1,8 @@
 import { StyleSheet } from "react-native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import Button from "./Button";
 import { useSettingsContext } from "@/contexts/settingsContext";
+import Icon from "./Icon";
 
 interface DeleteItemButtonProps {
     onPress: () => void;
@@ -18,7 +17,7 @@ export default function DeleteItemButton({ onPress, style } : DeleteItemButtonPr
 
     return (
         <Button onPress={onPress} style={[style, styles.button, {width: settingsCtx.cardsView ? "100%" : SIZE}]} colors={COLORS}>
-            <FontAwesomeIcon icon={faTrash} size={15} color="white"/>
+            <Icon icon="trash" size={15} color="white"/>
         </Button>
     );
 }
