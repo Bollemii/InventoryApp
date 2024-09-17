@@ -4,6 +4,8 @@ import ItemCard from "./ItemCard";
 import ItemList from "./ItemList";
 import { Category as CategoryObj } from "@/model/category";
 import { useSettingsContext } from "@/contexts/settingsContext";
+import PlusMinusButton from "./PlusMinusButton";
+import { useState } from "react";
 
 interface CategoryProps {
     categoryIndex: number;
@@ -15,6 +17,7 @@ interface CategoryProps {
 
 export default function Category({ categoryIndex, category, cardViewSetting, handleChangeQuantity, handleRemoveItem }: CategoryProps) {
     const { settingsCtx } = useSettingsContext();
+    const [ collapsed, setCollapsed ] = useState(false);
 
     return (
         <View style={styles.container}>
@@ -26,8 +29,14 @@ export default function Category({ categoryIndex, category, cardViewSetting, han
                     },
                 ]}
             >
+                <PlusMinusButton
+                    onPress={() => setCollapsed(!collapsed)}
+                    plus={collapsed}
+                    style={styles.collapseButton}
+                />
                 <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{category.name}</Text>
             </View>
+            {!collapsed && (
             <View
                 style={[
                     styles.items,
@@ -59,6 +68,7 @@ export default function Category({ categoryIndex, category, cardViewSetting, han
                     )
                 )}
             </View>
+            )}
         </View>
     );
 }
@@ -75,6 +85,12 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         padding: 5,
         borderBottomWidth: 1,
+    },
+    collapseButton: {
+        position: "absolute",
+        left: 10,
+        height: 20,
+        width: 20,
     },
     title: {
         fontSize: 17,

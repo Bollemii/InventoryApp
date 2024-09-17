@@ -5,25 +5,24 @@ import Button from "./Button";
 import Icon from "./Icon";
 
 interface PlusMinusButtonProps {
-    onPress: (categoryIndex: number, itemIndex: number, number: number) => void;
+    onPress: () => void;
     plus: boolean;
-    categoryIndex: number;
-    itemIndex: number;
+    style?: any;
 }
 
-export default function PlusMinusButton({ onPress, plus, categoryIndex, itemIndex }: PlusMinusButtonProps) {
+export default function PlusMinusButton(props: PlusMinusButtonProps) {
     const { settingsCtx } = useSettingsContext();
 
     return (
         <Button
-            onPress={() => onPress(categoryIndex, itemIndex, plus ? 1 : -1)}
-            style={styles.button}
+            onPress={props.onPress}
+            style={[styles.button, props.style]}
             colors={{
                 normal: settingsCtx.theme.colors.items.button.normal,
                 pressed: settingsCtx.theme.colors.items.button.pressed,
             }}
         >
-            <Icon icon={plus ? "plus" : "minus"} size={15} color={settingsCtx.theme.colors.items.button.icon} />
+            <Icon icon={props.plus ? "plus" : "minus"} size={15} color={settingsCtx.theme.colors.items.button.icon} />
         </Button>
     );
 }
