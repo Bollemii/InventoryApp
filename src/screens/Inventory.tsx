@@ -2,22 +2,23 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 
+import { useSettingsContext } from "@/contexts/settingsContext";
+import { useEditionModeContext } from "@/contexts/editionModeContext";
+import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
 import Category from "@/components/Category";
+import Button from "@/components/Button";
+import AddItemModal from "@/components/AddItemModal";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
 import { addItem, deleteItem, fetchAllItems, fetchItemByName, updateItemQuantity } from "@/dataaccess/itemRepository";
-import { useSettingsContext } from "@/contexts/settingsContext";
-import Button from "@/components/Button";
-import AddItemModal from "@/components/AddItemModal";
 import { addCategory, fetchCategoryByName } from "@/dataaccess/categoryRepository";
-import { useEditionModeContext } from "@/contexts/editionModeContext";
 
 export default function Inventory() {
     const isFocused = useIsFocused();
     const { settingsCtx } = useSettingsContext();
     const { editionModeCtx, setEditionModeCtx } = useEditionModeContext();
+    const { modalVisibleCtx } = useModalVisibleContext();
     const [categories, setCategories] = useState<CategoryObj[]>([]);
-    const [showAddItemModal, setShowAddItemModal] = useState(false);
 
     useEffect(() => {
         fetchAllItems().then((categories) => setCategories(categories));
@@ -70,7 +71,6 @@ export default function Inventory() {
             setCategories([...categories]); // Force re-render
         }
 
-        setShowAddItemModal(false);
         return id;
     };
     const handleRemoveItem = async (categoryIndex: number, itemIndex: number) => {
@@ -94,7 +94,7 @@ export default function Inventory() {
                 backgroundColor: settingsCtx.theme.colors.background,
             }}
         >
-            <AddItemModal visible={showAddItemModal} close={() => setShowAddItemModal(false)} save={handleAddNewItem} />
+            {modalVisibleCtx && <View style={styles.opacityView} />}
             <ScrollView>
                 {categories.map((category, categoryIndex) => (
                     <Category
@@ -109,16 +109,7 @@ export default function Inventory() {
                 <View style={{ alignItems: "center" }}>
                     {editionModeCtx ? (
                         <>
-                            <Button
-                                onPress={() => setShowAddItemModal(true)}
-                                style={styles.button}
-                                colors={{
-                                    normal: settingsCtx.theme.colors.items.button.normal,
-                                    pressed: settingsCtx.theme.colors.items.button.pressed,
-                                }}
-                            >
-                                <Text>Add something</Text>
-                            </Button>
+                            <AddItemModal save={handleAddNewItem} />
                             <Button
                                 onPress={() => setEditionModeCtx(false)}
                                 style={styles.button}
@@ -166,5 +157,13 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderWidth: 1,
         elevation: 10,
+    },
+    opacityView: {
+        position: "absolute",
+        height: "100%",
+        width: "100%",
+        zIndex: 1,
+        backgroundColor: "black",
+        opacity: 0.6,
     },
 });

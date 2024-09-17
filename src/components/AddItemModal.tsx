@@ -1,18 +1,17 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Picker } from "@react-native-picker/picker";
 
+import { useSettingsContext } from "@/contexts/settingsContext";
+import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
 import Modal from "./Modal";
 import Button from "./Button";
+import Icon from "./Icon";
 import { Item } from "@/model/Item";
-import { useEffect, useState } from "react";
 import { Category } from "@/model/category";
 import { fetchAllCategories } from "@/dataaccess/categoryRepository";
 
 interface AddItemModalProps {
-    visible: boolean;
-    close: () => void;
     save: (category: Category, item?: Item) => Promise<number>;
 }
 
@@ -23,6 +22,9 @@ const MODES = {
 };
 
 export default function AddItemModal(props: AddItemModalProps) {
+    const { settingsCtx } = useSettingsContext();
+    const { setModalVisibleCtx } = useModalVisibleContext();
+    const [ visible, setVisible ] = useState(false);
     const [mode, setMode] = useState(MODES.NONE);
     const [categories, setCategories] = useState<Category[]>([]);
     const [name, setName] = useState("");
@@ -33,15 +35,20 @@ export default function AddItemModal(props: AddItemModalProps) {
         fetchAllCategories().then((categories) => setCategories(categories));
     }, []);
     useEffect(() => {
-        if (!props.visible) return;
+        if (!visible) return;
         setMode(MODES.NONE);
         setName("");
         setCategory(null);
         setError("");
-    }, [props.visible]);
+    }, [visible]);
     useEffect(() => {
         setError("");
     }, [name]);
+
+    const toggleVisible = (value: boolean) => {
+        setVisible(value);
+        setModalVisibleCtx(value);
+    }
 
     const handleSave = async () => {
         setError("");
@@ -63,16 +70,28 @@ export default function AddItemModal(props: AddItemModalProps) {
                 idResult = await props.save(new Category(0, name));
                 setCategories([...categories, new Category(idResult, name)]);
             }
+            toggleVisible(false);
         } catch (error) {
             setError(error.message);
         }
     };
 
     return (
-        <Modal visible={props.visible} close={props.close}>
+        <>
+        <Button
+            onPress={() => toggleVisible(true)}
+            style={styles.button}
+            colors={{
+                normal: settingsCtx.theme.colors.items.button.normal,
+                pressed: settingsCtx.theme.colors.items.button.pressed,
+            }}
+        >
+            <Text>Add something</Text>
+        </Button>
+        <Modal visible={visible} close={() => toggleVisible(false)}>
             <View style={styles.modal}>
-                <Button onPress={props.close} style={styles.closeButton}>
-                    <FontAwesomeIcon icon={faXmark} size={20} />
+                <Button onPress={() => toggleVisible(false)} style={styles.closeButton}>
+                    <Icon icon="xmark" size={20} />
                 </Button>
                 <Text style={styles.title}>
                     {mode === MODES.ITEM ? "Add Item" : mode === MODES.CATEGORY ? "Add Category" : "Choose mode"}
@@ -98,6 +117,7 @@ export default function AddItemModal(props: AddItemModalProps) {
                 )}
             </View>
         </Modal>
+        </>
     );
 }
 
@@ -160,6 +180,13 @@ function AddCategoryModalContent({ name, setName }: { name: string; setName: (na
 }
 
 const styles = StyleSheet.create({
+    button: {
+        width: "80%",
+        height: 40,
+        margin: 10,
+        borderWidth: 1,
+        borderRadius: 10,
+    },
     modal: {
         alignSelf: "center",
         justifyContent: "center",

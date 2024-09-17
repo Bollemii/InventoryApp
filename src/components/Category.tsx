@@ -1,11 +1,12 @@
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+import { useSettingsContext } from "@/contexts/settingsContext";
 import ItemCard from "./ItemCard";
 import ItemList from "./ItemList";
-import { Category as CategoryObj } from "@/model/category";
-import { useSettingsContext } from "@/contexts/settingsContext";
 import PlusMinusButton from "./PlusMinusButton";
-import { useState } from "react";
+import EditCategoryModal from "./EditCategoryModal";
+import { Category as CategoryObj } from "@/model/category";
 
 interface CategoryProps {
     categoryIndex: number;
@@ -29,11 +30,14 @@ export default function Category({ categoryIndex, category, cardViewSetting, han
                     },
                 ]}
             >
-                <PlusMinusButton
-                    onPress={() => setCollapsed(!collapsed)}
-                    plus={collapsed}
-                    style={styles.collapseButton}
-                />
+                <View style={styles.buttons}>
+                    <PlusMinusButton
+                        onPress={() => setCollapsed(!collapsed)}
+                        plus={collapsed}
+                        style={{ height: 25, width: 25, marginRight: 10 }}
+                    />
+                    <EditCategoryModal />
+                </View>
                 <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{category.name}</Text>
             </View>
             {!collapsed && (
@@ -86,11 +90,10 @@ const styles = StyleSheet.create({
         padding: 5,
         borderBottomWidth: 1,
     },
-    collapseButton: {
+    buttons: {
         position: "absolute",
         left: 10,
-        height: 20,
-        width: 20,
+        flexDirection: "row",
     },
     title: {
         fontSize: 17,
