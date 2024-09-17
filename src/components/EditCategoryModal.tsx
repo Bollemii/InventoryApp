@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
@@ -9,21 +9,52 @@ import Modal from "./Modal";
 import { Category } from "@/model/category";
 
 interface EditCategoryModalProps {
-    category: Category
+    category: Category;
+    save: (category: Category) => void;
 }
 
 export default function EditCategoryModal(props: EditCategoryModalProps) {
     const { settingsCtx } = useSettingsContext();
     const { setModalVisibleCtx } = useModalVisibleContext();
     const [ visible, setVisible ] = useState(false);
+    const [ name, setName ] = useState("");
+    const [ error, setError ] = useState("");
 
     useEffect(() => {
         setModalVisibleCtx(false);
     }, []);
+    useEffect(() => {
+        if (!visible) return;
+        setName(props.category.name);
+        setError("");
+    }, [visible]);
+    useEffect(() => {
+        setError("");
+    }, [name]);
 
     const toggleVisible = (value: boolean) => {
         setVisible(value);
         setModalVisibleCtx(value);
+    };
+    const handleSave = () => {
+        setError("");
+        try {
+            if (!Category.isNameValid(name)) {
+                throw new Error("Category name is invalid");
+            }
+
+            if (name.trim() === props.category.name) {
+                toggleVisible(false);
+                return;
+            }
+
+            props.category.name = name.trim();
+            props.save(props.category)
+
+            toggleVisible(false);
+        } catch (error) {
+            setError(error.message);
+        }
     };
 
     return (
@@ -49,6 +80,11 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
                     <Text style={styles.title}>
                         Edit "{props.category.name}" category
                     </Text>
+                    <TextInput value={name} onChangeText={setName} placeholder="Category name" style={styles.input} />
+                    {error !== "" && <Text style={styles.errorMessage}>{error}</Text>}
+                    <Button onPress={handleSave} style={styles.saveButton}>
+                        <Text>Save</Text>
+                    </Button>
                 </View>
             </Modal>
         </>
@@ -87,5 +123,25 @@ const styles = StyleSheet.create({
         top: 5,
         left: 5,
         fontSize: 16,
+    },
+    input: {
+        width: "80%",
+        height: 40,
+        margin: 10,
+        padding: 5,
+        borderWidth: 1,
+        borderRadius: 10,
+        justifyContent: "center",
+    },
+    errorMessage: {
+        color: "red",
+        margin: 10,
+    },
+    saveButton: {
+        width: "80%",
+        height: 40,
+        margin: 10,
+        borderWidth: 1,
+        borderRadius: 10,
     },
 });

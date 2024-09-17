@@ -15,7 +15,7 @@ export async function fetchAllItems(): Promise<Category[]> {
 
 export async function fetchItemByName(name: string): Promise<Item> {
     try {
-        return getByName(name);
+        return getByName(name.trim());
     } catch (error) {
         log.error(`${error} (ItemRepository::fetchItemByName)`);
         throw error;
@@ -35,12 +35,12 @@ export async function addItem(item: Item, category: Category): Promise<number> {
         if (!categoryFetched) {
             throw new Error("Category not found");
         }
-        const itemFetched = await fetchItemByName(item.name);
+        const itemFetched = await fetchItemByName(item.name.trim());
         if (itemFetched) {
             throw new Error("Item already exists");
         }
 
-        return insert(item.name, item.quantity, category.id);
+        return insert(item.name.trim(), item.quantity, category.id);
     } catch (error) {
         log.error(`${error} (ItemRepository::addItem)`);
         throw error;

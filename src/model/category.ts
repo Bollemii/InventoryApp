@@ -6,8 +6,12 @@ export class Category {
     private _items: Item[];
 
     constructor(id: number, name: string, items: Item[] = []) {
+        if (!Category.isNameValid(name)) {
+            throw new Error("Category name is invalid");
+        }
+
         this._id = id;
-        this._name = name;
+        this._name = name.trim();
         this._items = items;
     }
 
@@ -19,6 +23,13 @@ export class Category {
         return this._name;
     }
 
+    set name(name: string) {
+        if (!Category.isNameValid(name)) {
+            throw new Error("Category name is invalid");
+        }
+        this._name = name.trim();
+    }
+
     get items() {
         return this._items;
     }
@@ -28,7 +39,7 @@ export class Category {
     }
 
     static isNameValid(name: string): boolean {
-        return name.length > 0;
+        return name.trim().length > 0;
     }
 
     public toString(): string {

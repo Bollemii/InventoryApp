@@ -11,7 +11,7 @@ import AddThingModal from "@/components/AddThingModal";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
 import { addItem, deleteItem, fetchAllItems, fetchItemByName, updateItemQuantity } from "@/dataaccess/itemRepository";
-import { addCategory, fetchCategoryByName } from "@/dataaccess/categoryRepository";
+import { addCategory, editCategoryName, fetchCategoryByName } from "@/dataaccess/categoryRepository";
 
 export default function Inventory() {
     const isFocused = useIsFocused();
@@ -24,7 +24,7 @@ export default function Inventory() {
         fetchAllItems().then((categories) => setCategories(categories));
     }, []);
 
-    const handleChangeQuantity = async (categoryIndex: number, itemIndex: number, add: number) => {
+    const handleChangeQuantityItem = async (categoryIndex: number, itemIndex: number, add: number) => {
         const categoryAffected = categories[categoryIndex];
         const itemAffected = categoryAffected.items[itemIndex];
         if (!Item.isQuantityValid(itemAffected.quantity + add)) return;
@@ -35,43 +35,25 @@ export default function Inventory() {
         itemAffected.add(add);
         setCategories([...categories]); // Force re-render
     };
-    const handleAddNewThing = async (category: CategoryObj, item?: Item): Promise<number> => {
-        let id: number;
-        if (!item) {
-            // add new category
-            if (!CategoryObj.isNameValid(category.name)) {
-                throw new Error("Category name is required");
-            }
-
-            const fetchedCategory = await fetchCategoryByName(category.name);
-            if (fetchedCategory) {
-                throw new Error("This category already exists");
-            }
-
-            id = await addCategory(category.name);
-        } else {
-            // add new item
-            if (!Item.isNameValid(item.name)) {
-                throw new Error("Item name is required");
-            }
-
-            const itemFetched = await fetchItemByName(item.name);
-            if (itemFetched) {
-                throw new Error("This item already exists");
-            }
-
-            id = await addItem(item, category);
-            const categoryFound = categories.find((c) => c.id === category.id);
-            if (categoryFound) {
-                categoryFound.items.push(new Item(id, item.name, item.quantity));
-            } else {
-                category.addItem(new Item(id, item.name, item.quantity));
-                categories.push(category);
-            }
-            setCategories([...categories]); // Force re-render
+    const handleAddNewItem = async (category: CategoryObj, item: Item) => {
+        if (!Item.isNameValid(item.name)) {
+            throw new Error("Item name is required");
         }
 
-        return id;
+        const itemFetched = await fetchItemByName(item.name.trim());
+        if (itemFetched) {
+            throw new Error("This item already exists");
+        }
+
+        const id = await addItem(item, category);
+        const categoryFound = categories.find((c) => c.id === category.id);
+        if (categoryFound) {
+            categoryFound.items.push(new Item(id, item.name.trim(), item.quantity));
+        } else {
+            category.addItem(new Item(id, item.name.trim(), item.quantity));
+            categories.push(category);
+        }
+        setCategories([...categories]); // Force re-render
     };
     const handleRemoveItem = async (categoryIndex: number, itemIndex: number) => {
         const itemAffected = categories[categoryIndex].items[itemIndex];
@@ -85,7 +67,33 @@ export default function Inventory() {
         }
         setCategories([...categories]); // Force re-render
     };
+    const handleAddNewCategory = async (category: CategoryObj): Promise<number> => {
+        if (!CategoryObj.isNameValid(category.name)) {
+            throw new Error("Category name is required");
+        }
 
+        const fetchedCategory = await fetchCategoryByName(category.name.trim());
+        if (fetchedCategory) {
+            throw new Error("This category already exists");
+        }
+        
+        return await addCategory(category.name.trim());
+    };
+    const handleEditCategory = async (categoryIndex: number, category: CategoryObj) => {
+        if (!CategoryObj.isNameValid(category.name)) {
+            throw new Error("Category name is required");
+        }
+
+        const fetchedCategory = await fetchCategoryByName(category.name.trim());
+        if (fetchedCategory) {
+            throw new Error("This category already exists");
+        }
+
+        await editCategoryName(category.id, category.name.trim());
+        categories[categoryIndex].name = category.name.trim();
+        setCategories([...categories]); // Force re-render
+    };
+    
     if (!isFocused) return null;
     return (
         <View
@@ -101,14 +109,19 @@ export default function Inventory() {
                         key={categoryIndex}
                         categoryIndex={categoryIndex}
                         category={category}
-                        handleChangeQuantity={handleChangeQuantity}
+                        handleChangeQuantityItem={handleChangeQuantityItem}
                         handleRemoveItem={handleRemoveItem}
+                        handleEditCategory={handleEditCategory}
                     />
                 ))}
                 <View style={{ alignItems: "center" }}>
                     {editionModeCtx ? (
                         <>
-                            <AddThingModal save={handleAddNewThing} buttonStyle={styles.button} />
+                            <AddThingModal
+                                saveItem={handleAddNewItem}
+                                saveCategory={handleAddNewCategory}
+                                buttonStyle={styles.button}
+                            />
                             <Button onPress={() => setEditionModeCtx(false)} style={styles.button}>
                                 <Text>Quit edition mode</Text>
                             </Button>

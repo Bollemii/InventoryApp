@@ -7,8 +7,15 @@ export class Item {
     private _quantity: number;
 
     constructor(id: number, name: string, quantity: number) {
+        if (!Item.isNameValid(name)) {
+            throw new Error("Item name is invalid");
+        }
+        if (!Item.isQuantityValid(quantity)) {
+            throw new Error("Item quantity is invalid");
+        }
+
         this._id = id;
-        this._name = name;
+        this._name = name.trim();
         this._quantity = quantity;
     }
 
@@ -25,19 +32,25 @@ export class Item {
     }
 
     set name(name: string) {
-        if (name === "") return;
+        if (!Item.isNameValid(name)) {
+            throw new Error("Item name is invalid");
+        }
 
-        this._name = name;
+        this._name = name.trim();
     }
 
     set quantity(quantity: number) {
-        if (!Item.isQuantityValid(quantity)) return;
+        if (!Item.isQuantityValid(quantity)) {
+            throw new Error("Item quantity is invalid");
+        }
 
         this._quantity = quantity;
     }
 
     public add(quantity: number): void {
-        if (!Item.isQuantityValid(this._quantity + quantity)) return;
+        if (!Item.isQuantityValid(this._quantity + quantity)) {
+            throw new Error("Item quantity is invalid");
+        }
 
         this._quantity += quantity;
     }
@@ -47,7 +60,7 @@ export class Item {
     }
 
     static isNameValid(name: string): boolean {
-        return name.length > 0;
+        return name.trim().length > 0;
     }
 
     static isQuantityValid(quantity: number): boolean {

@@ -12,7 +12,8 @@ import { fetchAllCategories } from "@/dataaccess/categoryRepository";
 
 interface AddItemModalProps {
     buttonStyle: any;
-    save: (category: Category, item?: Item) => Promise<number>;
+    saveItem: (category: Category, item: Item) => void;
+    saveCategory: (category: Category) => Promise<number>;
 }
 
 const MODES = {
@@ -39,6 +40,8 @@ export default function AddThingModal(props: AddItemModalProps) {
         setName("");
         setCategory(null);
         setError("");
+
+        fetchAllCategories().then((categories) => setCategories(categories));
     }, [visible]);
     useEffect(() => {
         setError("");
@@ -60,14 +63,14 @@ export default function AddThingModal(props: AddItemModalProps) {
                     throw new Error("Item name is invalid");
                 }
 
-                idResult = await props.save(category, new Item(0, name, 0));
+                props.saveItem(category, new Item(0, name.trim(), 0));
             } else if (mode === MODES.CATEGORY) {
                 if (!Category.isNameValid(name)) {
                     throw new Error("Category name is invalid");
                 }
 
-                idResult = await props.save(new Category(0, name));
-                setCategories([...categories, new Category(idResult, name)]);
+                idResult = await props.saveCategory(new Category(0, name.trim()));
+                setCategories([...categories, new Category(idResult, name.trim())]);
             }
             toggleVisible(false);
         } catch (error) {

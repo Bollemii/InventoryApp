@@ -12,8 +12,9 @@ import { useEditionModeContext } from "@/contexts/editionModeContext";
 interface CategoryProps {
     categoryIndex: number;
     category: CategoryObj;
-    handleChangeQuantity: (categoryIndex: number, itemIndex: number, add: number) => void;
+    handleChangeQuantityItem: (categoryIndex: number, itemIndex: number, add: number) => void;
     handleRemoveItem: (categoryIndex: number, itemIndex: number) => void;
+    handleEditCategory: (categoryIndex: number, category: CategoryObj) => void;
 }
 
 export default function Category(props: CategoryProps) {
@@ -21,11 +22,14 @@ export default function Category(props: CategoryProps) {
     const { editionModeCtx } = useEditionModeContext();
     const [collapsed, setCollapsed] = useState(false);
 
-    const handleChangeQuantity = (itemIndex: number, add: number) => {
-        props.handleChangeQuantity(props.categoryIndex, itemIndex, add);
+    const handleChangeQuantityItem = (itemIndex: number, add: number) => {
+        props.handleChangeQuantityItem(props.categoryIndex, itemIndex, add);
     };
     const handleRemoveItem = (itemIndex: number) => {
         props.handleRemoveItem(props.categoryIndex, itemIndex);
+    };
+    const handleEditCategory = (category: CategoryObj) => {
+        props.handleEditCategory(props.categoryIndex, category);
     };
 
     return (
@@ -44,7 +48,7 @@ export default function Category(props: CategoryProps) {
                         plus={collapsed}
                         style={{ height: 25, width: 25, marginRight: 10 }}
                     />
-                    {editionModeCtx && <EditCategoryModal category={props.category} />}
+                    {editionModeCtx && <EditCategoryModal category={props.category} save={handleEditCategory}/>}
                 </View>
                 <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{props.category.name}</Text>
             </View>
@@ -64,7 +68,7 @@ export default function Category(props: CategoryProps) {
                                 key={item.id}
                                 itemIndex={index}
                                 item={item}
-                                handleChangeQuantity={handleChangeQuantity}
+                                handleChangeQuantity={handleChangeQuantityItem}
                                 handleRemoveItem={handleRemoveItem}
                             />
                         ) : (
@@ -72,7 +76,7 @@ export default function Category(props: CategoryProps) {
                                 key={item.id}
                                 itemIndex={index}
                                 item={item}
-                                handleChangeQuantity={handleChangeQuantity}
+                                handleChangeQuantity={handleChangeQuantityItem}
                                 handleRemoveItem={handleRemoveItem}
                             />
                         )
