@@ -6,8 +6,13 @@ import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
 import Button from "./Button";
 import Icon from "./Icon";
 import Modal from "./Modal";
+import { Category } from "@/model/category";
 
-export default function EditCategoryModal() {
+interface EditCategoryModalProps {
+    category: Category
+}
+
+export default function EditCategoryModal(props: EditCategoryModalProps) {
     const { settingsCtx } = useSettingsContext();
     const { setModalVisibleCtx } = useModalVisibleContext();
     const [ visible, setVisible ] = useState(false);
@@ -42,7 +47,7 @@ export default function EditCategoryModal() {
                         <Icon icon="xmark" size={20} />
                     </Button>
                     <Text style={styles.title}>
-                        Title
+                        Edit "{props.category.name}" category
                     </Text>
                 </View>
             </Modal>

@@ -7,18 +7,26 @@ import ItemList from "./ItemList";
 import PlusMinusButton from "./PlusMinusButton";
 import EditCategoryModal from "./EditCategoryModal";
 import { Category as CategoryObj } from "@/model/category";
+import { useEditionModeContext } from "@/contexts/editionModeContext";
 
 interface CategoryProps {
     categoryIndex: number;
     category: CategoryObj;
-    cardViewSetting: boolean;
     handleChangeQuantity: (categoryIndex: number, itemIndex: number, add: number) => void;
     handleRemoveItem: (categoryIndex: number, itemIndex: number) => void;
 }
 
-export default function Category({ categoryIndex, category, cardViewSetting, handleChangeQuantity, handleRemoveItem }: CategoryProps) {
+export default function Category(props: CategoryProps) {
     const { settingsCtx } = useSettingsContext();
-    const [ collapsed, setCollapsed ] = useState(false);
+    const { editionModeCtx } = useEditionModeContext();
+    const [collapsed, setCollapsed] = useState(false);
+
+    const handleChangeQuantity = (itemIndex: number, add: number) => {
+        props.handleChangeQuantity(props.categoryIndex, itemIndex, add);
+    };
+    const handleRemoveItem = (itemIndex: number) => {
+        props.handleRemoveItem(props.categoryIndex, itemIndex);
+    };
 
     return (
         <View style={styles.container}>
@@ -26,7 +34,7 @@ export default function Category({ categoryIndex, category, cardViewSetting, han
                 style={[
                     styles.category,
                     {
-                        borderTopWidth: categoryIndex === 0 ? 1 : 0,
+                        borderTopWidth: props.categoryIndex === 0 ? 1 : 0,
                     },
                 ]}
             >
@@ -36,42 +44,40 @@ export default function Category({ categoryIndex, category, cardViewSetting, han
                         plus={collapsed}
                         style={{ height: 25, width: 25, marginRight: 10 }}
                     />
-                    <EditCategoryModal />
+                    {editionModeCtx && <EditCategoryModal category={props.category} />}
                 </View>
-                <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{category.name}</Text>
+                <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{props.category.name}</Text>
             </View>
             {!collapsed && (
-            <View
-                style={[
-                    styles.items,
-                    {
-                        backgroundColor: settingsCtx.theme.colors.items.background,
-                        borderBottomWidth: cardViewSetting ? 1 : 0,
-                    },
-                ]}
-            >
-                {category.items.map((item, index) =>
-                    cardViewSetting ? (
-                        <ItemCard
-                            key={item.id}
-                            categoryIndex={categoryIndex}
-                            itemIndex={index}
-                            item={item}
-                            handleChangeQuantity={handleChangeQuantity}
-                            handleRemoveItem={handleRemoveItem}
-                        />
-                    ) : (
-                        <ItemList
-                            key={item.id}
-                            categoryIndex={categoryIndex}
-                            itemIndex={index}
-                            item={item}
-                            handleChangeQuantity={handleChangeQuantity}
-                            handleRemoveItem={handleRemoveItem}
-                        />
-                    )
-                )}
-            </View>
+                <View
+                    style={[
+                        styles.items,
+                        {
+                            backgroundColor: settingsCtx.theme.colors.items.background,
+                            borderBottomWidth: settingsCtx.cardsView ? 1 : 0,
+                        },
+                    ]}
+                >
+                    {props.category.items.map((item, index) =>
+                        settingsCtx.cardsView ? (
+                            <ItemCard
+                                key={item.id}
+                                itemIndex={index}
+                                item={item}
+                                handleChangeQuantity={handleChangeQuantity}
+                                handleRemoveItem={handleRemoveItem}
+                            />
+                        ) : (
+                            <ItemList
+                                key={item.id}
+                                itemIndex={index}
+                                item={item}
+                                handleChangeQuantity={handleChangeQuantity}
+                                handleRemoveItem={handleRemoveItem}
+                            />
+                        )
+                    )}
+                </View>
             )}
         </View>
     );

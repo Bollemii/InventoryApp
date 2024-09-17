@@ -17,10 +17,6 @@ export default function PlusMinusButton(props: PlusMinusButtonProps) {
         <Button
             onPress={props.onPress}
             style={[styles.button, props.style]}
-            colors={{
-                normal: settingsCtx.theme.colors.items.button.normal,
-                pressed: settingsCtx.theme.colors.items.button.pressed,
-            }}
         >
             <Icon icon={props.plus ? "plus" : "minus"} size={15} color={settingsCtx.theme.colors.items.button.icon} />
         </Button>

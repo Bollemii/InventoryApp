@@ -1,3 +1,4 @@
+import { useSettingsContext } from "@/contexts/settingsContext";
 import { Pressable, Text } from "react-native";
 
 interface ButtonProps {
@@ -9,6 +10,8 @@ interface ButtonProps {
 }
 
 export default function Button(props: ButtonProps) {
+    const { settingsCtx } = useSettingsContext();
+
     return (
         <Pressable
             onPress={props.onPress}
@@ -16,7 +19,8 @@ export default function Button(props: ButtonProps) {
                 { alignItems: "center", justifyContent: "center", padding: 10 },
                 props.style,
                 {
-                    backgroundColor: state.pressed ? props.colors?.pressed : props.colors?.normal,
+                    backgroundColor: props.colors ? (state.pressed ? props.colors.pressed : props.colors.normal) :
+                    (state.pressed ? settingsCtx.theme.colors.items.button.pressed : settingsCtx.theme.colors.items.button.normal),
                 },
             ]}
         >

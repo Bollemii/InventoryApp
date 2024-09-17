@@ -7,7 +7,7 @@ import { useEditionModeContext } from "@/contexts/editionModeContext";
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
 import Category from "@/components/Category";
 import Button from "@/components/Button";
-import AddItemModal from "@/components/AddItemModal";
+import AddThingModal from "@/components/AddThingModal";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
 import { addItem, deleteItem, fetchAllItems, fetchItemByName, updateItemQuantity } from "@/dataaccess/itemRepository";
@@ -35,7 +35,7 @@ export default function Inventory() {
         itemAffected.add(add);
         setCategories([...categories]); // Force re-render
     };
-    const handleAddNewItem = async (category: CategoryObj, item?: Item): Promise<number> => {
+    const handleAddNewThing = async (category: CategoryObj, item?: Item): Promise<number> => {
         let id: number;
         if (!item) {
             // add new category
@@ -94,14 +94,13 @@ export default function Inventory() {
                 backgroundColor: settingsCtx.theme.colors.background,
             }}
         >
-            {modalVisibleCtx && <View style={styles.opacityView} />}
+            {modalVisibleCtx && <View style={styles.opacityView} /> /* Modal opacity background */}
             <ScrollView>
                 {categories.map((category, categoryIndex) => (
                     <Category
                         key={categoryIndex}
                         categoryIndex={categoryIndex}
                         category={category}
-                        cardViewSetting={settingsCtx.cardsView}
                         handleChangeQuantity={handleChangeQuantity}
                         handleRemoveItem={handleRemoveItem}
                     />
@@ -109,27 +108,13 @@ export default function Inventory() {
                 <View style={{ alignItems: "center" }}>
                     {editionModeCtx ? (
                         <>
-                            <AddItemModal save={handleAddNewItem} />
-                            <Button
-                                onPress={() => setEditionModeCtx(false)}
-                                style={styles.button}
-                                colors={{
-                                    normal: settingsCtx.theme.colors.items.button.normal,
-                                    pressed: settingsCtx.theme.colors.items.button.pressed,
-                                }}
-                            >
+                            <AddThingModal save={handleAddNewThing} buttonStyle={styles.button} />
+                            <Button onPress={() => setEditionModeCtx(false)} style={styles.button}>
                                 <Text>Quit edition mode</Text>
                             </Button>
                         </>
                     ) : (
-                        <Button
-                            onPress={() => setEditionModeCtx(true)}
-                            style={styles.button}
-                            colors={{
-                                normal: settingsCtx.theme.colors.items.button.normal,
-                                pressed: settingsCtx.theme.colors.items.button.pressed,
-                            }}
-                        >
+                        <Button onPress={() => setEditionModeCtx(true)} style={styles.button}>
                             <Text>Edition mode</Text>
                         </Button>
                     )}
@@ -144,19 +129,9 @@ const styles = StyleSheet.create({
         width: "80%",
         height: 40,
         margin: 10,
+        marginBottom: 5,
         borderWidth: 1,
         borderRadius: 10,
-    },
-    modal: {
-        alignSelf: "center",
-        justifyContent: "center",
-        alignItems: "center",
-        top: "35%",
-        height: "30%",
-        width: "50%",
-        backgroundColor: "white",
-        borderWidth: 1,
-        elevation: 10,
     },
     opacityView: {
         position: "absolute",

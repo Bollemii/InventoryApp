@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-import { useSettingsContext } from "@/contexts/settingsContext";
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
 import Modal from "./Modal";
 import Button from "./Button";
@@ -12,6 +11,7 @@ import { Category } from "@/model/category";
 import { fetchAllCategories } from "@/dataaccess/categoryRepository";
 
 interface AddItemModalProps {
+    buttonStyle: any;
     save: (category: Category, item?: Item) => Promise<number>;
 }
 
@@ -21,8 +21,7 @@ const MODES = {
     CATEGORY: "category",
 };
 
-export default function AddItemModal(props: AddItemModalProps) {
-    const { settingsCtx } = useSettingsContext();
+export default function AddThingModal(props: AddItemModalProps) {
     const { setModalVisibleCtx } = useModalVisibleContext();
     const [ visible, setVisible ] = useState(false);
     const [mode, setMode] = useState(MODES.NONE);
@@ -80,11 +79,7 @@ export default function AddItemModal(props: AddItemModalProps) {
         <>
         <Button
             onPress={() => toggleVisible(true)}
-            style={styles.button}
-            colors={{
-                normal: settingsCtx.theme.colors.items.button.normal,
-                pressed: settingsCtx.theme.colors.items.button.pressed,
-            }}
+            style={props.buttonStyle}
         >
             <Text>Add something</Text>
         </Button>
@@ -180,13 +175,6 @@ function AddCategoryModalContent({ name, setName }: { name: string; setName: (na
 }
 
 const styles = StyleSheet.create({
-    button: {
-        width: "80%",
-        height: 40,
-        margin: 10,
-        borderWidth: 1,
-        borderRadius: 10,
-    },
     modal: {
         alignSelf: "center",
         justifyContent: "center",

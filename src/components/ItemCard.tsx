@@ -7,36 +7,35 @@ import { useEditionModeContext } from "@/contexts/editionModeContext";
 import DeleteItemButton from "./DeleteItemButton";
 
 interface ItemProps {
-    categoryIndex: number;
     itemIndex: number;
     item: Item;
-    handleChangeQuantity: (categoryIndex: number, itemIndex: number, quantity: number) => void;
-    handleRemoveItem: (categoryIndex: number, itemIndex: number) => void;
+    handleChangeQuantity: (itemIndex: number, quantity: number) => void;
+    handleRemoveItem: (itemIndex: number) => void;
 }
 
 const SIZE = 110;
 
-export default function ItemCard({ categoryIndex, itemIndex, item, handleChangeQuantity, handleRemoveItem }: ItemProps) {
+export default function ItemCard(props: ItemProps) {
     const { settingsCtx } = useSettingsContext();
     const { editionModeCtx } = useEditionModeContext();
 
     return (
         <View style={[styles.item, { backgroundColor: settingsCtx.theme.colors.items.background, height: editionModeCtx ? SIZE+10 : SIZE }]}>
-            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.name}>{props.item.name}</Text>
             <View style={styles.quantityBox}>
                 <PlusMinusButton
-                    onPress={() => handleChangeQuantity(categoryIndex, itemIndex, -1)}
+                    onPress={() => props.handleChangeQuantity(props.itemIndex, -1)}
                     plus={false}
                 />
-                <Text style={styles.quantity}>{item.quantity}</Text>
+                <Text style={styles.quantity}>{props.item.quantity}</Text>
                 <PlusMinusButton
-                    onPress={() => handleChangeQuantity(categoryIndex, itemIndex, 1)}
+                    onPress={() => props.handleChangeQuantity(props.itemIndex, 1)}
                     plus={true}
                 />
             </View>
             {editionModeCtx && (
                 <DeleteItemButton
-                    onPress={() => handleRemoveItem(categoryIndex, itemIndex)}
+                    onPress={() => props.handleRemoveItem(props.itemIndex)}
                 />
             )}
         </View>
