@@ -24,24 +24,33 @@ const MODES = {
 
 export default function AddThingModal(props: AddItemModalProps) {
     const { setModalVisibleCtx } = useModalVisibleContext();
-    const [ visible, setVisible ] = useState(false);
+    const [visible, setVisible] = useState(false);
     const [mode, setMode] = useState(MODES.NONE);
     const [categories, setCategories] = useState<Category[]>([]);
     const [name, setName] = useState("");
-    const [category, setCategory] = useState<Category>(null);
+    const [categoryName, setCategoryName] = useState<string>("");
     const [error, setError] = useState("");
 
     useEffect(() => {
-        fetchAllCategories().then((categories) => setCategories(categories));
+        fetchAllCategories().then((categories) => {
+            setCategories(categories);
+            if (categoryName && !categories.some((c) => c.name === categoryName)) {
+                setCategoryName("");
+            }
+        });
     }, []);
     useEffect(() => {
         if (!visible) return;
         setMode(MODES.NONE);
         setName("");
-        setCategory(null);
         setError("");
 
-        fetchAllCategories().then((categories) => setCategories(categories));
+        fetchAllCategories().then((categories) => {
+            setCategories(categories);
+            if (categoryName && !categories.some((c) => c.name === categoryName)) {
+                setCategoryName("");
+            }
+        });
     }, [visible]);
     useEffect(() => {
         setError("");
@@ -50,19 +59,20 @@ export default function AddThingModal(props: AddItemModalProps) {
     const toggleVisible = (value: boolean) => {
         setVisible(value);
         setModalVisibleCtx(value);
-    }
+    };
 
     const handleSave = async () => {
         setError("");
         let idResult: number;
         try {
             if (mode === MODES.ITEM) {
-                if (!category) {
+                if (!categoryName) {
                     throw new Error("Category is required");
                 } else if (!Item.isNameValid(name)) {
                     throw new Error("Item name is invalid");
                 }
 
+                const category = categories.find((c) => c.name === categoryName);
                 props.saveItem(category, new Item(0, name.trim(), 0));
             } else if (mode === MODES.CATEGORY) {
                 if (!Category.isNameValid(name)) {
@@ -80,41 +90,38 @@ export default function AddThingModal(props: AddItemModalProps) {
 
     return (
         <>
-        <Button
-            onPress={() => toggleVisible(true)}
-            style={props.buttonStyle}
-        >
-            <Text>Add something</Text>
-        </Button>
-        <Modal visible={visible} close={() => toggleVisible(false)}>
-            <View style={styles.modal}>
-                <Button onPress={() => toggleVisible(false)} style={styles.closeButton}>
-                    <Icon icon="xmark" size={20} />
-                </Button>
-                <Text style={styles.title}>
-                    {mode === MODES.ITEM ? "Add Item" : mode === MODES.CATEGORY ? "Add Category" : "Choose mode"}
-                </Text>
-                {mode === MODES.ITEM ? (
-                    <AddItemModalContent
-                        name={name}
-                        setName={setName}
-                        category={category}
-                        setCategory={setCategory}
-                        categories={categories}
-                    />
-                ) : mode === MODES.CATEGORY ? (
-                    <AddCategoryModalContent name={name} setName={setName} />
-                ) : (
-                    <ChooseModeContent setMode={setMode} categories={categories} />
-                )}
-                {error !== "" && <Text style={styles.errorMessage}>{error}</Text>}
-                {mode !== MODES.NONE && (
-                    <Button onPress={handleSave} style={styles.saveButton}>
-                        <Text>Save</Text>
+            <Button onPress={() => toggleVisible(true)} style={props.buttonStyle}>
+                <Text>Add something</Text>
+            </Button>
+            <Modal visible={visible} close={() => toggleVisible(false)}>
+                <View style={styles.modal}>
+                    <Button onPress={() => toggleVisible(false)} style={styles.closeButton}>
+                        <Icon icon="xmark" size={20} />
                     </Button>
-                )}
-            </View>
-        </Modal>
+                    <Text style={styles.title}>
+                        {mode === MODES.ITEM ? "Add Item" : mode === MODES.CATEGORY ? "Add Category" : "Choose mode"}
+                    </Text>
+                    {mode === MODES.ITEM ? (
+                        <AddItemModalContent
+                            name={name}
+                            setName={setName}
+                            categoryName={categoryName}
+                            setCategoryName={setCategoryName}
+                            categories={categories}
+                        />
+                    ) : mode === MODES.CATEGORY ? (
+                        <AddCategoryModalContent name={name} setName={setName} />
+                    ) : (
+                        <ChooseModeContent setMode={setMode} categories={categories} />
+                    )}
+                    {error !== "" && <Text style={styles.errorMessage}>{error}</Text>}
+                    {mode !== MODES.NONE && (
+                        <Button onPress={handleSave} style={styles.saveButton}>
+                            <Text>Save</Text>
+                        </Button>
+                    )}
+                </View>
+            </Modal>
         </>
     );
 }
@@ -136,19 +143,19 @@ function ChooseModeContent({ setMode, categories }: { setMode: (mode: string) =>
 function AddItemModalContent({
     name,
     setName,
-    category,
-    setCategory,
+    categoryName,
+    setCategoryName,
     categories,
 }: {
     name: string;
     setName: (name: string) => void;
-    category: Category;
-    setCategory: (category: Category) => void;
+    categoryName: string;
+    setCategoryName: (category: string) => void;
     categories: Category[];
 }) {
     useEffect(() => {
-        if (categories.length > 0) {
-            setCategory(categories[0]);
+        if (!categoryName && categories.length > 0) {
+            setCategoryName(categories[0].name);
         }
     }, [categories]);
 
@@ -157,12 +164,12 @@ function AddItemModalContent({
             <TextInput value={name} onChangeText={setName} placeholder="Item name" style={styles.input} />
             <View style={styles.input}>
                 <Picker
-                    selectedValue={category}
-                    onValueChange={(itemValue) => setCategory(itemValue)}
+                    selectedValue={categoryName}
+                    onValueChange={(value) => setCategoryName(value)}
                     style={styles.picker}
                 >
-                    {categories.map((category) => (
-                        <Picker.Item key={category.name} label={category.name} value={category} />
+                    {categories.map((c) => (
+                        <Picker.Item key={c.name} label={c.name} value={c.name} />
                     ))}
                 </Picker>
             </View>

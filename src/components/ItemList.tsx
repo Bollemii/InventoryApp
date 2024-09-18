@@ -1,16 +1,18 @@
 import { StyleSheet, Text, View } from "react-native";
 
-import { Item } from "@/model/Item";
-import PlusMinusButton from "./PlusMinusButton";
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { useEditionModeContext } from "@/contexts/editionModeContext";
-import DeleteItemButton from "./DeleteItemButton";
+import PlusMinusButton from "./PlusMinusButton";
+import EditItemModal from "./EditItemModal";
+import { Item } from "@/model/Item";
+import { Category } from "@/model/category";
 
 interface ItemProps {
-    itemIndex: number;
     item: Item;
-    handleChangeQuantity: (itemIndex: number, quantity: number) => void;
-    handleRemoveItem: (itemIndex: number) => void;
+    categoryName: string;
+    handleChangeQuantity: (quantity: number) => void;
+    handleEditItem: (item: Item, category: Category) => void;
+    handleRemoveItem: () => void;
 }
 
 export default function ItemList(props: ItemProps) {
@@ -20,20 +22,22 @@ export default function ItemList(props: ItemProps) {
     return (
         <View style={[styles.item, { backgroundColor: settingsCtx.theme.colors.items.background }]}>
             {editionModeCtx && (
-                <DeleteItemButton
-                    onPress={() => props.handleRemoveItem(props.itemIndex)}
-                    style={{ marginRight: 10 }}
+                <EditItemModal
+                    item={props.item}
+                    categoryName={props.categoryName}
+                    edit={props.handleEditItem}
+                    remove={props.handleRemoveItem}
                 />
             )}
             <Text style={styles.name}>{props.item.name}</Text>
             <View style={styles.quantityBox}>
                 <PlusMinusButton
-                    onPress={() => props.handleChangeQuantity(props.itemIndex, -1)}
+                    onPress={() => props.handleChangeQuantity(-1)}
                     plus={false}
                 />
                 <Text style={styles.quantity}>{props.item.quantity}</Text>
                 <PlusMinusButton
-                    onPress={() => props.handleChangeQuantity(props.itemIndex, 1)}
+                    onPress={() => props.handleChangeQuantity(1)}
                     plus={true}
                 />
             </View>
@@ -54,6 +58,7 @@ const styles = StyleSheet.create({
     name: {
         flexGrow: 4,
         fontSize: 15,
+        marginLeft: 10,
     },
     quantityBox: {
         flexDirection: "row",
