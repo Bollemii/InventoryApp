@@ -10,7 +10,15 @@ import Button from "@/components/Button";
 import AddThingModal from "@/components/AddThingModal";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
-import { addItem, deleteItem, fetchAllItems, fetchItemByName, updateItemQuantity } from "@/dataaccess/itemRepository";
+import {
+    addItem,
+    deleteItem,
+    fetchAllItems,
+    fetchItemByName,
+    editItemQuantity,
+    editItemName,
+    editItemCategory,
+} from "@/dataaccess/itemRepository";
 import {
     addCategory,
     deleteCategory,
@@ -42,8 +50,7 @@ export default function Inventory() {
         const itemAffected = categoryAffected.items[itemIndex];
         if (!Item.isQuantityValid(itemAffected.quantity + add)) return;
 
-        const idChanged = await updateItemQuantity(itemAffected.id, itemAffected.quantity + add);
-        if (idChanged === -1) return;
+        await editItemQuantity(itemAffected.id, itemAffected.quantity + add);
 
         itemAffected.add(add);
         setCategories([...categories]); // Force re-render
@@ -65,14 +72,58 @@ export default function Inventory() {
         } else {
             category.addItem(new Item(id, item.name.trim(), item.quantity));
             categories.push(category);
+            categoriesWithoutItems.splice(
+                categoriesWithoutItems.findIndex((c) => c.id === category.id),
+                1
+            );
         }
         setCategories([...categories]); // Force re-render
+    };
+    const handleEditItem = async (categoryIndex: number, itemIndex: number, item: Item, category: CategoryObj) => {        
+        const categoryAffected = categories[categoryIndex];
+        const itemAffected = categories[categoryIndex].items[itemIndex];
+
+        if (itemAffected.name !== item.name) {            
+            if (!Item.isNameValid(item.name)) {
+                throw new Error("Item name is required");
+            }
+
+            const itemFetched = await fetchItemByName(item.name.trim());
+            if (itemFetched) {
+                throw new Error("This item already exists");
+            }
+
+            itemAffected.name = item.name.trim();
+            await editItemName(itemAffected.id, itemAffected.name);
+            setCategories([...categories]); // Force re-render
+        }
+        if (categoryAffected.id !== category.id) {            
+            await editItemCategory(itemAffected.id, category);
+
+            const categoryFound = categories.find((c) => c.id === category.id);
+            if (categoryFound) {
+                categoryFound.items.push(itemAffected);
+                categoryAffected.items.splice(itemIndex, 1);
+            } else {
+                category.addItem(itemAffected);
+                categories.push(category);
+                categoriesWithoutItems.splice(
+                    categoriesWithoutItems.findIndex((c) => c.id === category.id),
+                    1
+                );
+                categoryAffected.items.splice(itemIndex, 1);
+                if (categoryAffected.items.length === 0) {
+                    categoriesWithoutItems.push(categoryAffected);
+                    categories.splice(categoryIndex, 1);
+                }
+            }
+            setCategories([...categories]); // Force re-render
+        }
     };
     const handleRemoveItem = async (categoryIndex: number, itemIndex: number) => {
         const itemAffected = categories[categoryIndex].items[itemIndex];
 
-        const finishId = await deleteItem(itemAffected.id);
-        if (finishId === -1) return;
+        await deleteItem(itemAffected.id);
 
         categories[categoryIndex].items.splice(itemIndex, 1);
         if (categories[categoryIndex].items.length === 0) {
@@ -141,6 +192,7 @@ export default function Inventory() {
                         categoryIndex={categoryIndex}
                         category={category}
                         handleChangeQuantityItem={handleChangeQuantityItem}
+                        handleEditItem={handleEditItem}
                         handleRemoveItem={handleRemoveItem}
                         handleEditCategory={handleEditCategory}
                         handleRemoveCategory={handleRemoveCategory}
@@ -153,6 +205,7 @@ export default function Inventory() {
                             categoryIndex={categoryIndex}
                             category={category}
                             handleChangeQuantityItem={handleChangeQuantityItem}
+                            handleEditItem={handleEditItem}
                             handleRemoveItem={handleRemoveItem}
                             handleEditCategory={handleEditCategory}
                             handleRemoveCategory={handleRemoveCategory}

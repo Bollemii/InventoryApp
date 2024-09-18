@@ -93,7 +93,7 @@ export async function insert(name: string, quantity: number, categoryId: number)
     return result.lastInsertRowId;
 }
 
-export async function updateQuantity(id: number, quantity: number): Promise<number> {
+export async function updateQuantity(id: number, quantity: number) {
     await initializeItemDatabase();
 
     if (!Item.isQuantityValid(quantity)) {
@@ -111,10 +111,45 @@ export async function updateQuantity(id: number, quantity: number): Promise<numb
             $id: id,
         }
     );
-    return result.lastInsertRowId;
 }
 
-export async function deleteOne(id: number): Promise<void> {
+export async function updateName(id: number, name: string) {
+    await initializeItemDatabase();
+
+    if (!Item.isNameValid(name)) {
+        throw new Error("Item name is invalid");
+    }
+
+    const result = await database.executeStatement(
+        `
+        UPDATE items
+        SET name = $name
+        WHERE id = $id
+    `,
+        {
+            $name: name.trim(),
+            $id: id,
+        }
+    );
+}
+
+export async function updateCategory(id: number, categoryId: number) {
+    await initializeItemDatabase();
+
+    const result = await database.executeStatement(
+        `
+        UPDATE items
+        SET category = $category
+        WHERE id = $id
+    `,
+        {
+            $category: categoryId,
+            $id: id,
+        }
+    );
+}
+
+export async function deleteOne(id: number) {
     await initializeItemDatabase();
 
     await database.executeStatement(

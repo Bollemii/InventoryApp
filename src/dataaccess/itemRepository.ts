@@ -1,6 +1,6 @@
 import { Item } from "@/model/Item";
 import { Category } from "@/model/category";
-import { getAllGroupByCategory, getByName, insert, updateQuantity, deleteOne } from "./database/itemdatabase";
+import { getAllGroupByCategory, getByName, insert, updateQuantity, deleteOne, updateName, updateCategory } from "./database/itemdatabase";
 import { fetchCategoryById } from "./categoryRepository";
 import { log } from "@/logger";
 
@@ -47,22 +47,53 @@ export async function addItem(item: Item, category: Category): Promise<number> {
     }
 }
 
-export async function updateItemQuantity(id: number, quantity: number): Promise<number> {
+export async function editItemQuantity(id: number, quantity: number) {
     try {
         if (!Item.isQuantityValid(quantity)) {
             throw new Error("Item quantity out of bounds");
         }
-        return updateQuantity(id, quantity);
+        await updateQuantity(id, quantity);
     } catch (error) {
         log.error(`${error} (ItemRepository::updateItemQuantity)`);
         throw error;
     }
 }
 
-export async function deleteItem(id: number): Promise<number> {
+export async function editItemName(id: number, name: string) {
+    try {
+        if (!Item.isNameValid(name)) {
+            throw new Error("Item name is invalid");
+        }
+
+        const itemFetched = await fetchItemByName(name.trim());
+        if (itemFetched) {
+            throw new Error("Item already exists");
+        }
+        
+        await updateName(id, name.trim());
+    } catch (error) {
+        log.error(`${error} (ItemRepository::editItemName)`);
+        throw error;
+    }
+}
+
+export async function editItemCategory(id: number, category: Category) {
+    try {
+        const categoryFetched = await fetchCategoryById(category.id);
+        if (!categoryFetched) {
+            throw new Error("Category not found");
+        }
+
+        await updateCategory(id, category.id);
+    } catch (error) {
+        log.error(`${error} (ItemRepository::editItemCategory)`);
+        throw error;
+    }
+}
+
+export async function deleteItem(id: number) {
     try {
         await deleteOne(id);
-        return 0;
     } catch (error) {
         log.error(`${error} (ItemRepository::deleteItem)`);
         throw error;

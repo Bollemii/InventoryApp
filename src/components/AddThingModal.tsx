@@ -73,9 +73,6 @@ export default function AddThingModal(props: AddItemModalProps) {
                 }
 
                 const category = categories.find((c) => c.name === categoryName);
-                console.log(categoryName);
-                console.log(categories);
-                console.log(category);
                 props.saveItem(category, new Item(0, name.trim(), 0));
             } else if (mode === MODES.CATEGORY) {
                 if (!Category.isNameValid(name)) {
