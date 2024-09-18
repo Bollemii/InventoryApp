@@ -1,5 +1,5 @@
 import { Category } from "@/model/category";
-import { getAll, getById, getByName, insert, updateName } from "./database/categoryDatabase";
+import { getAll, getById, getByName, insert, remove, updateName } from "./database/categoryDatabase";
 import { log } from "@/logger";
 
 export async function fetchAllCategories(): Promise<Category[]> {
@@ -72,7 +72,7 @@ export async function deleteCategory(id: number) {
             throw new Error("Category is not empty");
         }
 
-        await deleteCategory(id);
+        await remove(id);
     } catch (error) {
         log.error(`${error} (CategoryRepository::deleteCategory)`);
         throw error;

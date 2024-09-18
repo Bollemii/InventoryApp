@@ -47,11 +47,13 @@ export default function Category(props: CategoryProps) {
                 ]}
             >
                 <View style={styles.buttons}>
-                    <PlusMinusButton
-                        onPress={() => setCollapsed(!collapsed)}
-                        plus={collapsed}
-                        style={{ height: 25, width: 25, marginRight: 10 }}
-                    />
+                    {props.category.items.length > 0 && (
+                        <PlusMinusButton
+                            onPress={() => setCollapsed(!collapsed)}
+                            plus={collapsed}
+                            style={{ height: 25, width: 25, marginRight: 10 }}
+                        />
+                    )}
                     {editionModeCtx && <EditCategoryModal category={props.category} edit={handleEditCategory} remove={handleRemoveCategory}/>}
                 </View>
                 <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{props.category.name}</Text>

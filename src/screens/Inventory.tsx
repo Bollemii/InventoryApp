@@ -11,7 +11,13 @@ import AddThingModal from "@/components/AddThingModal";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
 import { addItem, deleteItem, fetchAllItems, fetchItemByName, updateItemQuantity } from "@/dataaccess/itemRepository";
-import { addCategory, deleteCategory, editCategoryName, fetchCategoryByName } from "@/dataaccess/categoryRepository";
+import {
+    addCategory,
+    deleteCategory,
+    editCategoryName,
+    fetchAllCategories,
+    fetchCategoryByName,
+} from "@/dataaccess/categoryRepository";
 
 export default function Inventory() {
     const isFocused = useIsFocused();
@@ -19,9 +25,16 @@ export default function Inventory() {
     const { editionModeCtx, setEditionModeCtx } = useEditionModeContext();
     const { modalVisibleCtx } = useModalVisibleContext();
     const [categories, setCategories] = useState<CategoryObj[]>([]);
+    const [categoriesWithoutItems, setCategoriesWithoutItems] = useState<CategoryObj[]>([]);
 
     useEffect(() => {
-        fetchAllItems().then((categories) => setCategories(categories));
+        async function fetchAll() {
+            const items = await fetchAllItems();
+            setCategories(items);
+            const categories = await fetchAllCategories();
+            setCategoriesWithoutItems(categories.filter((category) => !items.some((c) => c.id === category.id)));
+        }
+        fetchAll();
     }, []);
 
     const handleChangeQuantityItem = async (categoryIndex: number, itemIndex: number, add: number) => {
@@ -76,7 +89,7 @@ export default function Inventory() {
         if (fetchedCategory) {
             throw new Error("This category already exists");
         }
-        
+
         return await addCategory(category.name.trim());
     };
     const handleEditCategory = async (categoryIndex: number, category: CategoryObj) => {
@@ -90,11 +103,16 @@ export default function Inventory() {
         }
 
         await editCategoryName(category.id, category.name.trim());
-        categories[categoryIndex].name = category.name.trim();
-        setCategories([...categories]); // Force re-render
+        if (categories[categoryIndex]?.id === category.id) {
+            categories[categoryIndex].name = category.name.trim();
+            setCategories([...categories]); // Force re-render
+        } else {
+            categoriesWithoutItems[categoryIndex].name = category.name.trim();
+            setCategoriesWithoutItems([...categoriesWithoutItems]); // Force re-render
+        }
     };
     const handleRemoveCategory = async (categoryIndex: number) => {
-        const categoryAffected = categories[categoryIndex];
+        const categoryAffected = categoriesWithoutItems[categoryIndex];
 
         if (categoryAffected.items.length > 0) {
             throw new Error("Category is not empty");
@@ -102,10 +120,10 @@ export default function Inventory() {
 
         await deleteCategory(categoryAffected.id);
 
-        categories.splice(categoryIndex, 1);
-        setCategories([...categories]); // Force re-render
+        categoriesWithoutItems.splice(categoryIndex, 1);
+        setCategoriesWithoutItems([...categoriesWithoutItems]); // Force re-render
     };
-    
+
     if (!isFocused) return null;
     return (
         <View
@@ -127,6 +145,18 @@ export default function Inventory() {
                         handleRemoveCategory={handleRemoveCategory}
                     />
                 ))}
+                {editionModeCtx &&
+                    categoriesWithoutItems.map((category, categoryIndex) => (
+                        <Category
+                            key={categoryIndex}
+                            categoryIndex={categoryIndex}
+                            category={category}
+                            handleChangeQuantityItem={handleChangeQuantityItem}
+                            handleRemoveItem={handleRemoveItem}
+                            handleEditCategory={handleEditCategory}
+                            handleRemoveCategory={handleRemoveCategory}
+                        />
+                    ))}
                 <View style={{ alignItems: "center" }}>
                     {editionModeCtx ? (
                         <>
