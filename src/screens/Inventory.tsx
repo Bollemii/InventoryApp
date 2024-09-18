@@ -76,6 +76,7 @@ export default function Inventory() {
 
         categories[categoryIndex].items.splice(itemIndex, 1);
         if (categories[categoryIndex].items.length === 0) {
+            categoriesWithoutItems.push(categories[categoryIndex]);
             categories.splice(categoryIndex, 1);
         }
         setCategories([...categories]); // Force re-render
