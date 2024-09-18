@@ -83,7 +83,7 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
                     pressed: settingsCtx.theme.colors.items.button.pressed,
                 }}
             >
-                <Icon icon="pen" size={12} color={settingsCtx.theme.colors.items.button.icon} />
+                <Icon icon="pen" size={13} color={settingsCtx.theme.colors.items.button.icon} />
             </Button>
             <Modal
                 visible={visible}
@@ -112,19 +112,21 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
 
 const styles = StyleSheet.create({
     button: {
+        position: "absolute",
+        left: 5,
         borderWidth: 1,
         borderRadius: 10,
         alignItems: "center",
         justifyContent: "center",
         height: 25,
-        width: 25,
+        width: 80,
     },
     modal: {
         alignSelf: "center",
         justifyContent: "center",
         alignItems: "center",
         top: "35%",
-        width: "70%",
+        width: "80%",
         paddingTop: 40,
         backgroundColor: "white",
         borderWidth: 1,

@@ -42,23 +42,27 @@ export default function Category(props: CategoryProps) {
                 style={[
                     styles.category,
                     {
-                        borderTopWidth: props.categoryIndex === 0 ? 1 : 0,
+                        borderTopWidth: props.categoryIndex === 0 && props.category.items.length > 0 ? 1 : 0,
                     },
                 ]}
             >
-                <View style={styles.buttons}>
-                    {props.category.items.length > 0 && (
-                        <PlusMinusButton
-                            onPress={() => setCollapsed(!collapsed)}
-                            plus={collapsed}
-                            style={{ height: 25, width: 25, marginRight: 10 }}
-                        />
-                    )}
-                    {editionModeCtx && <EditCategoryModal category={props.category} edit={handleEditCategory} remove={handleRemoveCategory}/>}
-                </View>
+                {editionModeCtx && (
+                    <EditCategoryModal
+                        category={props.category}
+                        edit={handleEditCategory}
+                        remove={handleRemoveCategory}
+                    />
+                )}
                 <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{props.category.name}</Text>
+                {props.category.items.length > 0 && (
+                    <PlusMinusButton
+                        onPress={() => setCollapsed(!collapsed)}
+                        plus={collapsed}
+                        style={styles.collapseButton}
+                    />
+                )}
             </View>
-            {!collapsed && (
+            {!collapsed && props.category.items.length > 0 && (
                 <View
                     style={[
                         styles.items,
@@ -101,15 +105,18 @@ const styles = StyleSheet.create({
     },
     category: {
         width: "100%",
+        height: 35,
         alignItems: "center",
         justifyContent: "center",
         padding: 5,
         borderBottomWidth: 1,
     },
-    buttons: {
+    collapseButton: {
+        height: 25,
+        width: 25,
+        marginRight: 10,
         position: "absolute",
-        left: 10,
-        flexDirection: "row",
+        right: 5,
     },
     title: {
         fontSize: 17,
