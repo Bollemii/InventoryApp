@@ -1,7 +1,6 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import Button from "./Button";
-import { useSettingsContext } from "@/contexts/settingsContext";
 import Icon from "./Icon";
 
 interface DeleteItemButtonProps {
@@ -9,22 +8,22 @@ interface DeleteItemButtonProps {
     style?: any;
 }
 
-const SIZE = 30;
 const COLORS = {normal: "red", pressed: "darkred"}
 
-export default function DeleteItemButton({ onPress, style } : DeleteItemButtonProps) {
-    const { settingsCtx } = useSettingsContext();
-
+export default function DeleteItemButton(props : DeleteItemButtonProps) {
     return (
-        <Button onPress={onPress} style={[style, styles.button, {width: settingsCtx.cardsView ? "100%" : SIZE}]} colors={COLORS}>
-            <Icon icon="trash" size={15} color="white"/>
+        <Button onPress={props.onPress} style={[styles.button, props.style]} colors={COLORS}>
+            <View style={{flexDirection: "row", alignItems: "center"}}>
+                <Icon icon="trash" size={15} color="white"/>
+                <Text style={{color: "white", marginLeft: 5}}>Remove</Text>
+            </View>
         </Button>
     );
 }
 
 const styles = StyleSheet.create({
     button: {
-        height: SIZE,
+        height: 30,
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 10,

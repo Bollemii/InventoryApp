@@ -15,6 +15,7 @@ interface CategoryProps {
     handleChangeQuantityItem: (categoryIndex: number, itemIndex: number, add: number) => void;
     handleRemoveItem: (categoryIndex: number, itemIndex: number) => void;
     handleEditCategory: (categoryIndex: number, category: CategoryObj) => void;
+    handleRemoveCategory: (categoryIndex: number) => void;
 }
 
 export default function Category(props: CategoryProps) {
@@ -30,6 +31,9 @@ export default function Category(props: CategoryProps) {
     };
     const handleEditCategory = (category: CategoryObj) => {
         props.handleEditCategory(props.categoryIndex, category);
+    };
+    const handleRemoveCategory = () => {
+        props.handleRemoveCategory(props.categoryIndex);
     };
 
     return (
@@ -48,7 +52,7 @@ export default function Category(props: CategoryProps) {
                         plus={collapsed}
                         style={{ height: 25, width: 25, marginRight: 10 }}
                     />
-                    {editionModeCtx && <EditCategoryModal category={props.category} save={handleEditCategory}/>}
+                    {editionModeCtx && <EditCategoryModal category={props.category} edit={handleEditCategory} remove={handleRemoveCategory}/>}
                 </View>
                 <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{props.category.name}</Text>
             </View>

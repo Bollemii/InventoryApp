@@ -11,7 +11,7 @@ import AddThingModal from "@/components/AddThingModal";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
 import { addItem, deleteItem, fetchAllItems, fetchItemByName, updateItemQuantity } from "@/dataaccess/itemRepository";
-import { addCategory, editCategoryName, fetchCategoryByName } from "@/dataaccess/categoryRepository";
+import { addCategory, deleteCategory, editCategoryName, fetchCategoryByName } from "@/dataaccess/categoryRepository";
 
 export default function Inventory() {
     const isFocused = useIsFocused();
@@ -93,6 +93,18 @@ export default function Inventory() {
         categories[categoryIndex].name = category.name.trim();
         setCategories([...categories]); // Force re-render
     };
+    const handleRemoveCategory = async (categoryIndex: number) => {
+        const categoryAffected = categories[categoryIndex];
+
+        if (categoryAffected.items.length > 0) {
+            throw new Error("Category is not empty");
+        }
+
+        await deleteCategory(categoryAffected.id);
+
+        categories.splice(categoryIndex, 1);
+        setCategories([...categories]); // Force re-render
+    };
     
     if (!isFocused) return null;
     return (
@@ -112,6 +124,7 @@ export default function Inventory() {
                         handleChangeQuantityItem={handleChangeQuantityItem}
                         handleRemoveItem={handleRemoveItem}
                         handleEditCategory={handleEditCategory}
+                        handleRemoveCategory={handleRemoveCategory}
                     />
                 ))}
                 <View style={{ alignItems: "center" }}>

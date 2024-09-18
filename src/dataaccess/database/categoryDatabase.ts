@@ -96,3 +96,15 @@ export async function updateName(id: number, name: string) {
         { $name: name.trim(), $id: id }
     );
 }
+
+export async function remove(id: number) {
+    await initializeCategoryDatabase();
+
+    await database.executeStatement(
+        `
+        DELETE FROM categories
+        WHERE id = $id
+    `,
+        { $id: id }
+    );
+}

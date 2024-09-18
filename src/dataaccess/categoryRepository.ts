@@ -64,3 +64,17 @@ export async function editCategoryName(id: number, name: string) {
         throw error;
     }
 }
+
+export async function deleteCategory(id: number) {
+    try {
+        const category = await fetchCategoryById(id);
+        if (category.items.length > 0) {
+            throw new Error("Category is not empty");
+        }
+
+        await deleteCategory(id);
+    } catch (error) {
+        log.error(`${error} (CategoryRepository::deleteCategory)`);
+        throw error;
+    }
+}

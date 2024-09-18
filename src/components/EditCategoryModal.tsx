@@ -7,10 +7,13 @@ import Button from "./Button";
 import Icon from "./Icon";
 import Modal from "./Modal";
 import { Category } from "@/model/category";
+import HorizontalLine from "./HorizontalLine";
+import DeleteItemButton from "./DeleteItemButton";
 
 interface EditCategoryModalProps {
     category: Category;
-    save: (category: Category) => void;
+    edit: (category: Category) => void;
+    remove: () => void;
 }
 
 export default function EditCategoryModal(props: EditCategoryModalProps) {
@@ -36,7 +39,7 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
         setVisible(value);
         setModalVisibleCtx(value);
     };
-    const handleSave = () => {
+    const handleEditCategory = () => {
         setError("");
         try {
             if (!Category.isNameValid(name)) {
@@ -49,8 +52,21 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
             }
 
             props.category.name = name.trim();
-            props.save(props.category)
+            props.edit(props.category)
 
+            toggleVisible(false);
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+    const handleRemoveCategory = () => {
+        setError("");
+        try {
+            if (props.category.items.length > 0) {
+                throw new Error("Category is not empty");
+            }
+
+            props.remove();
             toggleVisible(false);
         } catch (error) {
             setError(error.message);
@@ -82,9 +98,12 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
                     </Text>
                     <TextInput value={name} onChangeText={setName} placeholder="Category name" style={styles.input} />
                     {error !== "" && <Text style={styles.errorMessage}>{error}</Text>}
-                    <Button onPress={handleSave} style={styles.saveButton}>
+                    <Button onPress={handleEditCategory} style={styles.actionButton}>
                         <Text>Save</Text>
                     </Button>
+                    <HorizontalLine width="90%"/>
+
+                    <DeleteItemButton onPress={handleRemoveCategory} style={styles.actionButton}/>
                 </View>
             </Modal>
         </>
@@ -137,7 +156,7 @@ const styles = StyleSheet.create({
         color: "red",
         margin: 10,
     },
-    saveButton: {
+    actionButton: {
         width: "80%",
         height: 40,
         margin: 10,
