@@ -142,6 +142,7 @@ export default function Inventory() {
             throw new Error("This category already exists");
         }
 
+        categoriesWithoutItems.push(category);
         return await addCategory(category.name.trim());
     };
     const handleEditCategory = async (categoryIndex: number, category: CategoryObj) => {
