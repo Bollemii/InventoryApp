@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faGear, faMinus, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faMinus, faPen, faPlus, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const ICONS = {
     "gear": faGear,
@@ -7,12 +7,13 @@ const ICONS = {
     "pen": faPen,
     "plus": faPlus,
     "trash": faTrash,
+    "xmark": faXmark,
 };
 
 interface IconProps {
     icon: keyof typeof ICONS;
     size: number;
-    color: string;
+    color?: string;
 }
 
 export default function Icon(props: IconProps) {
@@ -24,7 +25,7 @@ export default function Icon(props: IconProps) {
         <FontAwesomeIcon
             icon={ICONS[props.icon]}
             size={props.size}
-            color={props.color}
+            color={props.color || "black"}
         />
     );
 }

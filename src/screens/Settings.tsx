@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-import { setCardViewSetting, setThemeSetting } from "@/dataaccess/settingsRepository";
 import { colorScheme } from "@/styles/colors";
 import { useSettingsContext } from "@/contexts/settingsContext";
+import { setCardViewSetting, setThemeSetting } from "@/dataaccess/settingsRepository";
 
 const switchColors = {
     track: { true: "#4A85EB", false: "#767577" },

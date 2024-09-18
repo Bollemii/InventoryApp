@@ -1,23 +1,40 @@
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+import { useSettingsContext } from "@/contexts/settingsContext";
 import ItemCard from "./ItemCard";
 import ItemList from "./ItemList";
-import { Category as CategoryObj } from "@/model/category";
-import { useSettingsContext } from "@/contexts/settingsContext";
 import PlusMinusButton from "./PlusMinusButton";
-import { useState } from "react";
+import EditCategoryModal from "./EditCategoryModal";
+import { Category as CategoryObj } from "@/model/category";
+import { useEditionModeContext } from "@/contexts/editionModeContext";
 
 interface CategoryProps {
     categoryIndex: number;
     category: CategoryObj;
-    cardViewSetting: boolean;
-    handleChangeQuantity: (categoryIndex: number, itemIndex: number, add: number) => void;
+    handleChangeQuantityItem: (categoryIndex: number, itemIndex: number, add: number) => void;
     handleRemoveItem: (categoryIndex: number, itemIndex: number) => void;
+    handleEditCategory: (categoryIndex: number, category: CategoryObj) => void;
+    handleRemoveCategory: (categoryIndex: number) => void;
 }
 
-export default function Category({ categoryIndex, category, cardViewSetting, handleChangeQuantity, handleRemoveItem }: CategoryProps) {
+export default function Category(props: CategoryProps) {
     const { settingsCtx } = useSettingsContext();
-    const [ collapsed, setCollapsed ] = useState(false);
+    const { editionModeCtx } = useEditionModeContext();
+    const [collapsed, setCollapsed] = useState(false);
+
+    const handleChangeQuantityItem = (itemIndex: number, add: number) => {
+        props.handleChangeQuantityItem(props.categoryIndex, itemIndex, add);
+    };
+    const handleRemoveItem = (itemIndex: number) => {
+        props.handleRemoveItem(props.categoryIndex, itemIndex);
+    };
+    const handleEditCategory = (category: CategoryObj) => {
+        props.handleEditCategory(props.categoryIndex, category);
+    };
+    const handleRemoveCategory = () => {
+        props.handleRemoveCategory(props.categoryIndex);
+    };
 
     return (
         <View style={styles.container}>
@@ -25,49 +42,56 @@ export default function Category({ categoryIndex, category, cardViewSetting, han
                 style={[
                     styles.category,
                     {
-                        borderTopWidth: categoryIndex === 0 ? 1 : 0,
+                        borderTopWidth: props.categoryIndex === 0 && props.category.items.length > 0 ? 1 : 0,
                     },
                 ]}
             >
-                <PlusMinusButton
-                    onPress={() => setCollapsed(!collapsed)}
-                    plus={collapsed}
-                    style={styles.collapseButton}
-                />
-                <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{category.name}</Text>
-            </View>
-            {!collapsed && (
-            <View
-                style={[
-                    styles.items,
-                    {
-                        backgroundColor: settingsCtx.theme.colors.items.background,
-                        borderBottomWidth: cardViewSetting ? 1 : 0,
-                    },
-                ]}
-            >
-                {category.items.map((item, index) =>
-                    cardViewSetting ? (
-                        <ItemCard
-                            key={item.id}
-                            categoryIndex={categoryIndex}
-                            itemIndex={index}
-                            item={item}
-                            handleChangeQuantity={handleChangeQuantity}
-                            handleRemoveItem={handleRemoveItem}
-                        />
-                    ) : (
-                        <ItemList
-                            key={item.id}
-                            categoryIndex={categoryIndex}
-                            itemIndex={index}
-                            item={item}
-                            handleChangeQuantity={handleChangeQuantity}
-                            handleRemoveItem={handleRemoveItem}
-                        />
-                    )
+                {editionModeCtx && (
+                    <EditCategoryModal
+                        category={props.category}
+                        edit={handleEditCategory}
+                        remove={handleRemoveCategory}
+                    />
+                )}
+                <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{props.category.name}</Text>
+                {props.category.items.length > 0 && (
+                    <PlusMinusButton
+                        onPress={() => setCollapsed(!collapsed)}
+                        plus={collapsed}
+                        style={styles.collapseButton}
+                    />
                 )}
             </View>
+            {!collapsed && props.category.items.length > 0 && (
+                <View
+                    style={[
+                        styles.items,
+                        {
+                            backgroundColor: settingsCtx.theme.colors.items.background,
+                            borderBottomWidth: settingsCtx.cardsView ? 1 : 0,
+                        },
+                    ]}
+                >
+                    {props.category.items.map((item, index) =>
+                        settingsCtx.cardsView ? (
+                            <ItemCard
+                                key={item.id}
+                                itemIndex={index}
+                                item={item}
+                                handleChangeQuantity={handleChangeQuantityItem}
+                                handleRemoveItem={handleRemoveItem}
+                            />
+                        ) : (
+                            <ItemList
+                                key={item.id}
+                                itemIndex={index}
+                                item={item}
+                                handleChangeQuantity={handleChangeQuantityItem}
+                                handleRemoveItem={handleRemoveItem}
+                            />
+                        )
+                    )}
+                </View>
             )}
         </View>
     );
@@ -81,16 +105,18 @@ const styles = StyleSheet.create({
     },
     category: {
         width: "100%",
+        height: 35,
         alignItems: "center",
         justifyContent: "center",
         padding: 5,
         borderBottomWidth: 1,
     },
     collapseButton: {
+        height: 25,
+        width: 25,
+        marginRight: 10,
         position: "absolute",
-        left: 10,
-        height: 20,
-        width: 20,
+        right: 5,
     },
     title: {
         fontSize: 17,

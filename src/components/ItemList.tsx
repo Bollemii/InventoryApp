@@ -7,14 +7,13 @@ import { useEditionModeContext } from "@/contexts/editionModeContext";
 import DeleteItemButton from "./DeleteItemButton";
 
 interface ItemProps {
-    categoryIndex: number;
     itemIndex: number;
     item: Item;
-    handleChangeQuantity: (categoryIndex: number, itemIndex: number, quantity: number) => void;
-    handleRemoveItem: (categoryIndex: number, itemIndex: number) => void;
+    handleChangeQuantity: (itemIndex: number, quantity: number) => void;
+    handleRemoveItem: (itemIndex: number) => void;
 }
 
-export default function ItemList({ categoryIndex, itemIndex, item, handleChangeQuantity, handleRemoveItem }: ItemProps) {
+export default function ItemList(props: ItemProps) {
     const { settingsCtx } = useSettingsContext();
     const { editionModeCtx } = useEditionModeContext();
 
@@ -22,19 +21,19 @@ export default function ItemList({ categoryIndex, itemIndex, item, handleChangeQ
         <View style={[styles.item, { backgroundColor: settingsCtx.theme.colors.items.background }]}>
             {editionModeCtx && (
                 <DeleteItemButton
-                    onPress={() => handleRemoveItem(categoryIndex, itemIndex)}
+                    onPress={() => props.handleRemoveItem(props.itemIndex)}
                     style={{ marginRight: 10 }}
                 />
             )}
-            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.name}>{props.item.name}</Text>
             <View style={styles.quantityBox}>
                 <PlusMinusButton
-                    onPress={() => handleChangeQuantity(categoryIndex, itemIndex, -1)}
+                    onPress={() => props.handleChangeQuantity(props.itemIndex, -1)}
                     plus={false}
                 />
-                <Text style={styles.quantity}>{item.quantity}</Text>
+                <Text style={styles.quantity}>{props.item.quantity}</Text>
                 <PlusMinusButton
-                    onPress={() => handleChangeQuantity(categoryIndex, itemIndex, 1)}
+                    onPress={() => props.handleChangeQuantity(props.itemIndex, 1)}
                     plus={true}
                 />
             </View>

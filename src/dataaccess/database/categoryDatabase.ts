@@ -57,7 +57,7 @@ export async function getByName(name: string): Promise<Category> {
         FROM categories
         WHERE name = $name
     `,
-        { $name: name }
+        { $name: name.trim() }
     );
     if (!result) return null;
     return new Category(result.id, result.name);
@@ -75,7 +75,36 @@ export async function insert(name: string): Promise<number> {
         INSERT INTO categories (name)
         VALUES ($name)
     `,
-        { $name: name }
+        { $name: name.trim() }
     );
     return result.lastInsertRowId;
+}
+
+export async function updateName(id: number, name: string) {
+    await initializeCategoryDatabase();
+
+    if (!Category.isNameValid(name)) {
+        throw new Error("Category name is invalid");
+    }
+
+    await database.executeStatement(
+        `
+        UPDATE categories
+        SET name = $name
+        WHERE id = $id
+    `,
+        { $name: name.trim(), $id: id }
+    );
+}
+
+export async function remove(id: number) {
+    await initializeCategoryDatabase();
+
+    await database.executeStatement(
+        `
+        DELETE FROM categories
+        WHERE id = $id
+    `,
+        { $id: id }
+    );
 }

@@ -62,7 +62,7 @@ export async function getByName(name: string): Promise<Item> {
         `
         SELECT id, name, quantity FROM items
         WHERE name = $name`,
-        { $name: name }
+        { $name: name.trim() }
     )) as Result;
 
     if (!result) return null;
@@ -85,7 +85,7 @@ export async function insert(name: string, quantity: number, categoryId: number)
         VALUES ($name, $quantity, $category)
     `,
         {
-            $name: name,
+            $name: name.trim(),
             $quantity: quantity,
             $category: categoryId,
         }
