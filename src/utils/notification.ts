@@ -1,6 +1,6 @@
 import * as Notifications from "expo-notifications";
 
-import { NotificationRequest, WeeklyNotificationTrigger } from "@/types/notifications";
+import { NotificationRequest, WeeklyNotificationTrigger } from "types/notifications";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({

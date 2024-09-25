@@ -1,7 +1,7 @@
 import { colorScheme } from "@/styles/colors";
 import { getSetting, setSetting } from "./database/settingsDatabase";
 import { Settings } from "@/model/settings";
-import { Theme } from "@/types/theme";
+import { Theme } from "types/theme";
 import { log } from "@/logger";
 
 const SETTING_KEYS = {

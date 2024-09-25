@@ -13,10 +13,16 @@ interface PlusMinusButtonProps {
 export default function PlusMinusButton(props: PlusMinusButtonProps) {
     const { settingsCtx } = useSettingsContext();
 
+    let bgColor: any;
+    if (props.style?.backgroundColor) {        
+        bgColor = props.style.backgroundColor;
+    }
+
     return (
         <Button
             onPress={props.onPress}
             style={[styles.button, props.style]}
+            colors={bgColor && { normal: bgColor, pressed: bgColor }}
         >
             <Icon icon={props.plus ? "plus" : "minus"} size={15} color={settingsCtx.theme.colors.items.button.icon} />
         </Button>

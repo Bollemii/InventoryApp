@@ -5,7 +5,7 @@ import { useSettingsContext } from "@/contexts/settingsContext";
 import { useEditionModeContext } from "@/contexts/editionModeContext";
 import ItemCard from "./ItemCard";
 import ItemList from "./ItemList";
-import PlusMinusButton from "./PlusMinusButton";
+import PlusMinusButton from "../PlusMinusButton";
 import EditCategoryModal from "./EditCategoryModal";
 import { Category as CategoryObj } from "@/model/category";
 import { Item } from "@/model/Item";
@@ -32,6 +32,7 @@ export default function Category(props: CategoryProps) {
                     styles.category,
                     {
                         borderTopWidth: props.categoryIndex === 0 && props.category.items.length > 0 ? 1 : 0,
+                        backgroundColor: settingsCtx.theme.colors.background,
                     },
                 ]}
             >
@@ -47,7 +48,7 @@ export default function Category(props: CategoryProps) {
                     <PlusMinusButton
                         onPress={() => setCollapsed(!collapsed)}
                         plus={collapsed}
-                        style={styles.collapseButton}
+                        style={{...styles.collapseButton, backgroundColor: settingsCtx.theme.colors.background }}
                     />
                 )}
             </View>

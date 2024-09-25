@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { useEditionModeContext } from "@/contexts/editionModeContext";
-import PlusMinusButton from "./PlusMinusButton";
+import PlusMinusButton from "../PlusMinusButton";
 import EditItemModal from "./EditItemModal";
 import { Item } from "@/model/Item";
 import { Category } from "@/model/category";

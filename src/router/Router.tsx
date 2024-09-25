@@ -8,7 +8,7 @@ import { colorScheme } from "@/styles/colors";
 import Inventory from "@/screens/Inventory";
 import Settings from "@/screens/Settings";
 import { getThemeSetting } from "@/dataaccess/settingsRepository";
-import { Theme } from "@/types/theme";
+import { Theme } from "types/theme";
 import { log } from "@/logger";
 import Icon from "@/components/Icon";
 

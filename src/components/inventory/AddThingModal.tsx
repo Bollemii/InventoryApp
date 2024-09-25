@@ -3,9 +3,8 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
-import Modal from "./Modal";
-import Button from "./Button";
-import Icon from "./Icon";
+import Modal from "../Modal";
+import Button from "../Button";
 import { Item } from "@/model/Item";
 import { Category } from "@/model/category";
 import { fetchAllCategories } from "@/dataaccess/categoryRepository";
@@ -93,34 +92,30 @@ export default function AddThingModal(props: AddItemModalProps) {
             <Button onPress={() => toggleVisible(true)} style={props.buttonStyle}>
                 <Text>Add something</Text>
             </Button>
-            <Modal visible={visible} close={() => toggleVisible(false)}>
-                <View style={styles.modal}>
-                    <Button onPress={() => toggleVisible(false)} style={styles.closeButton}>
-                        <Icon icon="xmark" size={20} />
+            <Modal
+                title={mode === MODES.ITEM ? "Add Item" : mode === MODES.CATEGORY ? "Add Category" : "Choose mode"}
+                visible={visible}
+                close={() => toggleVisible(false)}
+            >
+                {mode === MODES.ITEM ? (
+                    <AddItemModalContent
+                        name={name}
+                        setName={setName}
+                        categoryName={categoryName}
+                        setCategoryName={setCategoryName}
+                        categories={categories}
+                    />
+                ) : mode === MODES.CATEGORY ? (
+                    <AddCategoryModalContent name={name} setName={setName} />
+                ) : (
+                    <ChooseModeContent setMode={setMode} categories={categories} />
+                )}
+                {error !== "" && <Text style={styles.errorMessage}>{error}</Text>}
+                {mode !== MODES.NONE && (
+                    <Button onPress={handleSave} style={styles.saveButton}>
+                        <Text>Save</Text>
                     </Button>
-                    <Text style={styles.title}>
-                        {mode === MODES.ITEM ? "Add Item" : mode === MODES.CATEGORY ? "Add Category" : "Choose mode"}
-                    </Text>
-                    {mode === MODES.ITEM ? (
-                        <AddItemModalContent
-                            name={name}
-                            setName={setName}
-                            categoryName={categoryName}
-                            setCategoryName={setCategoryName}
-                            categories={categories}
-                        />
-                    ) : mode === MODES.CATEGORY ? (
-                        <AddCategoryModalContent name={name} setName={setName} />
-                    ) : (
-                        <ChooseModeContent setMode={setMode} categories={categories} />
-                    )}
-                    {error !== "" && <Text style={styles.errorMessage}>{error}</Text>}
-                    {mode !== MODES.NONE && (
-                        <Button onPress={handleSave} style={styles.saveButton}>
-                            <Text>Save</Text>
-                        </Button>
-                    )}
-                </View>
+                )}
             </Modal>
         </>
     );
@@ -185,30 +180,6 @@ function AddCategoryModalContent({ name, setName }: { name: string; setName: (na
 }
 
 const styles = StyleSheet.create({
-    modal: {
-        alignSelf: "center",
-        justifyContent: "center",
-        alignItems: "center",
-        top: "35%",
-        width: "80%",
-        paddingTop: 40,
-        backgroundColor: "white",
-        borderWidth: 1,
-        elevation: 10,
-    },
-    closeButton: {
-        position: "absolute",
-        right: 0,
-        top: 0,
-        height: 30,
-        width: 30,
-    },
-    title: {
-        position: "absolute",
-        top: 5,
-        left: 5,
-        fontSize: 16,
-    },
     input: {
         width: "80%",
         height: 40,

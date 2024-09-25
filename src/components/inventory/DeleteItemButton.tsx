@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 
-import Button from "./Button";
-import Icon from "./Icon";
+import Button from "../Button";
+import Icon from "../Icon";
 
 interface DeleteItemButtonProps {
     onPress: () => void;
