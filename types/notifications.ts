@@ -1,5 +1,3 @@
-import { NotificationContent, NotificationTrigger } from "expo-notifications";
-
 export interface WeeklyNotificationTrigger {
     weekday: number;
     hour: number;
@@ -9,6 +7,9 @@ export interface WeeklyNotificationTrigger {
 
 export interface NotificationRequest {
     identifier: string;
-    content: NotificationContent;
-    trigger: NotificationTrigger;
+    content: {
+        title: string;
+        body: string;
+    };
+    trigger: WeeklyNotificationTrigger;
 }

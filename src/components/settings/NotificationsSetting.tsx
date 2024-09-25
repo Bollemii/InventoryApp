@@ -1,15 +1,47 @@
-import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
+import { StyleSheet, Switch, Text, View } from "react-native";
 
 import { switchColors } from "@/styles/colors";
 import HorizontalLine from "../HorizontalLine";
 import { useSettingsContext } from "@/contexts/settingsContext";
-import { useState } from "react";
-import Icon from "../Icon";
+import { useEffect, useState } from "react";
 import NotificationModal from "./NotificationModal";
+import {
+    cancelNotification,
+    getAllScheduledNotifications,
+    scheduleInventoryNotification,
+} from "@/utils/notification";
+import { NotificationRequest } from "types/notifications";
+import { getNotificationSetting } from "@/dataaccess/settingsRepository";
 
 export default function NotificationsSetting() {
-    const { settingsCtx, setSettingsCtx } = useSettingsContext();
+    const { settingsCtx } = useSettingsContext();
     const [notifsEnabled, setNotifsEnabled] = useState(false);
+    const [foregroundNotif, setForegroundNotif] = useState<NotificationRequest | null>(null);
+    const [savedNotif, setSavedNotif] = useState<NotificationRequest | null>(null);
+
+    useEffect(() => {
+        getAllScheduledNotifications().then((notifs) => {
+            const fgNotif = notifs.find((notif) => notif.content.title === "Inventaire");
+            setForegroundNotif(fgNotif || null);
+            setNotifsEnabled(fgNotif !== undefined);
+        });
+        getNotificationSetting().then((notif) => {
+            setSavedNotif(notif || null);
+        });
+    }, []);
+
+    const toggleEnabled = (value: boolean) => {
+        try {
+            if (!value && foregroundNotif) {
+                cancelNotification(foregroundNotif.identifier);
+            } else if (value && !foregroundNotif && savedNotif) {
+                scheduleInventoryNotification(savedNotif.trigger.weekday, savedNotif.trigger.hour);
+            }
+            setNotifsEnabled(value);
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     return (
         <View
@@ -25,11 +57,11 @@ export default function NotificationsSetting() {
                 <Switch
                     trackColor={switchColors.track}
                     thumbColor={notifsEnabled ? switchColors.thumb.true : switchColors.thumb.false}
-                    onValueChange={setNotifsEnabled}
+                    onValueChange={toggleEnabled}
                     value={notifsEnabled}
                 />
             </View>
-            { notifsEnabled && (
+            {notifsEnabled && (
                 <>
                     <HorizontalLine />
                     <NotificationModal />

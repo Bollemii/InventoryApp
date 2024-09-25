@@ -7,51 +7,79 @@ import Icon from "../Icon";
 import Modal from "../Modal";
 import { Picker } from "@react-native-picker/picker";
 import Button from "../Button";
+import { getNotificationSetting, setNotificationSetting } from "@/dataaccess/settingsRepository";
+import { NotificationRequest } from "types/notifications";
+import { cancelNotification, scheduleInventoryNotification } from "@/utils/notification";
 
 const WEEKDAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
 export default function NotificationModal() {
-    const { settingsCtx, setSettingsCtx } = useSettingsContext();
+    const { settingsCtx } = useSettingsContext();
     const { setModalVisibleCtx } = useModalVisibleContext();
     const [visible, setVisible] = useState(false);
-    const [savedNotif, setSavedNotif] = useState({ weekDay: WEEKDAYS[4], hour: "17h00" });
+    const [savedNotif, setSavedNotif] = useState<NotificationRequest | null>(null);
     const [notifWeekDay, setNotifWeekDay] = useState(WEEKDAYS[4]);
     const [notifHour, setNotifHour] = useState("17h00");
 
     useEffect(() => {
         setModalVisibleCtx(false);
+
+        getNotificationSetting().then((notif) => {
+            setSavedNotif(notif || null);
+            setNotifWeekDay(notif ? WEEKDAYS[notif?.trigger.weekday] : WEEKDAYS[4]);
+            setNotifHour(notif ? `${notif?.trigger.hour}h00` : "17h00");
+        });
     }, []);
     useEffect(() => {
         if (!visible) return;
+        getNotificationSetting().then((notif) => {
+            console.log("NOTIFS", notif);
 
-        // Fetch saved notification settings
-        // setSavedNotif({});
+            setSavedNotif(notif || null);
+            setNotifWeekDay(notif ? WEEKDAYS[notif?.trigger.weekday] : WEEKDAYS[4]);
+            setNotifHour(notif ? `${notif?.trigger.hour}h00` : "17h00");
+        });
     }, [visible]);
 
     const toggleVisible = (value: boolean) => {
-        // Disable notification => cancel it
-
         setVisible(value);
         setModalVisibleCtx(value);
     };
 
-    const save = () => {
-        // Change notification => cancel it and set new one
+    const save = async () => {
+        try {            
+            if (savedNotif) {
+                cancelNotification(savedNotif.identifier);
+            }
+            console.log("SAVE", notifWeekDay, notifHour);
+            
+            const notification = await scheduleInventoryNotification(
+                WEEKDAYS.indexOf(notifWeekDay),
+                parseInt(notifHour.split("h")[0])
+            );
 
-        setSavedNotif({
-            weekDay: notifWeekDay,
-            hour: notifHour,
-        });
-        toggleVisible(false);
+            setNotificationSetting(notification);
+            setSavedNotif(notification);
+
+            toggleVisible(false);
+        } catch (e) {
+            console.error(e);
+        }
     };
 
     return (
         <>
             <Pressable onPress={() => toggleVisible(true)} style={styles.notifBox}>
-                <Text style={[styles.itemText, { color: settingsCtx.theme.colors.texts }]}>
-                    {savedNotif.weekDay} {savedNotif.hour}
-                </Text>
-                <Icon icon="pen" size={20} color={settingsCtx.theme.colors.texts} />
+                {savedNotif ? (
+                    <>
+                        <Text style={[styles.itemText, { color: settingsCtx.theme.colors.texts }]}>
+                            {WEEKDAYS[savedNotif?.trigger.weekday]} {savedNotif?.trigger.hour}h00
+                        </Text>
+                        <Icon icon="pen" size={20} color={settingsCtx.theme.colors.texts} />
+                    </>
+                ) : (
+                    <Text style={[styles.itemText, { color: settingsCtx.theme.colors.texts }]}>Set reminder</Text>
+                )}
             </Pressable>
             <Modal title="Edit inventory reminder" visible={visible} close={() => toggleVisible(false)}>
                 <View style={styles.pickerContainer}>
