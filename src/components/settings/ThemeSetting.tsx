@@ -6,7 +6,12 @@ import { colorScheme } from "@/styles/colors";
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { setThemeSetting } from "@/dataaccess/settingsRepository";
 
-export default function ThemeSetting(props: { parentRerender: () => void }) {
+interface ThemeSettingProps {
+    style: any;
+    parentRerender: () => void;
+}
+
+export default function ThemeSetting(props: ThemeSettingProps) {
     const { settingsCtx, setSettingsCtx } = useSettingsContext();
     const [selectedTheme, setSelectedTheme] = useState(Object.keys(colorScheme)[0]);
 
@@ -24,13 +29,7 @@ export default function ThemeSetting(props: { parentRerender: () => void }) {
 
     return (
         <View
-            style={[
-                styles.item,
-                ,
-                {
-                    backgroundColor: settingsCtx.theme.colors.items.background,
-                },
-            ]}
+            style={props.style}
         >
             <Text style={[styles.itemText, { color: settingsCtx.theme.colors.texts }]}>Dark mode</Text>
             <View style={styles.pickerContainer}>
@@ -57,16 +56,6 @@ export default function ThemeSetting(props: { parentRerender: () => void }) {
 }
 
 const styles = StyleSheet.create({
-    item: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: 10,
-        borderWidth: 1,
-        borderRadius: 10,
-        marginVertical: 5,
-        height: 80,
-    },
     itemText: {
         fontSize: 16,
     },

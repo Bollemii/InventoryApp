@@ -5,7 +5,11 @@ import { switchColors } from "@/styles/colors";
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { setCardViewSetting } from "@/dataaccess/settingsRepository";
 
-export default function CardViewSetting() {
+interface CardViewSettingProps {
+    style: any;
+}
+
+export default function CardViewSetting(props: CardViewSettingProps) {
     const { settingsCtx, setSettingsCtx } = useSettingsContext();
     const [cardsView, setCardsView] = useState(false);
 
@@ -22,12 +26,7 @@ export default function CardViewSetting() {
 
     return (
         <View
-            style={[
-                styles.item,
-                {
-                    backgroundColor: settingsCtx.theme.colors.items.background,
-                },
-            ]}
+            style={props.style}
         >
             <Text style={[styles.itemText, { color: settingsCtx.theme.colors.texts }]}>Cards view</Text>
             <Switch
@@ -41,16 +40,6 @@ export default function CardViewSetting() {
 }
 
 const styles = StyleSheet.create({
-    item: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: 10,
-        borderWidth: 1,
-        borderRadius: 10,
-        marginVertical: 5,
-        height: 80,
-    },
     itemText: {
         fontSize: 16,
     },
