@@ -1,4 +1,9 @@
-import { Theme } from "@/types/theme";
+import { Theme } from "types/theme";
+
+export const switchColors = {
+    track: { true: "#4A85EB", false: "#767577" },
+    thumb: { true: "#1545D5", false: "#F4F3F4" },
+};
 
 export const colorScheme: { [key: string]: Theme } = {
     dark: {

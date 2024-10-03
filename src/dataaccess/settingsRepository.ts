@@ -1,12 +1,14 @@
 import { colorScheme } from "@/styles/colors";
 import { getSetting, setSetting } from "./database/settingsDatabase";
 import { Settings } from "@/model/settings";
-import { Theme } from "@/types/theme";
+import { Theme } from "types/theme";
 import { log } from "@/logger";
+import { NotificationRequest } from "types/notifications";
 
 const SETTING_KEYS = {
     cardsView: "cardsView",
     theme: "theme",
+    notification: "notification",
 };
 
 export async function getSettings(): Promise<Settings> {
@@ -35,4 +37,14 @@ export function setThemeSetting(value: string): Promise<void> {
     }
 
     return setSetting(SETTING_KEYS.theme, value);
+}
+
+export async function getNotificationSetting(): Promise<NotificationRequest | null> {
+    return getSetting(SETTING_KEYS.notification).then((value) => {
+        return JSON.parse(value) || null;
+    });
+}
+
+export function setNotificationSetting(value: NotificationRequest): Promise<void> {
+    return setSetting(SETTING_KEYS.notification, JSON.stringify(value));
 }

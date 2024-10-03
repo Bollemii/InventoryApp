@@ -5,27 +5,13 @@ import { useIsFocused } from "@react-navigation/native";
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { useEditionModeContext } from "@/contexts/editionModeContext";
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
-import Category from "@/components/Category";
+import Category from "@/components/inventory/Category";
+import AddThingModal from "@/components/inventory/AddThingModal";
 import Button from "@/components/Button";
-import AddThingModal from "@/components/AddThingModal";
 import { Item } from "@/model/Item";
 import { Category as CategoryObj } from "@/model/category";
-import {
-    addItem,
-    deleteItem,
-    fetchAllItems,
-    fetchItemByName,
-    editItemQuantity,
-    editItemName,
-    editItemCategory,
-} from "@/dataaccess/itemRepository";
-import {
-    addCategory,
-    deleteCategory,
-    editCategoryName,
-    fetchAllCategories,
-    fetchCategoryByName,
-} from "@/dataaccess/categoryRepository";
+import * as ItemRepository from "@/dataaccess/itemRepository";
+import * as CategoryRepository from "@/dataaccess/categoryRepository";
 
 export default function Inventory() {
     const isFocused = useIsFocused();
@@ -37,9 +23,9 @@ export default function Inventory() {
 
     useEffect(() => {
         async function fetchAll() {
-            const items = await fetchAllItems();
+            const items = await ItemRepository.fetchAllItems();
             setCategories(items);
-            const categories = await fetchAllCategories();
+            const categories = await CategoryRepository.fetchAllCategories();
             setCategoriesWithoutItems(categories.filter((category) => !items.some((c) => c.id === category.id)));
         }
         fetchAll();
@@ -50,7 +36,7 @@ export default function Inventory() {
         const itemAffected = categoryAffected.items[itemIndex];
         if (!Item.isQuantityValid(itemAffected.quantity + add)) return;
 
-        await editItemQuantity(itemAffected.id, itemAffected.quantity + add);
+        await ItemRepository.editItemQuantity(itemAffected.id, itemAffected.quantity + add);
 
         itemAffected.add(add);
         setCategories([...categories]); // Force re-render
@@ -60,12 +46,12 @@ export default function Inventory() {
             throw new Error("Item name is required");
         }
 
-        const itemFetched = await fetchItemByName(item.name.trim());
+        const itemFetched = await ItemRepository.fetchItemByName(item.name.trim());
         if (itemFetched) {
             throw new Error("This item already exists");
         }
 
-        const id = await addItem(item, category);
+        const id = await ItemRepository.addItem(item, category);
         const categoryFound = categories.find((c) => c.id === category.id);
         if (categoryFound) {
             categoryFound.items.push(new Item(id, item.name.trim(), item.quantity));
@@ -88,17 +74,17 @@ export default function Inventory() {
                 throw new Error("Item name is required");
             }
 
-            const itemFetched = await fetchItemByName(item.name.trim());
+            const itemFetched = await ItemRepository.fetchItemByName(item.name.trim());
             if (itemFetched) {
                 throw new Error("This item already exists");
             }
 
             itemAffected.name = item.name.trim();
-            await editItemName(itemAffected.id, itemAffected.name);
+            await ItemRepository.editItemName(itemAffected.id, itemAffected.name);
             setCategories([...categories]); // Force re-render
         }
         if (categoryAffected.id !== category.id) {            
-            await editItemCategory(itemAffected.id, category);
+            await ItemRepository.editItemCategory(itemAffected.id, category);
 
             const categoryFound = categories.find((c) => c.id === category.id);
             if (categoryFound) {
@@ -123,7 +109,7 @@ export default function Inventory() {
     const handleRemoveItem = async (categoryIndex: number, itemIndex: number) => {
         const itemAffected = categories[categoryIndex].items[itemIndex];
 
-        await deleteItem(itemAffected.id);
+        await ItemRepository.deleteItem(itemAffected.id);
 
         categories[categoryIndex].items.splice(itemIndex, 1);
         if (categories[categoryIndex].items.length === 0) {
@@ -137,25 +123,25 @@ export default function Inventory() {
             throw new Error("Category name is required");
         }
 
-        const fetchedCategory = await fetchCategoryByName(category.name.trim());
+        const fetchedCategory = await CategoryRepository.fetchCategoryByName(category.name.trim());
         if (fetchedCategory) {
             throw new Error("This category already exists");
         }
 
         categoriesWithoutItems.push(category);
-        return await addCategory(category.name.trim());
+        return await CategoryRepository.addCategory(category.name.trim());
     };
     const handleEditCategory = async (categoryIndex: number, category: CategoryObj) => {
         if (!CategoryObj.isNameValid(category.name)) {
             throw new Error("Category name is required");
         }
 
-        const fetchedCategory = await fetchCategoryByName(category.name.trim());
+        const fetchedCategory = await CategoryRepository.fetchCategoryByName(category.name.trim());
         if (fetchedCategory) {
             throw new Error("This category already exists");
         }
 
-        await editCategoryName(category.id, category.name.trim());
+        await CategoryRepository.editCategoryName(category.id, category.name.trim());
         if (categories[categoryIndex]?.id === category.id) {
             categories[categoryIndex].name = category.name.trim();
             setCategories([...categories]); // Force re-render
@@ -171,7 +157,7 @@ export default function Inventory() {
             throw new Error("Category is not empty");
         }
 
-        await deleteCategory(categoryAffected.id);
+        await CategoryRepository.deleteCategory(categoryAffected.id);
 
         categoriesWithoutItems.splice(categoryIndex, 1);
         setCategoriesWithoutItems([...categoriesWithoutItems]); // Force re-render
@@ -179,13 +165,14 @@ export default function Inventory() {
 
     if (!isFocused) return null;
     return (
+        <>
+        {modalVisibleCtx && <View style={styles.opacityView} /> /* Modal opacity background */}
         <View
             style={{
                 flex: 1,
                 backgroundColor: settingsCtx.theme.colors.background,
             }}
         >
-            {modalVisibleCtx && <View style={styles.opacityView} /> /* Modal opacity background */}
             <ScrollView>
                 {categories.map((category, categoryIndex) => (
                     <Category
@@ -232,6 +219,7 @@ export default function Inventory() {
                 </View>
             </ScrollView>
         </View>
+        </>
     );
 }
 

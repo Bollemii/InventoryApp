@@ -1,6 +1,6 @@
 import { log } from "@/logger";
 import { colorScheme } from "@/styles/colors";
-import { Theme } from "@/types/theme";
+import { Theme } from "types/theme";
 
 export class Settings {
     private _cardsView: boolean;
