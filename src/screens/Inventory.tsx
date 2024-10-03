@@ -15,6 +15,7 @@ import * as CategoryRepository from "@/dataaccess/categoryRepository";
 
 export default function Inventory() {
     const isFocused = useIsFocused();
+    const [rerender, setRerender] = useState(false);
     const { settingsCtx } = useSettingsContext();
     const { editionModeCtx, setEditionModeCtx } = useEditionModeContext();
     const { modalVisibleCtx } = useModalVisibleContext();
@@ -23,13 +24,24 @@ export default function Inventory() {
 
     useEffect(() => {
         async function fetchAll() {
-            const items = await ItemRepository.fetchAllItems();
-            setCategories(items);
-            const categories = await CategoryRepository.fetchAllCategories();
-            setCategoriesWithoutItems(categories.filter((category) => !items.some((c) => c.id === category.id)));
+            const catItems = await ItemRepository.fetchAllItems();
+            catItems.forEach((cat) => {
+                sortArray(cat.items);
+            });
+            sortArray(catItems);
+            setCategories(catItems);
+
+            let catEmpty = await CategoryRepository.fetchAllCategories();
+            catEmpty = catEmpty.filter((category) => !catItems.some((c) => c.id === category.id));
+            sortArray(catEmpty);
+            setCategoriesWithoutItems(catEmpty);
         }
         fetchAll();
     }, []);
+
+    const sortArray = (array: { name: string }[]) => {
+        array.sort((a, b) => a.name.localeCompare(b.name));
+    };
 
     const handleChangeQuantityItem = async (categoryIndex: number, itemIndex: number, add: number) => {
         const categoryAffected = categories[categoryIndex];
@@ -39,7 +51,7 @@ export default function Inventory() {
         await ItemRepository.editItemQuantity(itemAffected.id, itemAffected.quantity + add);
 
         itemAffected.add(add);
-        setCategories([...categories]); // Force re-render
+        setRerender(!rerender);
     };
     const handleAddNewItem = async (category: CategoryObj, item: Item) => {
         if (!Item.isNameValid(item.name)) {
@@ -55,15 +67,17 @@ export default function Inventory() {
         const categoryFound = categories.find((c) => c.id === category.id);
         if (categoryFound) {
             categoryFound.items.push(new Item(id, item.name.trim(), item.quantity));
+            sortArray(categoryFound.items);
         } else {
             category.addItem(new Item(id, item.name.trim(), item.quantity));
             categories.push(category);
+            sortArray(categories)
             categoriesWithoutItems.splice(
                 categoriesWithoutItems.findIndex((c) => c.id === category.id),
                 1
             );
         }
-        setCategories([...categories]); // Force re-render
+        setRerender(!rerender);
     };
     const handleEditItem = async (categoryIndex: number, itemIndex: number, item: Item, category: CategoryObj) => {        
         const categoryAffected = categories[categoryIndex];
@@ -81,7 +95,7 @@ export default function Inventory() {
 
             itemAffected.name = item.name.trim();
             await ItemRepository.editItemName(itemAffected.id, itemAffected.name);
-            setCategories([...categories]); // Force re-render
+            sortArray(categoryAffected.items);
         }
         if (categoryAffected.id !== category.id) {            
             await ItemRepository.editItemCategory(itemAffected.id, category);
@@ -89,10 +103,17 @@ export default function Inventory() {
             const categoryFound = categories.find((c) => c.id === category.id);
             if (categoryFound) {
                 categoryFound.items.push(itemAffected);
+                sortArray(categoryFound.items);
                 categoryAffected.items.splice(itemIndex, 1);
+                if (categoryAffected.items.length === 0) {
+                    categoriesWithoutItems.push(categoryAffected);
+                    sortArray(categoriesWithoutItems);
+                    categories.splice(categoryIndex, 1);
+                }
             } else {
                 category.addItem(itemAffected);
                 categories.push(category);
+                sortArray(categories)
                 categoriesWithoutItems.splice(
                     categoriesWithoutItems.findIndex((c) => c.id === category.id),
                     1
@@ -103,8 +124,8 @@ export default function Inventory() {
                     categories.splice(categoryIndex, 1);
                 }
             }
-            setCategories([...categories]); // Force re-render
         }
+        setRerender(!rerender);
     };
     const handleRemoveItem = async (categoryIndex: number, itemIndex: number) => {
         const itemAffected = categories[categoryIndex].items[itemIndex];
@@ -114,9 +135,10 @@ export default function Inventory() {
         categories[categoryIndex].items.splice(itemIndex, 1);
         if (categories[categoryIndex].items.length === 0) {
             categoriesWithoutItems.push(categories[categoryIndex]);
+            sortArray(categoriesWithoutItems);
             categories.splice(categoryIndex, 1);
         }
-        setCategories([...categories]); // Force re-render
+        setRerender(!rerender);
     };
     const handleAddNewCategory = async (category: CategoryObj): Promise<number> => {
         if (!CategoryObj.isNameValid(category.name)) {
@@ -129,6 +151,8 @@ export default function Inventory() {
         }
 
         categoriesWithoutItems.push(category);
+        sortArray(categoriesWithoutItems);
+        setRerender(!rerender);
         return await CategoryRepository.addCategory(category.name.trim());
     };
     const handleEditCategory = async (categoryIndex: number, category: CategoryObj) => {
@@ -144,11 +168,12 @@ export default function Inventory() {
         await CategoryRepository.editCategoryName(category.id, category.name.trim());
         if (categories[categoryIndex]?.id === category.id) {
             categories[categoryIndex].name = category.name.trim();
-            setCategories([...categories]); // Force re-render
+            sortArray(categories);
         } else {
             categoriesWithoutItems[categoryIndex].name = category.name.trim();
-            setCategoriesWithoutItems([...categoriesWithoutItems]); // Force re-render
+            sortArray(categoriesWithoutItems);
         }
+        setRerender(!rerender);
     };
     const handleRemoveCategory = async (categoryIndex: number) => {
         const categoryAffected = categoriesWithoutItems[categoryIndex];
@@ -160,7 +185,8 @@ export default function Inventory() {
         await CategoryRepository.deleteCategory(categoryAffected.id);
 
         categoriesWithoutItems.splice(categoryIndex, 1);
-        setCategoriesWithoutItems([...categoriesWithoutItems]); // Force re-render
+        sortArray(categoriesWithoutItems);
+        setRerender(!rerender);
     };
 
     if (!isFocused) return null;
