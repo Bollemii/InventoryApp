@@ -165,13 +165,14 @@ export default function Inventory() {
 
     if (!isFocused) return null;
     return (
+        <>
+        {modalVisibleCtx && <View style={styles.opacityView} /> /* Modal opacity background */}
         <View
             style={{
                 flex: 1,
                 backgroundColor: settingsCtx.theme.colors.background,
             }}
         >
-            {modalVisibleCtx && <View style={styles.opacityView} /> /* Modal opacity background */}
             <ScrollView>
                 {categories.map((category, categoryIndex) => (
                     <Category
@@ -218,6 +219,7 @@ export default function Inventory() {
                 </View>
             </ScrollView>
         </View>
+        </>
     );
 }
 

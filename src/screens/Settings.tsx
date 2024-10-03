@@ -17,14 +17,16 @@ export default function Settings() {
     };
 
     return (
+        <>
+        {modalVisibleCtx && <View style={styles.opacityView} /> /* Modal opacity background */}
         <View style={[styles.container, { backgroundColor: settingsCtx.theme.colors.background }]}>
-            {modalVisibleCtx && <View style={styles.opacityView} /> /* Modal opacity background */}
             <ScrollView>
                 <CardViewSetting />
                 <ThemeSetting parentRerender={rerender} />
                 <NotificationsSetting />
             </ScrollView>
         </View>
+        </>
     );
 }
 
