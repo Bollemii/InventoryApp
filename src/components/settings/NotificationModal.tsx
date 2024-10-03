@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
 import Icon from "../Icon";
 import Modal from "../Modal";
-import { Picker } from "@react-native-picker/picker";
 import Button from "../Button";
 import { getNotificationSetting, setNotificationSetting } from "@/dataaccess/settingsRepository";
 import { NotificationRequest } from "types/notifications";
 import { cancelNotification, scheduleInventoryNotification } from "@/utils/notification";
 
-const WEEKDAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 export default function NotificationModal() {
     const { settingsCtx } = useSettingsContext();
@@ -33,8 +33,6 @@ export default function NotificationModal() {
     useEffect(() => {
         if (!visible) return;
         getNotificationSetting().then((notif) => {
-            console.log("NOTIFS", notif);
-
             setSavedNotif(notif || null);
             setNotifWeekDay(notif ? WEEKDAYS[notif?.trigger.weekday] : WEEKDAYS[4]);
             setNotifHour(notif ? `${notif?.trigger.hour}h00` : "17h00");
@@ -51,7 +49,6 @@ export default function NotificationModal() {
             if (savedNotif) {
                 cancelNotification(savedNotif.identifier);
             }
-            console.log("SAVE", notifWeekDay, notifHour);
             
             const notification = await scheduleInventoryNotification(
                 WEEKDAYS.indexOf(notifWeekDay),
