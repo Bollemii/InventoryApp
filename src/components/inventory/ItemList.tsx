@@ -21,25 +21,28 @@ export default function ItemList(props: ItemProps) {
 
     return (
         <View style={[styles.item, { backgroundColor: settingsCtx.theme.colors.items.background }]}>
-            {editionModeCtx && (
+            <Text style={styles.name}>{props.item.name}</Text>
+            <View style={styles.quantityBox}>
+            {editionModeCtx ? (
                 <EditItemModal
                     item={props.item}
                     categoryName={props.categoryName}
                     edit={props.handleEditItem}
                     remove={props.handleRemoveItem}
                 />
+            ) : (
+                <>
+                    <PlusMinusButton
+                        onPress={() => props.handleChangeQuantity(-1)}
+                        plus={false}
+                    />
+                    <Text style={styles.quantity}>{props.item.quantity}</Text>
+                    <PlusMinusButton
+                        onPress={() => props.handleChangeQuantity(1)}
+                        plus={true}
+                    />
+                </>
             )}
-            <Text style={styles.name}>{props.item.name}</Text>
-            <View style={styles.quantityBox}>
-                <PlusMinusButton
-                    onPress={() => props.handleChangeQuantity(-1)}
-                    plus={false}
-                />
-                <Text style={styles.quantity}>{props.item.quantity}</Text>
-                <PlusMinusButton
-                    onPress={() => props.handleChangeQuantity(1)}
-                    plus={true}
-                />
             </View>
         </View>
     );

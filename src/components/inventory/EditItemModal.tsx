@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         height: 30,
-        width: 80,
+        width: "100%",
     },
     picker: {
         width: "100%",

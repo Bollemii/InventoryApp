@@ -22,27 +22,30 @@ export default function ItemCard(props: ItemProps) {
     const { editionModeCtx } = useEditionModeContext();
 
     return (
-        <View style={[styles.item, { backgroundColor: settingsCtx.theme.colors.items.background, height: editionModeCtx ? SIZE+10 : SIZE }]}>
+        <View style={[styles.item, { backgroundColor: settingsCtx.theme.colors.items.background, height: SIZE }]}>
             <Text style={styles.name}>{props.item.name}</Text>
             <View style={styles.quantityBox}>
-                <PlusMinusButton
-                    onPress={() => props.handleChangeQuantity(-1)}
-                    plus={false}
-                />
-                <Text style={styles.quantity}>{props.item.quantity}</Text>
-                <PlusMinusButton
-                    onPress={() => props.handleChangeQuantity(1)}
-                    plus={true}
-                />
-            </View>
-            {editionModeCtx && (
+            {editionModeCtx ? (
                 <EditItemModal
                     item={props.item}
                     categoryName={props.categoryName}
                     edit={props.handleEditItem}
                     remove={props.handleRemoveItem}
                 />
+            ) : (
+                <>
+                    <PlusMinusButton
+                        onPress={() => props.handleChangeQuantity(-1)}
+                        plus={false}
+                    />
+                    <Text style={styles.quantity}>{props.item.quantity}</Text>
+                    <PlusMinusButton
+                        onPress={() => props.handleChangeQuantity(1)}
+                        plus={true}
+                    />
+                </>
             )}
+            </View>
         </View>
     );
 }
