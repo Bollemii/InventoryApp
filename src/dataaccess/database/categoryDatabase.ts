@@ -1,6 +1,9 @@
 import { Category } from "@/model/category";
 import * as database from "./common/sqliteDatabase";
 
+/**
+ * Initialize the category database
+ */
 export async function initializeCategoryDatabase() {
     database.execute(`
         CREATE TABLE IF NOT EXISTS categories (
@@ -10,6 +13,11 @@ export async function initializeCategoryDatabase() {
     `);
 }
 
+/**
+ * Fetch all categories
+ * 
+ * @returns A promise that resolves to all categories
+ */
 export async function getAll(): Promise<Category[]> {
     await initializeCategoryDatabase();
     interface Result {
@@ -25,6 +33,12 @@ export async function getAll(): Promise<Category[]> {
     return result.map((category) => new Category(category.id, category.name));
 }
 
+/**
+ * Fetch a category by ID
+ * 
+ * @param id The ID of the category
+ * @returns A promise that resolves to the category
+ */
 export async function getById(id: number): Promise<Category> {
     await initializeCategoryDatabase();
     interface Result {
@@ -44,6 +58,12 @@ export async function getById(id: number): Promise<Category> {
     return new Category(result.id, result.name);
 }
 
+/**
+ * Fetch a category by name
+ * 
+ * @param name The name of the category
+ * @returns A promise that resolves to the category
+ */
 export async function getByName(name: string): Promise<Category> {
     await initializeCategoryDatabase();
     interface Result {
@@ -58,11 +78,17 @@ export async function getByName(name: string): Promise<Category> {
         WHERE name = $name
     `,
         { $name: name.trim() }
-    );
+    ) as Result;
     if (!result) return null;
     return new Category(result.id, result.name);
 }
 
+/**
+ * Insert a category
+ * 
+ * @param name The name of the category
+ * @returns A promise that resolves to the ID of the inserted category
+ */
 export async function insert(name: string): Promise<number> {
     await initializeCategoryDatabase();
 
@@ -80,6 +106,12 @@ export async function insert(name: string): Promise<number> {
     return result.lastInsertRowId;
 }
 
+/**
+ * Update the name of a category
+ * 
+ * @param id The ID of the category
+ * @param name The new name of the category
+ */
 export async function updateName(id: number, name: string) {
     await initializeCategoryDatabase();
 
@@ -97,6 +129,11 @@ export async function updateName(id: number, name: string) {
     );
 }
 
+/**
+ * Remove a category
+ * 
+ * @param id The ID of the category
+ */
 export async function remove(id: number) {
     await initializeCategoryDatabase();
 

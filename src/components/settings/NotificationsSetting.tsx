@@ -11,12 +11,18 @@ import {
     scheduleInventoryNotification,
 } from "@/utils/notification";
 import { NotificationRequest } from "types/notifications";
-import { getNotificationSetting } from "@/dataaccess/settingsRepository";
 
 interface NotificationsSettingProps {
     style: any;
 }
 
+/**
+ * A notifications setting component : switch to enable/disable the notifications
+ * It displays a modal to set the reminder for the inventory
+ * 
+ * @param props The component props : {style}
+ * @returns The JSX element
+ */
 export default function NotificationsSetting(props: NotificationsSettingProps) {
     const { settingsCtx } = useSettingsContext();
     const [notifsEnabled, setNotifsEnabled] = useState(false);
@@ -29,9 +35,7 @@ export default function NotificationsSetting(props: NotificationsSettingProps) {
             setForegroundNotif(fgNotif || null);
             setNotifsEnabled(fgNotif !== undefined);
         });
-        getNotificationSetting().then((notif) => {
-            setSavedNotif(notif || null);
-        });
+        setSavedNotif(settingsCtx.notification)
     }, []);
 
     const toggleEnabled = (value: boolean) => {

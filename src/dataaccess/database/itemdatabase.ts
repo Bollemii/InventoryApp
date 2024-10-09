@@ -4,6 +4,9 @@ import { groupBy } from "@/utils";
 import { initializeCategoryDatabase } from "./categoryDatabase";
 import * as database from "./common/sqliteDatabase";
 
+/**
+ * Initialize the item database
+ */
 export async function initializeItemDatabase() {
     await initializeCategoryDatabase();
     await database.execute(`
@@ -20,6 +23,11 @@ export async function initializeItemDatabase() {
     }
 }
 
+/**
+ * Fetch all items
+ * 
+ * @returns A promise that resolves to all items
+ */
 export async function getAllGroupByCategory(): Promise<Category[]> {
     await initializeItemDatabase();
     interface Result {
@@ -50,6 +58,12 @@ export async function getAllGroupByCategory(): Promise<Category[]> {
         .map((category) => new Category(category.id, category.name, category.items));
 }
 
+/**
+ * Fetch an item by its name
+ * 
+ * @param name The name of the item to fetch
+ * @returns A promise that resolves to the item
+ */
 export async function getByName(name: string): Promise<Item> {
     await initializeItemDatabase();
     interface Result {
@@ -69,6 +83,12 @@ export async function getByName(name: string): Promise<Item> {
     return new Item(result.id, result.name, result.quantity);
 }
 
+/**
+ * Fetch an item by its ID
+ * 
+ * @param id The ID of the item to fetch
+ * @returns A promise that resolves to the item
+ */
 export async function insert(name: string, quantity: number, categoryId: number): Promise<number> {
     await initializeItemDatabase();
 
@@ -93,6 +113,12 @@ export async function insert(name: string, quantity: number, categoryId: number)
     return result.lastInsertRowId;
 }
 
+/**
+ * Fetch an item by its ID
+ * 
+ * @param id The ID of the item to fetch
+ * @returns A promise that resolves to the item
+ */
 export async function updateQuantity(id: number, quantity: number) {
     await initializeItemDatabase();
 
@@ -113,6 +139,12 @@ export async function updateQuantity(id: number, quantity: number) {
     );
 }
 
+/**
+ * Fetch an item by its ID
+ * 
+ * @param id The ID of the item to fetch
+ * @returns A promise that resolves to the item
+ */
 export async function updateName(id: number, name: string) {
     await initializeItemDatabase();
 
@@ -133,6 +165,12 @@ export async function updateName(id: number, name: string) {
     );
 }
 
+/**
+ * Fetch an item by its ID
+ * 
+ * @param id The ID of the item to fetch
+ * @returns A promise that resolves to the item
+ */
 export async function updateCategory(id: number, categoryId: number) {
     await initializeItemDatabase();
 
@@ -149,6 +187,12 @@ export async function updateCategory(id: number, categoryId: number) {
     );
 }
 
+/**
+ * Fetch an item by its ID
+ * 
+ * @param id The ID of the item to fetch
+ * @returns A promise that resolves to the item
+ */
 export async function deleteOne(id: number) {
     await initializeItemDatabase();
 

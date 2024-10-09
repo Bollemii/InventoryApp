@@ -7,6 +7,12 @@ import CardViewSetting from "@/components/settings/CardViewSetting";
 import ThemeSetting from "@/components/settings/ThemeSetting";
 import NotificationsSetting from "@/components/settings/NotificationsSetting";
 
+/**
+ * The settings screen
+ * It displays the settings of the application
+ * 
+ * @returns The JSX element
+ */
 export default function Settings() {
     const { settingsCtx } = useSettingsContext();
     const { modalVisibleCtx } = useModalVisibleContext();

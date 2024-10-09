@@ -17,6 +17,13 @@ interface ItemProps {
 
 const SIZE = 110;
 
+/**
+ * A component that displays an item in a card
+ * It displays the item name and its quantity
+ * 
+ * @param props The component props : {item, categoryName, handleChangeQuantity, handleEditItem, handleRemoveItem}
+ * @returns The JSX element
+ */
 export default function ItemCard(props: ItemProps) {
     const { settingsCtx } = useSettingsContext();
     const { editionModeCtx } = useEditionModeContext();

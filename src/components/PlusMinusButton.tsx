@@ -10,6 +10,12 @@ interface PlusMinusButtonProps {
     style?: any;
 }
 
+/**
+ * A button that displays a plus or minus icon
+ * 
+ * @param props The component props : {onPress, plus, style}
+ * @returns The JSX element
+ */
 export default function PlusMinusButton(props: PlusMinusButtonProps) {
     const { settingsCtx } = useSettingsContext();
 

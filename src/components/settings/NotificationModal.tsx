@@ -7,14 +7,21 @@ import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
 import Icon from "../Icon";
 import Modal from "../Modal";
 import Button from "../Button";
-import { getNotificationSetting, setNotificationSetting } from "@/dataaccess/settingsRepository";
+import { setNotificationSetting } from "@/dataaccess/settingsRepository";
 import { NotificationRequest } from "types/notifications";
 import { cancelNotification, scheduleInventoryNotification } from "@/utils/notification";
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
+/**
+ * A notification modal component to set a reminder for the inventory
+ * It displays a button to open the modal
+ * The modal contains two pickers to choose the day and the hour of the reminder
+ * 
+ * @returns The JSX element
+ */
 export default function NotificationModal() {
-    const { settingsCtx } = useSettingsContext();
+    const { settingsCtx, setSettingsCtx } = useSettingsContext();
     const { setModalVisibleCtx } = useModalVisibleContext();
     const [visible, setVisible] = useState(false);
     const [savedNotif, setSavedNotif] = useState<NotificationRequest | null>(null);
@@ -24,19 +31,16 @@ export default function NotificationModal() {
     useEffect(() => {
         setModalVisibleCtx(false);
 
-        getNotificationSetting().then((notif) => {
-            setSavedNotif(notif || null);
-            setNotifWeekDay(notif ? WEEKDAYS[notif?.trigger.weekday] : WEEKDAYS[4]);
-            setNotifHour(notif ? `${notif?.trigger.hour}h00` : "17h00");
-        });
+        if (!settingsCtx.notification) return;
+        setSavedNotif(settingsCtx.notification);
+        setNotifWeekDay(WEEKDAYS[settingsCtx.notification.trigger.weekday]);
+        setNotifHour(`${settingsCtx.notification.trigger.hour}h00`);
     }, []);
     useEffect(() => {
-        if (!visible) return;
-        getNotificationSetting().then((notif) => {
-            setSavedNotif(notif || null);
-            setNotifWeekDay(notif ? WEEKDAYS[notif?.trigger.weekday] : WEEKDAYS[4]);
-            setNotifHour(notif ? `${notif?.trigger.hour}h00` : "17h00");
-        });
+        if (!visible || !settingsCtx.notification) return;
+        setSavedNotif(settingsCtx.notification);
+        setNotifWeekDay(WEEKDAYS[settingsCtx.notification.trigger.weekday]);
+        setNotifHour(`${settingsCtx.notification.trigger.hour}h00`);
     }, [visible]);
 
     const toggleVisible = (value: boolean) => {
@@ -56,6 +60,8 @@ export default function NotificationModal() {
             );
 
             setNotificationSetting(notification);
+            settingsCtx.notification = notification;
+            setSettingsCtx(settingsCtx);
             setSavedNotif(notification);
 
             toggleVisible(false);

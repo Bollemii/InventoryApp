@@ -11,6 +11,12 @@ interface ThemeSettingProps {
     parentRerender: () => void;
 }
 
+/**
+ * A theme setting component : select the theme of the application
+ * 
+ * @param props The component props : {style, parentRerender}
+ * @returns The JSX element
+ */
 export default function ThemeSetting(props: ThemeSettingProps) {
     const { settingsCtx, setSettingsCtx } = useSettingsContext();
     const [selectedTheme, setSelectedTheme] = useState(Object.keys(colorScheme)[0]);

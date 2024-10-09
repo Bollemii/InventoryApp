@@ -21,6 +21,14 @@ const MODES = {
     CATEGORY: "category",
 };
 
+/**
+ * A modal to add an item or a category
+ * It displays a button to open the modal
+ * The modal contains a text input to enter the name of the item or category and a picker to choose the item category
+ * 
+ * @param props The component props : {buttonStyle, saveItem, saveCategory}
+ * @returns The JSX element
+ */
 export default function AddThingModal(props: AddItemModalProps) {
     const { setModalVisibleCtx } = useModalVisibleContext();
     const [visible, setVisible] = useState(false);

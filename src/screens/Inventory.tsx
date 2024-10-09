@@ -13,6 +13,13 @@ import { Category as CategoryObj } from "@/model/category";
 import * as ItemRepository from "@/dataaccess/itemRepository";
 import * as CategoryRepository from "@/dataaccess/categoryRepository";
 
+/**
+ * The inventory screen
+ * It displays the categories and items
+ * It allows to add, edit or remove items and categories
+ * 
+ * @returns The JSX element
+ */
 export default function Inventory() {
     const isFocused = useIsFocused();
     const [rerender, setRerender] = useState(false);

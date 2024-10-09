@@ -20,6 +20,9 @@ const consoleLogger = logger.createLogger({
     },
 });
 
+/**
+ * A logger that logs to both the console and a file
+ */
 export const log = {
     info: (msg: string) => {
         fileLogger.info(msg);

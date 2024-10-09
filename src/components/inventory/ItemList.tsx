@@ -15,6 +15,13 @@ interface ItemProps {
     handleRemoveItem: () => void;
 }
 
+/**
+ * A component that displays an item in a list
+ * It displays the item name and its quantity
+ * 
+ * @param props The component props : {item, categoryName, handleChangeQuantity, handleEditItem, handleRemoveItem}
+ * @returns The JSX element
+ */
 export default function ItemList(props: ItemProps) {
     const { settingsCtx } = useSettingsContext();
     const { editionModeCtx } = useEditionModeContext();

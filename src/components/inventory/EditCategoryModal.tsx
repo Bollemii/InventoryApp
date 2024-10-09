@@ -16,6 +16,14 @@ interface EditCategoryModalProps {
     remove: () => void;
 }
 
+/**
+ * An edit category modal component to edit or remove a category
+ * It displays a button to open the modal
+ * The modal contains a text input to enter the new category name
+ * 
+ * @param props The component props : {category, edit, remove}
+ * @returns The JSX element
+ */
 export default function EditCategoryModal(props: EditCategoryModalProps) {
     const { settingsCtx } = useSettingsContext();
     const { setModalVisibleCtx } = useModalVisibleContext();

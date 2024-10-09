@@ -19,6 +19,11 @@ async function allowNotification(): Promise<boolean> {
     return permission.status === "granted";
 }
 
+/**
+ * Get all scheduled notifications
+ * 
+ * @returns An array of all scheduled notifications
+ */
 export async function getAllScheduledNotifications(): Promise<NotificationRequest[]> {
     return (await Notifications.getAllScheduledNotificationsAsync()).map((notif) => ({
         identifier: notif.identifier,
@@ -35,6 +40,14 @@ export async function getAllScheduledNotifications(): Promise<NotificationReques
     }));
 }
 
+/**
+ * Schedule a notification
+ * 
+ * @param title The title of the notification 
+ * @param body The message of the notification
+ * @param trigger The trigger for the notification (when to show it)
+ * @returns The scheduled notification
+ */
 export async function scheduleNotification(title: string, body: string, trigger: WeeklyNotificationTrigger) : Promise<NotificationRequest> {
     if (!(await allowNotification())) {
         return;
@@ -61,6 +74,12 @@ export async function scheduleNotification(title: string, body: string, trigger:
     };
 }
 
+/**
+ * Schedule a notification to remind the user to update their inventory
+ * @param weekday Weekday (0 Monday - 6 Sunday)
+ * @param hour Hour of the day
+ * @returns The scheduled notification
+ */
 export async function scheduleInventoryNotification(weekday: number, hour: number) : Promise<NotificationRequest> {
     if (!(await allowNotification())) {
         return;
@@ -83,6 +102,11 @@ export async function scheduleInventoryNotification(weekday: number, hour: numbe
     return notif;
 }
 
+/**
+ * Cancel a scheduled notification
+ * 
+ * @param id The id of the notification to cancel
+ */
 export async function cancelNotification(id: string) {
     if (!(await allowNotification())) {
         return;

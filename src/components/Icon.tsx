@@ -16,6 +16,13 @@ interface IconProps {
     color?: string;
 }
 
+/**
+ * An icon component
+ * Icon names are : gear, minus, pen, plus, trash, xmark
+ * 
+ * @param props The component props : {icon, size, color}
+ * @returns The JSX element
+ */
 export default function Icon(props: IconProps) {
     if (!ICONS[props.icon]) {
         throw new Error("Icon not found");

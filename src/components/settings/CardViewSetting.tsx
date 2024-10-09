@@ -9,6 +9,12 @@ interface CardViewSettingProps {
     style: any;
 }
 
+/**
+ * A card view setting component : switch to enable/disable the cards view
+ * 
+ * @param props The component props : {style}
+ * @returns The JSX element
+ */
 export default function CardViewSetting(props: CardViewSettingProps) {
     const { settingsCtx, setSettingsCtx } = useSettingsContext();
     const [cardsView, setCardsView] = useState(false);

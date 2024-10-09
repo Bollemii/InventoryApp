@@ -1,3 +1,7 @@
+/**
+ * Item model
+ * It contains the item properties : id, name and quantity
+ */
 export class Item {
     static QUANTITY_MIN = 0;
     static QUANTITY_MAX = 99;

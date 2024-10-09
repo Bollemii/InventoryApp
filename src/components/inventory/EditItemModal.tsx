@@ -20,6 +20,14 @@ interface EditItemModalProps {
     remove: () => void;
 }
 
+/**
+ * An edit item modal component to edit or remove an item
+ * It displays a button to open the modal
+ * The modal contains a text input to enter the new item name and a picker to choose the item category
+ * 
+ * @param props The component props : {item, categoryName, edit, remove}
+ * @returns The JSX element
+ */
 export default function EditItemModal(props: EditItemModalProps) {
     const { settingsCtx } = useSettingsContext();
     const { setModalVisibleCtx } = useModalVisibleContext();

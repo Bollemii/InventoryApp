@@ -4,6 +4,11 @@ import { getAllGroupByCategory, getByName, insert, updateQuantity, deleteOne, up
 import { fetchCategoryById } from "./categoryRepository";
 import { log } from "@/logger";
 
+/**
+ * Fetch all items
+ * 
+ * @returns A promise that resolves to all items
+ */
 export async function fetchAllItems(): Promise<Category[]> {
     try {
         return getAllGroupByCategory();
@@ -13,6 +18,12 @@ export async function fetchAllItems(): Promise<Category[]> {
     }
 }
 
+/**
+ * Fetch an item by its name
+ * 
+ * @param name The name of the item to fetch
+ * @returns A promise that resolves to the item
+ */
 export async function fetchItemByName(name: string): Promise<Item> {
     try {
         return getByName(name.trim());
@@ -22,6 +33,13 @@ export async function fetchItemByName(name: string): Promise<Item> {
     }
 }
 
+/**
+ * Add an item
+ * 
+ * @param item The item to add
+ * @param category The category to add the item to
+ * @returns A promise that resolves to the ID of the added item
+ */
 export async function addItem(item: Item, category: Category): Promise<number> {
     try {
         if (!Item.isNameValid(item.name)) {
@@ -47,6 +65,12 @@ export async function addItem(item: Item, category: Category): Promise<number> {
     }
 }
 
+/**
+ * Edit an item's quantity
+ * 
+ * @param id The ID of the item to edit
+ * @param quantity The new quantity of the item
+ */
 export async function editItemQuantity(id: number, quantity: number) {
     try {
         if (!Item.isQuantityValid(quantity)) {
@@ -59,6 +83,12 @@ export async function editItemQuantity(id: number, quantity: number) {
     }
 }
 
+/**
+ * Edit an item's name
+ * 
+ * @param id The ID of the item to edit
+ * @param name The new name of the item
+ */
 export async function editItemName(id: number, name: string) {
     try {
         if (!Item.isNameValid(name)) {
@@ -77,6 +107,12 @@ export async function editItemName(id: number, name: string) {
     }
 }
 
+/**
+ * Edit an item's category
+ * 
+ * @param id The ID of the item to edit
+ * @param category The new category of the item
+ */
 export async function editItemCategory(id: number, category: Category) {
     try {
         const categoryFetched = await fetchCategoryById(category.id);
@@ -91,6 +127,11 @@ export async function editItemCategory(id: number, category: Category) {
     }
 }
 
+/**
+ * Delete an item
+ * 
+ * @param id The ID of the item to delete
+ */
 export async function deleteItem(id: number) {
     try {
         await deleteOne(id);

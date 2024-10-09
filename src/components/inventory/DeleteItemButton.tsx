@@ -10,6 +10,12 @@ interface DeleteItemButtonProps {
 
 const COLORS = {normal: "red", pressed: "darkred"}
 
+/**
+ * A delete item button component with a trash icon
+ * 
+ * @param props The component props : {onPress, style}
+ * @returns The JSX element
+ */
 export default function DeleteItemButton(props : DeleteItemButtonProps) {
     return (
         <Button onPress={props.onPress} style={[styles.button, props.style]} colors={COLORS}>

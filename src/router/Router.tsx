@@ -18,6 +18,11 @@ declare global {
     }
 }
 
+/**
+ * The router component
+ * 
+ * @returns The JSX element
+ */
 export default function Router() {
     const Stack = createNativeStackNavigator<RootStackParamList>();
     const navigationRef = useNavigationContainerRef();

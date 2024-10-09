@@ -20,6 +20,12 @@ interface CategoryProps {
     handleRemoveCategory: (categoryIndex: number) => void;
 }
 
+/**
+ * A category component that displays a category and its items
+ * 
+ * @param props The component props : {categoryIndex, category, handleChangeQuantityItem, handleEditItem, handleRemoveItem, handleEditCategory, handleRemoveCategory}
+ * @returns The JSX element
+ */
 export default function Category(props: CategoryProps) {
     const { settingsCtx } = useSettingsContext();
     const { editionModeCtx } = useEditionModeContext();

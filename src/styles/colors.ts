@@ -1,10 +1,16 @@
 import { Theme } from "types/theme";
 
+/**
+ * The colors used for the switch component
+ */
 export const switchColors = {
     track: { true: "#4A85EB", false: "#767577" },
     thumb: { true: "#1545D5", false: "#F4F3F4" },
 };
 
+/**
+ * The color scheme of the application
+ */
 export const colorScheme: { [key: string]: Theme } = {
     dark: {
         name: "dark",
