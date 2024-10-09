@@ -1,4 +1,5 @@
 import EditionModeContextProvider from "./editionModeContext";
+import InventoryContextProvider from "./inventoryContext";
 import ModalVisibleContextProvider from "./modalVisibleContext";
 import SettingsContextProvider from "./settingsContext";
 
@@ -13,7 +14,9 @@ export default function ContextsProvider({ children }) {
         <SettingsContextProvider>
             <EditionModeContextProvider>
                 <ModalVisibleContextProvider>
-                    {children}
+                    <InventoryContextProvider>
+                        {children}
+                    </InventoryContextProvider>
                 </ModalVisibleContextProvider>
             </EditionModeContextProvider>
         </SettingsContextProvider>

@@ -27,6 +27,10 @@ export class Category {
         return this._name;
     }
 
+    set id(id: number) {
+        this._id = id;
+    }
+
     set name(name: string) {
         if (!Category.isNameValid(name)) {
             throw new Error("Category name is invalid");
