@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { useSettingsContext } from "@/contexts/settingsContext";
@@ -10,6 +10,7 @@ import PlusMinusButton from "../PlusMinusButton";
 import EditCategoryModal from "./EditCategoryModal";
 import { Category as CategoryObj } from "@/model/category";
 import * as CategoryRepository from "@/dataaccess/categoryRepository";
+import { collapseCategory, isCategoryCollapsed } from "@/dataaccess/settingsRepository";
 
 interface CategoryProps {
     categoryIndex: number;
@@ -27,6 +28,10 @@ export default function Category(props: CategoryProps) {
     const { editionModeCtx } = useEditionModeContext();
     const { renameCategory, removeCategory } = useInventoryContext();
     const [collapsed, setCollapsed] = useState(false);
+
+    useEffect(() => {
+        isCategoryCollapsed(props.category.id).then((isCollapsed) => setCollapsed(isCollapsed));
+    }, [props.category.name]);
 
     const handleRenameCategory = async (name: string) => {
         if (!CategoryObj.isNameValid(name)) {
@@ -50,6 +55,10 @@ export default function Category(props: CategoryProps) {
 
         removeCategory(props.category.id);
     };
+    const handleCollapseCategory = async () => {
+        setCollapsed(!collapsed);
+        collapseCategory(props.category.id);
+    };
 
     return (
         <View style={styles.container}>
@@ -72,7 +81,7 @@ export default function Category(props: CategoryProps) {
                 <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{props.category.name}</Text>
                 {props.category.items.length > 0 && (
                     <PlusMinusButton
-                        onPress={() => setCollapsed(!collapsed)}
+                        onPress={handleCollapseCategory}
                         plus={collapsed}
                         style={{ ...styles.collapseButton, backgroundColor: settingsCtx.theme.colors.background }}
                     />
