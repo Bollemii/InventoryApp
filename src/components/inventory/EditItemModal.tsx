@@ -5,6 +5,7 @@ import { Picker } from "@react-native-picker/picker";
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
 import { useInventoryContext } from "@/contexts/inventoryContext";
+import { useEditionModeContext } from "@/contexts/editionModeContext";
 import Button from "../Button";
 import Icon from "../Icon";
 import Modal from "../Modal";
@@ -32,6 +33,7 @@ interface EditItemModalProps {
 export default function EditItemModal(props: EditItemModalProps) {
     const { settingsCtx } = useSettingsContext();
     const { setModalVisibleCtx } = useModalVisibleContext();
+    const { setEditionModeCtx } = useEditionModeContext();
     const { inventoryCtx } = useInventoryContext();
     const [visible, setVisible] = useState(false);
     const [name, setName] = useState("");
@@ -69,6 +71,7 @@ export default function EditItemModal(props: EditItemModalProps) {
             }
 
             toggleVisible(false);
+            setEditionModeCtx(false);
         } catch (error) {
             setError(error.message);
         }
@@ -78,6 +81,7 @@ export default function EditItemModal(props: EditItemModalProps) {
         try {
             props.remove();
             toggleVisible(false);
+            setEditionModeCtx(false);
         } catch (error) {
             setError(error.message);
         }

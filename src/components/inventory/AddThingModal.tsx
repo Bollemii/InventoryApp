@@ -4,6 +4,7 @@ import { Picker } from "@react-native-picker/picker";
 
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
 import { useInventoryContext } from "@/contexts/inventoryContext";
+import { useEditionModeContext } from "@/contexts/editionModeContext";
 import Modal from "../Modal";
 import Button from "../Button";
 import { Item } from "@/model/Item";
@@ -31,6 +32,7 @@ const MODES = {
  */
 export default function AddThingModal(props: AddItemModalProps) {
     const { setModalVisibleCtx } = useModalVisibleContext();
+    const { setEditionModeCtx } = useEditionModeContext();
     const { inventoryCtx } = useInventoryContext();
     const [visible, setVisible] = useState(false);
     const [mode, setMode] = useState(MODES.NONE);
@@ -79,6 +81,7 @@ export default function AddThingModal(props: AddItemModalProps) {
                 props.saveCategory(new Category(0, name.trim()));
             }
             toggleVisible(false);
+            setEditionModeCtx(false);
         } catch (error) {
             setError(error.message);
         }

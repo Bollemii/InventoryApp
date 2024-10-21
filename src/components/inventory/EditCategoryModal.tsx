@@ -3,6 +3,7 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
+import { useEditionModeContext } from "@/contexts/editionModeContext";
 import Button from "../Button";
 import Icon from "../Icon";
 import Modal from "../Modal";
@@ -27,6 +28,7 @@ interface EditCategoryModalProps {
 export default function EditCategoryModal(props: EditCategoryModalProps) {
     const { settingsCtx } = useSettingsContext();
     const { setModalVisibleCtx } = useModalVisibleContext();
+    const { setEditionModeCtx } = useEditionModeContext();
     const [visible, setVisible] = useState(false);
     const [name, setName] = useState("");
     const [error, setError] = useState("");
@@ -62,6 +64,7 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
             props.edit(name);
 
             toggleVisible(false);
+            setEditionModeCtx(false);
         } catch (error) {
             setError(error.message);
         }
@@ -75,6 +78,7 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
 
             props.remove();
             toggleVisible(false);
+            setEditionModeCtx(false);
         } catch (error) {
             setError(error.message);
         }
