@@ -7,23 +7,31 @@ import CardViewSetting from "@/components/settings/CardViewSetting";
 import ThemeSetting from "@/components/settings/ThemeSetting";
 import NotificationsSetting from "@/components/settings/NotificationsSetting";
 
+/**
+ * The settings screen
+ * It displays the settings of the application
+ * 
+ * @returns The JSX element
+ */
 export default function Settings() {
     const { settingsCtx } = useSettingsContext();
     const { modalVisibleCtx } = useModalVisibleContext();
-    const [i, setI] = useState(0); // Force re-render
-
-    const rerender = () => {
-        setI(i + 1);
-    };
+    const [rerender, setRerender] = useState(false);
+    const itemStyle = [
+        styles.item,
+        {
+            backgroundColor: settingsCtx.theme.colors.items.background,
+        },
+    ]
 
     return (
         <>
         {modalVisibleCtx && <View style={styles.opacityView} /> /* Modal opacity background */}
         <View style={[styles.container, { backgroundColor: settingsCtx.theme.colors.background }]}>
             <ScrollView>
-                <CardViewSetting />
-                <ThemeSetting parentRerender={rerender} />
-                <NotificationsSetting />
+                <CardViewSetting style={itemStyle} />
+                <ThemeSetting style={itemStyle} parentRerender={() => setRerender(!rerender)} />
+                <NotificationsSetting style={itemStyle} />
             </ScrollView>
         </View>
         </>
@@ -34,6 +42,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
+    },
+    item: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: 10,
+        borderWidth: 1,
+        borderRadius: 10,
+        marginVertical: 5,
+        height: 80,
     },
     opacityView: {
         position: "absolute",

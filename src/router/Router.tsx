@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
 import { Pressable, Text } from "react-native";
 import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { RootStackParamList, routes } from "@/router/routes";
-import { colorScheme } from "@/styles/colors";
-import Inventory from "@/screens/Inventory";
-import Settings from "@/screens/Settings";
-import { getThemeSetting } from "@/dataaccess/settingsRepository";
 import { Theme } from "types/theme";
 import { log } from "@/logger";
+import { RootStackParamList, routes } from "@/router/routes";
+import { useSettingsContext } from "@/contexts/settingsContext";
+import Inventory from "@/screens/Inventory";
+import Settings from "@/screens/Settings";
 import Icon from "@/components/Icon";
 
 declare global {
@@ -18,16 +16,15 @@ declare global {
     }
 }
 
+/**
+ * The router component
+ *
+ * @returns The JSX element
+ */
 export default function Router() {
+    const { settingsCtx } = useSettingsContext();
     const Stack = createNativeStackNavigator<RootStackParamList>();
     const navigationRef = useNavigationContainerRef();
-    const [theme, setTheme] = useState(colorScheme.dark);
-
-    useEffect(() => {
-        getThemeSetting().then((theme) => {
-            setTheme(theme);
-        });
-    }, []);
 
     const handleError = (error: any) => {
         log.warn(`Unhandled routing action : ${error} (Router)`);
@@ -39,7 +36,7 @@ export default function Router() {
             <Stack.Navigator
                 initialRouteName="Inventory"
                 screenOptions={({ navigation }) => ({
-                    ...headerOptions(navigation, theme),
+                    ...headerOptions(navigation, settingsCtx.theme),
                 })}
             >
                 <Stack.Screen name="Inventory" component={Inventory} options={{ title: "Inventaire" }} />

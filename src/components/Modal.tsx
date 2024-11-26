@@ -11,6 +11,12 @@ interface ModalProps {
     style?: any;
 }
 
+/**
+ * A modal component with a title and a close button
+ * 
+ * @param props The component props : {children, title, visible, close, style}
+ * @returns The JSX element
+ */
 export default function Modal(props: ModalProps) {
     if (!props.visible) return null;
     return (

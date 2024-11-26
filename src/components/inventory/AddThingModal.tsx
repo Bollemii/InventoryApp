@@ -3,11 +3,12 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
+import { useInventoryContext } from "@/contexts/inventoryContext";
+import { useEditionModeContext } from "@/contexts/editionModeContext";
 import Modal from "../Modal";
 import Button from "../Button";
 import { Item } from "@/model/Item";
 import { Category } from "@/model/category";
-import { fetchAllCategories } from "@/dataaccess/categoryRepository";
 
 interface AddItemModalProps {
     buttonStyle: any;
@@ -21,35 +22,33 @@ const MODES = {
     CATEGORY: "category",
 };
 
+/**
+ * A modal to add an item or a category
+ * It displays a button to open the modal
+ * The modal contains a text input to enter the name of the item or category and a picker to choose the item category
+ *
+ * @param props The component props : {buttonStyle, saveItem, saveCategory}
+ * @returns The JSX element
+ */
 export default function AddThingModal(props: AddItemModalProps) {
     const { setModalVisibleCtx } = useModalVisibleContext();
+    const { setEditionModeCtx } = useEditionModeContext();
+    const { inventoryCtx } = useInventoryContext();
     const [visible, setVisible] = useState(false);
     const [mode, setMode] = useState(MODES.NONE);
-    const [categories, setCategories] = useState<Category[]>([]);
     const [name, setName] = useState("");
     const [categoryName, setCategoryName] = useState<string>("");
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        fetchAllCategories().then((categories) => {
-            setCategories(categories);
-            if (categoryName && !categories.some((c) => c.name === categoryName)) {
-                setCategoryName("");
-            }
-        });
-    }, []);
     useEffect(() => {
         if (!visible) return;
         setMode(MODES.NONE);
         setName("");
         setError("");
 
-        fetchAllCategories().then((categories) => {
-            setCategories(categories);
-            if (categoryName && !categories.some((c) => c.name === categoryName)) {
-                setCategoryName("");
-            }
-        });
+        if (categoryName && !inventoryCtx.some((c) => c.name === categoryName)) {
+            setCategoryName("");
+        }
     }, [visible]);
     useEffect(() => {
         setError("");
@@ -62,7 +61,6 @@ export default function AddThingModal(props: AddItemModalProps) {
 
     const handleSave = async () => {
         setError("");
-        let idResult: number;
         try {
             if (mode === MODES.ITEM) {
                 if (!categoryName) {
@@ -71,17 +69,19 @@ export default function AddThingModal(props: AddItemModalProps) {
                     throw new Error("Item name is invalid");
                 }
 
-                const category = categories.find((c) => c.name === categoryName);
-                props.saveItem(category, new Item(0, name.trim(), 0));
+                props.saveItem(
+                    inventoryCtx.find((c) => c.name === categoryName),
+                    new Item(0, name.trim())
+                );
             } else if (mode === MODES.CATEGORY) {
                 if (!Category.isNameValid(name)) {
-                    throw new Error("Category name is invalid");
+                    throw new Error("Category name is required");
                 }
 
-                idResult = await props.saveCategory(new Category(0, name.trim()));
-                setCategories([...categories, new Category(idResult, name.trim())]);
+                props.saveCategory(new Category(0, name.trim()));
             }
             toggleVisible(false);
+            setEditionModeCtx(false);
         } catch (error) {
             setError(error.message);
         }
@@ -103,12 +103,12 @@ export default function AddThingModal(props: AddItemModalProps) {
                         setName={setName}
                         categoryName={categoryName}
                         setCategoryName={setCategoryName}
-                        categories={categories}
+                        categories={inventoryCtx}
                     />
                 ) : mode === MODES.CATEGORY ? (
                     <AddCategoryModalContent name={name} setName={setName} />
                 ) : (
-                    <ChooseModeContent setMode={setMode} categories={categories} />
+                    <ChooseModeContent setMode={setMode} categories={inventoryCtx} />
                 )}
                 {error !== "" && <Text style={styles.errorMessage}>{error}</Text>}
                 {mode !== MODES.NONE && (

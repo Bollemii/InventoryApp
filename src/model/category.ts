@@ -1,5 +1,9 @@
 import { Item } from "./Item";
 
+/**
+ * Category class, it contains a list of items
+ * It contains the category properties : id, name and items
+ */
 export class Category {
     private _id: number;
     private _name: string;
@@ -21,6 +25,10 @@ export class Category {
 
     get name() {
         return this._name;
+    }
+
+    set id(id: number) {
+        this._id = id;
     }
 
     set name(name: string) {

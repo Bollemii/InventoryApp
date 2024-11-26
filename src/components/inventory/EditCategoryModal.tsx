@@ -3,6 +3,7 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
+import { useEditionModeContext } from "@/contexts/editionModeContext";
 import Button from "../Button";
 import Icon from "../Icon";
 import Modal from "../Modal";
@@ -12,16 +13,25 @@ import { Category } from "@/model/category";
 
 interface EditCategoryModalProps {
     category: Category;
-    edit: (category: Category) => void;
+    edit: (name: string) => void;
     remove: () => void;
 }
 
+/**
+ * An edit category modal component to edit or remove a category
+ * It displays a button to open the modal
+ * The modal contains a text input to enter the new category name
+ *
+ * @param props The component props : {category, edit, remove}
+ * @returns The JSX element
+ */
 export default function EditCategoryModal(props: EditCategoryModalProps) {
     const { settingsCtx } = useSettingsContext();
     const { setModalVisibleCtx } = useModalVisibleContext();
-    const [ visible, setVisible ] = useState(false);
-    const [ name, setName ] = useState("");
-    const [ error, setError ] = useState("");
+    const { setEditionModeCtx } = useEditionModeContext();
+    const [visible, setVisible] = useState(false);
+    const [name, setName] = useState("");
+    const [error, setError] = useState("");
 
     useEffect(() => {
         setModalVisibleCtx(false);
@@ -39,7 +49,7 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
         setVisible(value);
         setModalVisibleCtx(value);
     };
-    const handleEditCategory = () => {
+    const handleRename = () => {
         setError("");
         try {
             if (!Category.isNameValid(name)) {
@@ -51,15 +61,15 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
                 return;
             }
 
-            props.category.name = name.trim();
-            props.edit(props.category)
+            props.edit(name);
 
             toggleVisible(false);
+            setEditionModeCtx(false);
         } catch (error) {
             setError(error.message);
         }
     };
-    const handleRemoveCategory = () => {
+    const handleRemove = () => {
         setError("");
         try {
             if (props.category.items.length > 0) {
@@ -68,6 +78,7 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
 
             props.remove();
             toggleVisible(false);
+            setEditionModeCtx(false);
         } catch (error) {
             setError(error.message);
         }
@@ -92,12 +103,12 @@ export default function EditCategoryModal(props: EditCategoryModalProps) {
             >
                 <TextInput value={name} onChangeText={setName} placeholder="Category name" style={styles.input} />
                 {error !== "" && <Text style={styles.errorMessage}>{error}</Text>}
-                <Button onPress={handleEditCategory} style={styles.actionButton}>
+                <Button onPress={handleRename} style={styles.actionButton}>
                     <Text>Save</Text>
                 </Button>
-                <HorizontalLine width="90%"/>
+                <HorizontalLine width="90%" />
 
-                <DeleteItemButton onPress={handleRemoveCategory} style={styles.actionButton}/>
+                <DeleteItemButton onPress={handleRemove} style={styles.actionButton} />
             </Modal>
         </>
     );

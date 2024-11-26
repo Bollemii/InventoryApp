@@ -1,29 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { useEditionModeContext } from "@/contexts/editionModeContext";
+import { useInventoryContext } from "@/contexts/inventoryContext";
 import ItemCard from "./ItemCard";
 import ItemList from "./ItemList";
 import PlusMinusButton from "../PlusMinusButton";
 import EditCategoryModal from "./EditCategoryModal";
 import { Category as CategoryObj } from "@/model/category";
-import { Item } from "@/model/Item";
+import * as CategoryRepository from "@/dataaccess/categoryRepository";
+import { collapseCategory, isCategoryCollapsed } from "@/dataaccess/settingsRepository";
 
 interface CategoryProps {
     categoryIndex: number;
     category: CategoryObj;
-    handleChangeQuantityItem: (categoryIndex: number, itemIndex: number, add: number) => void;
-    handleEditItem: (categoryIndex: number, itemIndex: number, item: Item, category: CategoryObj) => void;
-    handleRemoveItem: (categoryIndex: number, itemIndex: number) => void;
-    handleEditCategory: (categoryIndex: number, category: CategoryObj) => void;
-    handleRemoveCategory: (categoryIndex: number) => void;
 }
 
+/**
+ * A category component that displays a category and its items
+ *
+ * @param props The component props : {categoryIndex, category}
+ * @returns The JSX element
+ */
 export default function Category(props: CategoryProps) {
     const { settingsCtx } = useSettingsContext();
     const { editionModeCtx } = useEditionModeContext();
+    const { renameCategory, removeCategory } = useInventoryContext();
     const [collapsed, setCollapsed] = useState(false);
+
+    useEffect(() => {
+        isCategoryCollapsed(props.category.id).then((isCollapsed) => setCollapsed(isCollapsed));
+    }, [props.category.name]);
+
+    const handleRenameCategory = async (name: string) => {
+        if (!CategoryObj.isNameValid(name)) {
+            throw new Error("Category name is required");
+        }
+
+        const fetchedCategory = await CategoryRepository.fetchCategoryByName(name.trim());
+        if (fetchedCategory) {
+            throw new Error("This category already exists");
+        }
+
+        await CategoryRepository.editCategoryName(props.category.id, name.trim());
+        renameCategory(props.category.id, name);
+    };
+    const handleRemoveCategory = async () => {
+        if (props.category.items.length > 0) {
+            throw new Error("Category is not empty");
+        }
+
+        await CategoryRepository.deleteCategory(props.category.id);
+
+        removeCategory(props.category.id);
+    };
+    const handleCollapseCategory = async () => {
+        setCollapsed(!collapsed);
+        collapseCategory(props.category.id);
+    };
 
     return (
         <View style={styles.container}>
@@ -39,16 +74,16 @@ export default function Category(props: CategoryProps) {
                 {editionModeCtx && (
                     <EditCategoryModal
                         category={props.category}
-                        edit={(category) => props.handleEditCategory(props.categoryIndex, category)}
-                        remove={() => props.handleRemoveCategory(props.categoryIndex)}
+                        edit={handleRenameCategory}
+                        remove={handleRemoveCategory}
                     />
                 )}
                 <Text style={[styles.title, { color: settingsCtx.theme.colors.texts }]}>{props.category.name}</Text>
                 {props.category.items.length > 0 && (
                     <PlusMinusButton
-                        onPress={() => setCollapsed(!collapsed)}
+                        onPress={handleCollapseCategory}
                         plus={collapsed}
-                        style={{...styles.collapseButton, backgroundColor: settingsCtx.theme.colors.background }}
+                        style={{ ...styles.collapseButton, backgroundColor: settingsCtx.theme.colors.background }}
                     />
                 )}
             </View>
@@ -64,23 +99,9 @@ export default function Category(props: CategoryProps) {
                 >
                     {props.category.items.map((item, index) =>
                         settingsCtx.cardsView ? (
-                            <ItemCard
-                                key={item.id}
-                                item={item}
-                                categoryName={props.category.name}
-                                handleChangeQuantity={(add) => props.handleChangeQuantityItem(props.categoryIndex, index, add)}
-                                handleEditItem={(item, category) => props.handleEditItem(props.categoryIndex, index, item, category)}
-                                handleRemoveItem={() => props.handleRemoveItem(props.categoryIndex, index)}
-                            />
+                            <ItemCard key={item.id} item={item} category={props.category} />
                         ) : (
-                            <ItemList
-                                key={item.id}
-                                item={item}
-                                categoryName={props.category.name}
-                                handleChangeQuantity={(add) => props.handleChangeQuantityItem(props.categoryIndex, index, add)}
-                                handleEditItem={(item, category) => props.handleEditItem(props.categoryIndex, index, item, category)}
-                                handleRemoveItem={() => props.handleRemoveItem(props.categoryIndex, index)}
-                            />
+                            <ItemList key={item.id} item={item} category={props.category} />
                         )
                     )}
                 </View>

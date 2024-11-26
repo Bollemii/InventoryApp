@@ -9,6 +9,13 @@ interface ButtonProps {
     colors?: { normal: string; pressed: string };
 }
 
+/**
+ * A button component
+ * The button changes its background color when pressed. The colors can be customized in the "colors" prop as an object with "normal" and "pressed" properties
+ * 
+ * @param props The component props : {children, title, onPress, style, colors}
+ * @returns The JSX element
+ */
 export default function Button(props: ButtonProps) {
     const { settingsCtx } = useSettingsContext();
 

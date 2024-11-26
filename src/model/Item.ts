@@ -1,3 +1,7 @@
+/**
+ * Item model
+ * It contains the item properties : id, name and quantity
+ */
 export class Item {
     static QUANTITY_MIN = 0;
     static QUANTITY_MAX = 99;
@@ -6,7 +10,7 @@ export class Item {
     private _name: string;
     private _quantity: number;
 
-    constructor(id: number, name: string, quantity: number) {
+    constructor(id: number, name: string, quantity: number = 0) {
         if (!Item.isNameValid(name)) {
             throw new Error("Item name is invalid");
         }
@@ -29,6 +33,10 @@ export class Item {
 
     get quantity() {
         return this._quantity;
+    }
+
+    set id(id: number) {
+        this._id = id;
     }
 
     set name(name: string) {

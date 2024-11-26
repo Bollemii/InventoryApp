@@ -4,6 +4,8 @@ import { Picker } from "@react-native-picker/picker";
 
 import { useSettingsContext } from "@/contexts/settingsContext";
 import { useModalVisibleContext } from "@/contexts/modalVisibleContext";
+import { useInventoryContext } from "@/contexts/inventoryContext";
+import { useEditionModeContext } from "@/contexts/editionModeContext";
 import Button from "../Button";
 import Icon from "../Icon";
 import Modal from "../Modal";
@@ -11,38 +13,38 @@ import HorizontalLine from "../HorizontalLine";
 import DeleteItemButton from "./DeleteItemButton";
 import { Category } from "@/model/category";
 import { Item } from "@/model/Item";
-import { fetchAllCategories } from "@/dataaccess/categoryRepository";
 
 interface EditItemModalProps {
     item: Item;
     categoryName: string;
-    edit: (item: Item, category: Category) => void;
+    rename: (name: string) => void;
+    move: (newCategoryId: number) => void;
     remove: () => void;
 }
 
+/**
+ * An edit item modal component to edit or remove an item
+ * It displays a button to open the modal
+ * The modal contains a text input to enter the new item name and a picker to choose the item category
+ *
+ * @param props The component props : {item, categoryName, rename, move, remove}
+ * @returns The JSX element
+ */
 export default function EditItemModal(props: EditItemModalProps) {
     const { settingsCtx } = useSettingsContext();
     const { setModalVisibleCtx } = useModalVisibleContext();
+    const { setEditionModeCtx } = useEditionModeContext();
+    const { inventoryCtx } = useInventoryContext();
     const [visible, setVisible] = useState(false);
     const [name, setName] = useState("");
-    const [categoryName, setCategoryName] = useState<string>("");
-    const [categories, setCategories] = useState<Category[]>([]);
+    const [categoryName, setCategoryName] = useState("");
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        setModalVisibleCtx(false);
-        fetchAllCategories().then((categories) => {
-            setCategories(categories);
-        });
-    }, []);
     useEffect(() => {
         if (!visible) return;
         setName(props.item.name);
         setCategoryName(props.categoryName);
         setError("");
-        fetchAllCategories().then((categories) => {
-            setCategories(categories);
-        });
     }, [visible]);
     useEffect(() => {
         setError("");
@@ -59,16 +61,17 @@ export default function EditItemModal(props: EditItemModalProps) {
                 throw new Error("Category name is invalid");
             }
 
-            if (name.trim() === props.item.name && categoryName === props.categoryName) {
-                toggleVisible(false);
-                return;
+            if (name.trim() !== props.item.name) {
+                props.rename(name);
+            } else if (categoryName !== props.categoryName) {
+                const category = inventoryCtx.find((c) => c.name === categoryName);
+                if (category) {
+                    props.move(category.id);
+                }
             }
 
-            const newItem = new Item(props.item.id, name.trim(), props.item.quantity);
-            const category = categories.find((c) => c.name === categoryName);
-            props.edit(newItem, category);
-
             toggleVisible(false);
+            setEditionModeCtx(false);
         } catch (error) {
             setError(error.message);
         }
@@ -78,6 +81,7 @@ export default function EditItemModal(props: EditItemModalProps) {
         try {
             props.remove();
             toggleVisible(false);
+            setEditionModeCtx(false);
         } catch (error) {
             setError(error.message);
         }
@@ -95,11 +99,7 @@ export default function EditItemModal(props: EditItemModalProps) {
             >
                 <Icon icon="pen" size={13} color={settingsCtx.theme.colors.items.button.icon} />
             </Button>
-            <Modal
-                title={`Edit "${props.item.name}" item`}
-                visible={visible}
-                close={() => toggleVisible(false)}
-            >
+            <Modal title={`Edit "${props.item.name}" item`} visible={visible} close={() => toggleVisible(false)}>
                 <TextInput value={name} onChangeText={setName} placeholder="Item name" style={styles.input} />
                 <View style={styles.input}>
                     <Picker
@@ -107,7 +107,7 @@ export default function EditItemModal(props: EditItemModalProps) {
                         onValueChange={(value) => setCategoryName(value)}
                         style={styles.picker}
                     >
-                        {categories.map((c) => (
+                        {inventoryCtx.map((c) => (
                             <Picker.Item key={c.name} label={c.name} value={c.name} />
                         ))}
                     </Picker>
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         height: 30,
-        width: 80,
+        width: "100%",
     },
     picker: {
         width: "100%",
